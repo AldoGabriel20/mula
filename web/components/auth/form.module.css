@@ -1,0 +1,146 @@
+/* Auth form pieces — prototype .h1 / .lede / label.f / .btn / .sm. */
+.form {
+  display: grid;
+  gap: 16px;
+  line-height: 1.5; /* prototype body line-height */
+}
+.title {
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: clamp(34px, 4.4vw, 58px);
+  line-height: 1.02;
+  letter-spacing: -0.02em;
+  margin: 0;
+  text-wrap: balance;
+}
+.lede {
+  font-size: 17px;
+  margin: 0 0 6px;
+  color: var(--mut);
+  max-width: 58ch;
+  text-wrap: pretty;
+}
+.rootError {
+  background: var(--nob);
+  color: var(--no);
+  border-radius: 10px;
+  padding: 10px 14px;
+  font-size: 14px;
+}
+.submit {
+  min-height: 50px;
+  margin-top: 6px;
+}
+.footer {
+  text-align: center;
+  padding-top: 20px;
+  font-size: 13px;
+  color: var(--mut);
+}
+.footer a {
+  color: var(--ink);
+}
+.rowBetween {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+/* .btn .btn-t .btn-s as a link */
+.ghostLink {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 36px;
+  padding: 0 14px;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--ink);
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background 0.25s, color 0.25s;
+}
+.footer a.ghostLink:hover {
+  background: var(--bg2);
+  color: var(--ink);
+}
+.forgot {
+  min-height: 26px;
+  padding: 0 14px;
+}
+
+/* login: "or" rule + secondary button */
+.or {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 12px;
+  color: var(--mut);
+}
+.or span {
+  flex: 1;
+  height: 1px;
+  background: var(--line);
+}
+
+/* register: password strength + terms */
+.strength {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.strength i {
+  flex: 1;
+  height: 4px;
+  border-radius: 9px;
+  background: var(--line);
+  transition: background 0.4s;
+}
+.strength i.s1 {
+  background: var(--no);
+}
+.strength i.s2 {
+  background: var(--wt);
+}
+.strength i.s3 {
+  background: var(--ok);
+}
+.strength small {
+  min-width: 64px;
+  text-align: right;
+  font-size: 12px;
+  color: var(--mut);
+}
+.terms {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 13px;
+}
+.terms input {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--ink);
+  margin: 2px 3px 3px 4px; /* browser default checkbox margins, top overridden as in the prototype */
+  flex: none;
+}
+.terms span {
+  color: var(--mut);
+}
+.terms a {
+  color: var(--ink);
+  text-decoration-color: var(--dot);
+  text-underline-offset: 3px;
+}
+.fieldError {
+  color: var(--no);
+  font-size: 13px;
+}
+
+/* prototype `button{font:inherit}` — the shared Button leaves the UA font family in place */
+.form button {
+  font-family: inherit;
+}

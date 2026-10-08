@@ -1,0 +1,3 @@
+DROP TABLE IF EXISTS rsvps;
+DROP TABLE IF EXISTS guests;
+DROP TABLE IF EXISTS guest_groups;

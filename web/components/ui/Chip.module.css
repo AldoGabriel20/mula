@@ -1,0 +1,24 @@
+/* Prototype .chip + .chip.on */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  min-height: 36px;
+  padding: 0 15px;
+  border-radius: 99px;
+  border: 1px solid var(--line);
+  background: transparent;
+  font-size: 13px;
+  color: var(--ink2);
+  transition: all 0.3s var(--eo);
+}
+.chip:hover {
+  border-color: var(--line2);
+}
+.on {
+  background: var(--ink);
+  color: var(--onink);
+  border-color: var(--ink);
+}
+button.chip {
+  cursor: pointer;
+}

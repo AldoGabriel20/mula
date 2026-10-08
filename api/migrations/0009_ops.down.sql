@@ -1,0 +1,2 @@
+DROP TABLE IF EXISTS live_config;
+DROP TABLE IF EXISTS checkins;

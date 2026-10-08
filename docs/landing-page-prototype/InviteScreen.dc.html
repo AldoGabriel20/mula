@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=Manrope:wght@300;400;500;600;700&family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;0,6..96,500;1,6..96,400&family=Italiana&family=Pinyon+Script&family=Unbounded:wght@300;500;700&display=swap"></helmet>
+<div style="container-type:inline-size;width:100%;aspect-ratio:9/19.5;height:auto;box-sizing:border-box;padding:2.6%;background:#0c0b0a;border-radius:15% / 7%;box-shadow:0 50px 90px -40px rgba(0,0,0,.7), 0 18px 40px -20px rgba(0,0,0,.45), inset 0 0 0 1px rgba(255,255,255,.08);">
+  <div style="position:relative;width:100%;height:100%;border-radius:12.5cqw;overflow:hidden;background:{{ d.bg }};color:{{ d.fg }};transition:background-color .9s ease, color .9s ease;">
+    <sc-if value="{{ isCover }}" hint-placeholder-val="{{ false }}">
+      <div style="position:absolute;left:0;right:0;top:0;height:64%;background:{{ d.photo }};"></div>
+      <div style="position:absolute;left:0;right:0;top:34%;height:32%;background:linear-gradient(to bottom, rgba(0,0,0,0), {{ d.bg }});"></div>
+      <div style="position:absolute;left:8cqw;right:8cqw;top:17cqw;display:flex;justify-content:space-between;font-family:'Manrope',sans-serif;font-size:3cqw;font-weight:500;letter-spacing:.22em;text-transform:uppercase;"><span>{{ d.eyebrow }}</span><span>{{ d.dateShort }}</span></div>
+      <div style="position:absolute;left:8cqw;right:8cqw;bottom:9cqw;display:flex;flex-direction:column;gap:4cqw;">
+        <div style="font-family:{{ d.font }};font-style:{{ d.italic }};font-weight:{{ d.weight }};font-size:{{ d.coverSize }}cqw;line-height:.98;letter-spacing:{{ d.ls }};text-wrap:balance;">{{ d.title }}</div>
+        <sc-if value="{{ hasGuest }}" hint-placeholder-val="{{ false }}">
+          <div style="font-family:'Manrope',sans-serif;font-size:3.6cqw;opacity:.85;">{{ d.guestLabel }} {{ d.guest }}</div>
+        </sc-if>
+        <div style="height:1px;background:{{ d.accent }};opacity:.6;"></div>
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:3cqw;font-family:'Manrope',sans-serif;font-size:3.2cqw;">
+          <span style="opacity:.85;">{{ d.date }}</span><span style="flex:none;padding:2.4cqw 5cqw;border-radius:10cqw;background:{{ d.fg }};color:{{ d.bg }};">Open</span>
+        </div>
+      </div>
+    </sc-if>
+    <sc-if value="{{ isStandard }}" hint-placeholder-val="{{ true }}">
+      <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;text-align:center;box-sizing:border-box;padding:17cqw 8cqw 8cqw;">
+        <div style="font-family:'Manrope',sans-serif;font-weight:500;font-size:3cqw;letter-spacing:.26em;text-transform:uppercase;opacity:.82;">{{ d.eyebrow }}</div>
+        <div style="flex:1;width:100%;position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6cqw;">
+          <sc-if value="{{ isRing }}" hint-placeholder-val="{{ false }}">
+            <div style="position:absolute;width:66cqw;height:66cqw;border-radius:50%;border:1px solid {{ d.accent }};"></div>
+            <div style="position:absolute;width:52cqw;height:52cqw;border-radius:50%;border:1px solid {{ d.accent }};opacity:.45;"></div>
+          </sc-if>
+          <sc-if value="{{ isArch }}" hint-placeholder-val="{{ false }}">
+            <div style="position:absolute;width:60cqw;height:82cqw;border-radius:30cqw 30cqw 0 0;border:1px solid {{ d.accent }};"></div>
+            <div style="position:absolute;width:52cqw;height:74cqw;border-radius:26cqw 26cqw 0 0;border:1px solid {{ d.accent }};opacity:.4;"></div>
+          </sc-if>
+          <sc-if value="{{ isNumeral }}" hint-placeholder-val="{{ false }}">
+            <div style="position:absolute;font-family:{{ d.numFont }};font-size:78cqw;line-height:1;color:transparent;-webkit-text-stroke:1px {{ d.accent }};letter-spacing:-.05em;">{{ d.numeral }}</div>
+          </sc-if>
+          <sc-if value="{{ isFrame }}" hint-placeholder-val="{{ false }}">
+            <div style="position:absolute;inset:6cqw 0;border:1px solid {{ d.accent }};"></div>
+            <div style="position:absolute;inset:8cqw 2cqw;border:1px solid {{ d.accent }};opacity:.4;"></div>
+          </sc-if>
+          <sc-if value="{{ isPhoto }}" hint-placeholder-val="{{ false }}">
+            <div style="width:58cqw;height:68cqw;border-radius:29cqw 29cqw 0 0;background:{{ d.photo }};box-shadow:0 0 0 1.4cqw {{ d.bg }}, 0 0 0 calc(1.4cqw + 1px) {{ d.accent }};"></div>
+          </sc-if>
+          <div style="position:relative;display:flex;flex-direction:column;align-items:center;gap:3.4cqw;">
+            <div style="font-family:{{ d.font }};font-style:{{ d.italic }};font-weight:{{ d.weight }};font-size:{{ d.titleSize }}cqw;line-height:1.04;letter-spacing:{{ d.ls }};text-wrap:balance;max-width:78cqw;">{{ d.title }}</div>
+            <sc-if value="{{ hasSub }}" hint-placeholder-val="{{ false }}">
+              <div style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:4.8cqw;opacity:.85;">{{ d.sub }}</div>
+            </sc-if>
+          </div>
+        </div>
+        <sc-if value="{{ hasGuest }}" hint-placeholder-val="{{ false }}">
+          <div style="display:flex;flex-direction:column;gap:1.4cqw;margin-bottom:5cqw;">
+            <div style="font-family:'Manrope',sans-serif;font-size:2.7cqw;letter-spacing:.22em;text-transform:uppercase;opacity:.65;">{{ d.guestLabel }}</div>
+            <div style="font-family:'Cormorant Garamond',serif;font-size:5.4cqw;font-weight:500;">{{ d.guest }}</div>
+          </div>
+        </sc-if>
+        <div style="width:10cqw;height:1px;background:{{ d.accent }};margin-bottom:4cqw;"></div>
+        <div style="font-family:'Manrope',sans-serif;font-size:3.3cqw;letter-spacing:.04em;opacity:.86;margin-bottom:7cqw;">{{ d.date }}</div>
+        <div style="font-family:'Manrope',sans-serif;font-size:3.2cqw;letter-spacing:.08em;padding:3cqw 7cqw;border-radius:10cqw;border:1px solid {{ d.accent }};">Open invitation</div>
+      </div>
+    </sc-if>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:280,&quot;height&quot;:606},&quot;d&quot;:{&quot;editor&quot;:null,&quot;default&quot;:{&quot;bg&quot;:&quot;#EFE7DA&quot;,&quot;fg&quot;:&quot;#2B2420&quot;,&quot;accent&quot;:&quot;#A88452&quot;,&quot;font&quot;:&quot;'Bodoni Moda', serif&quot;,&quot;italic&quot;:&quot;italic&quot;,&quot;size&quot;:15,&quot;eyebrow&quot;:&quot;The Wedding of&quot;,&quot;title&quot;:&quot;Raka &amp; Celine&quot;,&quot;variant&quot;:&quot;arch&quot;,&quot;date&quot;:&quot;Saturday · 12 April 2027&quot;,&quot;guest&quot;:&quot;Anindya &amp; Family&quot;},&quot;tsType&quot;:&quot;object&quot;}}">
+class Component extends DCLogic {
+  renderVals() {
+    const d = { italic: 'normal', weight: 400, ls: '-0.01em', size: 12, font: "'Cormorant Garamond', serif", guestLabel: 'Dear', bg: '#EFE7DA', fg: '#2B2420', accent: '#A88452', ...(this.props.d || {}) };
+    if (!d.numFont) d.numFont = d.font;
+    d.titleSize = d.variant === 'photo' ? d.size * 0.82 : d.size;
+    d.coverSize = d.size * 1.25;
+    d.dateShort = (d.date || '').split('·').pop().trim().slice(0, 12);
+    const cover = d.variant === 'cover';
+    return {
+      d, isCover: cover, isStandard: !cover,
+      isRing: d.variant === 'ring', isArch: d.variant === 'arch', isNumeral: d.variant === 'numeral', isFrame: d.variant === 'frame', isPhoto: d.variant === 'photo',
+      hasGuest: !!d.guest, hasSub: !!d.sub
+    };
+  }
+}
+</script>
+</body>
+</html>

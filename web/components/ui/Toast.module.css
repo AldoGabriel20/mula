@@ -1,0 +1,57 @@
+/* Prototype .toast + dot. */
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: 28px;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  background: var(--ink);
+  color: var(--onink);
+  padding: 13px 22px 13px 18px;
+  border-radius: 99px;
+  z-index: 120;
+  font-size: 14px;
+  max-width: calc(100vw - 32px);
+  box-shadow: var(--sh2);
+  animation: toast 0.6s var(--sp);
+}
+.inline {
+  position: static;
+  transform: none;
+  animation: none;
+}
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--dot);
+  flex: none;
+  animation: pop 0.6s var(--sp) 0.15s both;
+}
+.ok {
+  background: var(--ok);
+}
+.warn {
+  background: var(--wt);
+}
+.error {
+  background: var(--no);
+}
+.info {
+  background: var(--in);
+}
+
+@keyframes toast {
+  from {
+    opacity: 0;
+    transform: translate(-50%, 18px) scale(0.94);
+  }
+}
+@keyframes pop {
+  from {
+    opacity: 0;
+    transform: scale(0);
+  }
+}

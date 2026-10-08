@@ -1,0 +1,12 @@
+DROP TABLE IF EXISTS user_addons;
+ALTER TABLE invitations DROP CONSTRAINT IF EXISTS fk_invitations_template;
+DROP TABLE IF EXISTS templates;
+DROP TABLE IF EXISTS gift_methods;
+ALTER TABLE invitations DROP COLUMN IF EXISTS rsvp_deadline;
+ALTER TABLE users DROP COLUMN IF EXISTS phone;
+ALTER TABLE live_config DROP COLUMN IF EXISTS show_on_invitation, DROP COLUMN IF EXISTS starts_at;
+ALTER TABLE gifts DROP CONSTRAINT IF EXISTS chk_gift_claimed, DROP CONSTRAINT IF EXISTS chk_gift_quantity, DROP COLUMN IF EXISTS claimed, DROP COLUMN IF EXISTS quantity;
+ALTER TABLE tasks DROP COLUMN IF EXISTS category;
+ALTER TABLE guests DROP COLUMN IF EXISTS invited_at, DROP COLUMN IF EXISTS notes, DROP COLUMN IF EXISTS table_label;
+ALTER TABLE schedule_items DROP CONSTRAINT IF EXISTS chk_schedule_range, DROP CONSTRAINT IF EXISTS chk_schedule_visibility,
+  DROP COLUMN IF EXISTS visibility, DROP COLUMN IF EXISTS description, DROP COLUMN IF EXISTS dress_code, DROP COLUMN IF EXISTS address, DROP COLUMN IF EXISTS ends_at;

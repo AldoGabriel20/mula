@@ -1,0 +1,161 @@
+/* Landing-page base (prototype Home.dc.html <helmet> style + the `style-hover` rules). Scoped to
+   .root so none of it leaks into the rest of the app. */
+.root {
+  background: #0e0c0b;
+  color: #f4eee4;
+  font-family: var(--l-manrope), sans-serif;
+  overflow-x: clip;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  min-height: 100vh;
+}
+.root,
+.root * {
+  box-sizing: border-box;
+}
+:global(html):has(.root) {
+  scroll-padding-top: 80px;
+}
+:global(html):has(.root[data-smooth="1"]) {
+  scroll-behavior: smooth;
+}
+:global(html):has(.root[data-pad="90"]) {
+  scroll-padding-top: 90px;
+}
+:global(html):has(.root[data-pad="100"]) {
+  scroll-padding-top: 100px;
+}
+
+.root a {
+  color: inherit;
+  text-decoration: none;
+}
+.root a:hover {
+  color: #c9a56e;
+}
+.root[data-hover="brown"] a:hover {
+  color: #8a5f38;
+}
+.root[data-hover="fade"] a:hover {
+  color: inherit;
+  opacity: 0.85;
+}
+.root ::selection {
+  background: #c9a56e;
+  color: #0e0c0b;
+}
+.root em {
+  font-style: italic;
+}
+.root :focus-visible {
+  outline: 2px solid #c9a56e !important;
+  outline-offset: 3px !important;
+}
+.root button {
+  font-family: inherit;
+}
+.hideScroll {
+  scrollbar-width: none;
+}
+.hideScroll::-webkit-scrollbar {
+  display: none;
+}
+
+/* buttons */
+.root a.btnLight {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  height: 56px;
+  padding: 0 30px;
+  border-radius: 999px;
+  background: #f4eee4;
+  color: #0e0c0b;
+  font-size: 14px;
+  font-weight: 600;
+  transition: background-color 0.35s, color 0.35s, box-shadow 0.35s;
+}
+.root a.btnLight:hover {
+  background: #e8d9bf;
+  color: #0e0c0b;
+  box-shadow: 0 10px 40px -10px rgba(201, 165, 110, 0.6);
+}
+.root a.btnGhost {
+  display: inline-flex;
+  align-items: center;
+  height: 56px;
+  padding: 0 28px;
+  border-radius: 999px;
+  border: 1px solid rgba(244, 238, 228, 0.26);
+  color: #f4eee4;
+  font-size: 14px;
+  backdrop-filter: blur(6px);
+  transition: border-color 0.3s;
+}
+.root a.btnGhost:hover {
+  border-color: #f4eee4;
+  color: #f4eee4;
+}
+.root a.btnDark {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  height: 56px;
+  padding: 0 30px;
+  border-radius: 999px;
+  background: #0e0c0b;
+  color: #f4eee4;
+  font-size: 14px;
+  font-weight: 600;
+}
+.root a.btnDark:hover {
+  color: #f4eee4;
+}
+.textLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  border-bottom: 1px solid currentColor;
+  padding-bottom: 4px;
+}
+.root a.textLink:hover {
+  color: inherit;
+}
+.galCard {
+  display: block;
+}
+.root a.galCard:hover {
+  color: inherit;
+}
+.tipRow:hover {
+  color: #0e0c0b !important;
+}
+.catCard:hover {
+  color: inherit;
+}
+.root a.noHover:hover {
+  color: inherit;
+}
+.input {
+  outline: none;
+}
+.input:focus {
+  border-color: #0e0c0b !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :global(html):has(.root) {
+    scroll-behavior: auto;
+  }
+}
+
+/* page-level hover rules (prototype `style-hover`) */
+.root a.chip:hover {
+  border-color: #c9a56e;
+  color: #f4eee4;
+}
+.root a.noHoverBrown:hover {
+  color: inherit;
+}

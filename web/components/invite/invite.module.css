@@ -1,0 +1,186 @@
+.page {
+  min-height: 100dvh;
+  display: grid;
+  justify-items: center;
+  padding: clamp(20px, 5vw, 56px) 16px 80px;
+}
+.card {
+  width: min(560px, 100%);
+  display: grid;
+  gap: 40px;
+  text-align: center;
+  border-radius: 28px;
+  padding: clamp(28px, 6vw, 56px) clamp(20px, 5vw, 44px);
+  box-shadow: var(--sh2);
+}
+.eyebrow {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  opacity: 0.7;
+}
+.names {
+  font-family: var(--serif);
+  font-style: italic;
+  font-weight: 400;
+  font-size: clamp(40px, 9vw, 64px);
+  line-height: 1.02;
+  margin: 10px 0 0;
+}
+.greet {
+  font-family: var(--serif);
+  font-size: 22px;
+  margin: 0;
+}
+.meta {
+  display: grid;
+  gap: 6px;
+  font-size: 15px;
+}
+.section {
+  display: grid;
+  gap: 10px;
+}
+.h2 {
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: 28px;
+  margin: 0;
+}
+.body {
+  margin: 0;
+  line-height: 1.6;
+  opacity: 0.88;
+  white-space: pre-line;
+}
+.row {
+  border: 1px solid color-mix(in oklab, currentColor 18%, transparent);
+  border-radius: 16px;
+  padding: 14px 18px;
+  text-align: left;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+.rowTitle {
+  font-size: 12px;
+  opacity: 0.7;
+}
+.btnRow {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+.btn {
+  min-height: 44px;
+  padding: 0 22px;
+  border-radius: 999px;
+  border: 1px solid currentColor;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-weight: 500;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.4s var(--eo), opacity 0.2s;
+}
+.btn:active {
+  transform: scale(0.97);
+}
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.btnFill {
+  background: var(--pv-fg);
+  color: var(--pv-bg);
+  border-color: transparent;
+}
+.field {
+  display: grid;
+  gap: 6px;
+  text-align: left;
+  font-size: 13px;
+}
+.input {
+  min-height: 44px;
+  padding: 10px 14px;
+  border-radius: 12px;
+  border: 1px solid color-mix(in oklab, currentColor 28%, transparent);
+  background: color-mix(in oklab, var(--pv-bg) 70%, #fff);
+  color: #272523;
+  font: inherit;
+  width: 100%;
+}
+.input:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
+}
+.form {
+  display: grid;
+  gap: 14px;
+}
+.done {
+  display: grid;
+  gap: 8px;
+  justify-items: center;
+  animation: rise 0.7s var(--eo) both;
+}
+.doneTitle {
+  font-family: var(--serif);
+  font-size: 26px;
+}
+.error {
+  font-size: 14px;
+  padding: 10px 14px;
+  border-radius: 10px;
+  background: color-mix(in oklab, #a3462f 14%, transparent);
+  color: #a3462f;
+  text-align: left;
+}
+.wishQuote {
+  text-align: left;
+  padding: 16px 0;
+  border-top: 1px solid color-mix(in oklab, currentColor 15%, transparent);
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 18px;
+}
+.foot {
+  font-size: 12px;
+  opacity: 0.55;
+  letter-spacing: 0.1em;
+}
+.draw {
+  stroke-dasharray: 100;
+  animation: drawp 1.2s var(--eo) both;
+}
+@keyframes drawp {
+  from {
+    stroke-dashoffset: 100;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .done,
+  .draw {
+    animation: none;
+  }
+  .draw {
+    stroke-dashoffset: 0;
+  }
+}

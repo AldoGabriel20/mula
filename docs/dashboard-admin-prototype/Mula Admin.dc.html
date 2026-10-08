@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--ivory:#F6F4EF;--paper:#FBFAF7;--stone:#E9E5DC;--line:#DFDAD0;--taupe:#A79B8A;--muted:#6E675D;--ink:#262422;--ok:#4F6B4A;--okbg:#E4EBDD;--wait:#8A5A1F;--waitbg:#F3E6CF;--no:#A2432F;--nobg:#F3DDD5;--info:#3F5A6B;--infobg:#DFE8EC;--serif:'Newsreader',Georgia,serif;--sans:'Instrument Sans',system-ui,sans-serif}
+*{box-sizing:border-box}
+body{margin:0;background:var(--ivory);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased}
+a{color:var(--ink);text-decoration-color:var(--taupe)}a:hover{color:var(--ok)}
+button{font:inherit;color:inherit;cursor:pointer}
+:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+.serif{font-family:var(--serif)}
+.h1{font-family:var(--serif);font-weight:400;font-size:clamp(30px,4.4vw,44px);line-height:1.1;margin:0;letter-spacing:-.01em}
+.h2{font-family:var(--serif);font-weight:400;font-size:24px;line-height:1.2;margin:0}
+.eyebrow{font-size:12px;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);font-weight:500}
+.muted{color:var(--muted)}.sm{font-size:13px}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:22px}
+.card.flat{background:transparent}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:0 18px;border-radius:8px;border:1px solid var(--ink);background:transparent;font-weight:500;font-size:14px;text-decoration:none;white-space:nowrap}
+.btn:hover{background:var(--stone)}
+.btn-p{background:var(--ink);color:var(--paper)}.btn-p:hover{background:#3d3a36;color:var(--paper)}
+.btn-q{border-color:var(--line)}.btn-s{min-height:36px;padding:0 12px;font-size:13px}
+.btn-t{border-color:transparent;background:transparent}
+.badge{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:500;padding:3px 10px;border-radius:99px;white-space:nowrap}
+.badge:before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor}
+.b-ok{background:var(--okbg);color:var(--ok)}.b-wait{background:var(--waitbg);color:var(--wait)}.b-no{background:var(--nobg);color:var(--no)}.b-info{background:var(--infobg);color:var(--info)}.b-mute{background:var(--stone);color:var(--muted)}
+.inp{width:100%;min-height:44px;padding:9px 12px;border:1px solid var(--line);border-radius:8px;background:#fff;font:inherit;color:var(--ink)}
+textarea.inp{min-height:96px;resize:vertical}
+label.f{display:grid;gap:6px;font-size:13px;font-weight:500}
+.chip{min-height:36px;padding:0 14px;border-radius:99px;border:1px solid var(--line);background:transparent;font-size:13px}
+.chip.on{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.side{position:fixed;left:0;top:0;bottom:0;width:248px;background:var(--ivory);border-right:1px solid var(--line);padding:22px 14px;overflow:auto;z-index:20}
+.nv{display:flex;justify-content:space-between;align-items:center;width:100%;min-height:38px;padding:0 12px;border:0;background:transparent;border-radius:7px;text-align:left;font-size:14px;color:var(--muted)}
+.nv:hover{background:var(--stone);color:var(--ink)}.nv.on{background:var(--ink);color:var(--paper)}
+.ngl{margin:18px 12px 6px}
+.main{margin-left:248px;padding:0 40px 60px;min-height:100vh}
+.top{position:sticky;top:0;z-index:10;background:var(--ivory);display:flex;align-items:center;gap:12px;padding:14px 0;border-bottom:1px solid var(--line);margin-bottom:34px}
+.bnav{display:none;position:fixed;left:0;right:0;bottom:0;background:var(--paper);border-top:1px solid var(--line);z-index:30;padding:4px 6px calc(4px + env(safe-area-inset-bottom))}
+.bnav button{flex:1;min-height:52px;border:0;background:transparent;font-size:11px;color:var(--muted);display:grid;place-items:center;gap:2px;align-content:center}
+.bnav button.on{color:var(--ink);font-weight:600}
+.dt{display:block}.mo{display:none}.mobrand{display:none}
+.tbl{width:100%;border-collapse:collapse;font-size:14px}
+.tbl th{text-align:left;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:500;padding:10px 12px;border-bottom:1px solid var(--line)}
+.tbl td{padding:12px;border-bottom:1px solid var(--line);vertical-align:middle}
+.tbl tr.rw:hover td{background:var(--ivory);cursor:pointer}
+.ga{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr));gap:16px}
+.gb{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr));gap:18px}
+.split{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);gap:18px}
+.ed{display:grid;grid-template-columns:200px minmax(0,1fr) 300px;gap:18px}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.tog{width:44px;height:26px;border-radius:99px;border:0;background:var(--line);position:relative;flex:none;padding:0}
+.tog:after{content:"";position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;transition:left .15s}
+.tog.on{background:var(--ok)}.tog.on:after{left:21px}
+.ph{background:repeating-linear-gradient(135deg,var(--stone),var(--stone) 10px,#E2DDD2 10px,#E2DDD2 20px);display:grid;place-items:center;color:var(--muted);font-size:12px}
+.sk{background:linear-gradient(90deg,var(--stone),#F0EDE6,var(--stone));background-size:200% 100%;animation:sk 1.6s infinite;border-radius:6px}
+@keyframes sk{to{background-position:-200% 0}}
+@keyframes pop{from{transform:scale(.6);opacity:0}to{transform:none;opacity:1}}
+@keyframes up{from{transform:translateY(12px);opacity:0}to{transform:none;opacity:1}}
+.toast{position:fixed;left:50%;bottom:28px;transform:translateX(-50%);background:var(--ink);color:var(--paper);padding:12px 20px;border-radius:8px;z-index:100;animation:up .25s;font-size:14px;max-width:90vw}
+.ovl{position:fixed;inset:0;z-index:60;background:var(--ivory);overflow:auto}
+.pan{position:fixed;top:64px;right:24px;width:min(380px,calc(100vw - 32px));background:var(--paper);border:1px solid var(--line);border-radius:10px;z-index:50;box-shadow:0 12px 32px rgba(38,36,34,.12);max-height:75vh;overflow:auto;animation:up .2s}
+.scrim{position:fixed;inset:0;background:rgba(38,36,34,.35);z-index:70;display:grid;place-items:center;padding:16px}
+.mod{background:var(--paper);border-radius:12px;padding:26px;width:min(480px,100%);max-height:90vh;overflow:auto;animation:up .2s}
+.drw{position:fixed;top:0;right:0;bottom:0;width:min(440px,100%);background:var(--paper);border-left:1px solid var(--line);z-index:70;padding:26px;overflow:auto;animation:up .2s}
+@media(max-width:1180px){.ed{grid-template-columns:180px minmax(0,1fr)}.ed .pv{display:none}}
+@media(max-width:900px){.side{display:none}.bnav{display:flex}.main{margin-left:0;padding:0 16px 96px}.split,.ed{grid-template-columns:1fr}.dt{display:none}.mo{display:block}.mobrand{display:block}.top{margin-bottom:22px}.edn{display:flex;overflow:auto;gap:6px}.edn button{flex:none}.hidem{display:none!important}.card{padding:18px}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</helmet>
+
+<div>
+<aside class="side" aria-label="Main navigation">
+  <div style="padding:0 12px 6px"><img src="assets/mula-lockup.png" alt="mula" style="height:34px;mix-blend-mode:multiply"></div>
+  <sc-for list="{{ nav }}" as="g" hint-placeholder-count="4">
+    <div>
+      <div class="eyebrow ngl">{{ g.label }}</div>
+      <sc-for list="{{ g.items }}" as="n" hint-placeholder-count="3">
+        <button class="nv {{ n.on }}" data-p="{{ n.id }}" onClick="{{ go }}"><span>{{ n.label }}</span><span class="sm">{{ n.badge }}</span></button>
+      </sc-for>
+    </div>
+  </sc-for>
+</aside>
+
+<div class="main">
+  <header class="top">
+    <img class="mobrand" src="assets/mula-symbol.png" alt="mula" style="height:34px;mix-blend-mode:multiply">
+    <button class="inp" onClick="{{ openSearch }}" style="text-align:left;color:var(--muted);flex:1;max-width:420px;cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0" aria-label="Search">Search guests, events, tasks…</button>
+    <div style="flex:1"></div>
+    <button class="btn btn-q btn-s hidem" data-p="guide" onClick="{{ go }}">Help</button>
+    <button class="btn btn-q btn-s" onClick="{{ toggleNotif }}" aria-label="Notifications">Updates <span class="badge b-no" style="padding:1px 8px">{{ unread }}</span></button>
+    <button class="btn btn-q btn-s" data-p="account" onClick="{{ go }}" aria-label="Profile"><span style="width:24px;height:24px;border-radius:50%;background:var(--taupe);color:#fff;display:grid;place-items:center;font-size:12px">A</span><span class="hidem">Aldo</span></button>
+  </header>
+
+  <!-- HOME -->
+  <sc-if value="{{ p.home }}" hint-placeholder-val="{{ true }}">
+  <div style="display:grid;gap:24px">
+    <div>
+      <div class="eyebrow">Good morning, Aldo.</div>
+      <h1 class="h1" style="margin-top:8px">Raden &amp; Cilla</h1>
+      <p class="muted" style="margin:6px 0 0">Your wedding celebration · 12 December 2026</p>
+    </div>
+    <div class="split">
+      <div class="card" style="display:flex;gap:28px;align-items:center;flex-wrap:wrap">
+        <svg width="132" height="132" viewBox="0 0 132 132" role="img" aria-label="82 percent ready"><circle cx="66" cy="66" r="56" fill="none" stroke="var(--stone)" stroke-width="10"/><circle cx="66" cy="66" r="56" fill="none" stroke="var(--ink)" stroke-width="10" stroke-linecap="round" stroke-dasharray="288 352" transform="rotate(-90 66 66)"/><text x="66" y="74" text-anchor="middle" font-family="Newsreader" font-size="32" fill="#262422">82%</text></svg>
+        <div style="flex:1;min-width:220px">
+          <div class="eyebrow">Invitation</div>
+          <h2 class="h2" style="margin:6px 0">Your invitation still needs a few details.</h2>
+          <p class="muted sm" style="margin:0 0 14px">Add your gallery and gift information, then you're ready to publish.</p>
+          <button class="btn btn-p" data-p="invitation" onClick="{{ go }}">Continue setup</button>
+        </div>
+      </div>
+      <div class="card" style="background:var(--ink);color:var(--paper);border-color:var(--ink);display:grid;align-content:space-between;gap:20px">
+        <div class="eyebrow" style="color:var(--taupe)">Countdown</div>
+        <div><div class="serif" style="font-size:64px;line-height:1">42</div><div style="font-size:18px">days to go</div></div>
+        <div class="sm" style="color:var(--taupe)">Saturday, 12 December 2026</div>
+      </div>
+    </div>
+    <div class="ga">
+      <sc-for list="{{ kpis }}" as="k" hint-placeholder-count="4">
+        <div class="card" style="padding:18px"><div class="eyebrow">{{ k.l }}</div><div class="serif" style="font-size:38px;line-height:1.2">{{ k.v }}</div><div class="badge {{ k.c }}">{{ k.t }}</div></div>
+      </sc-for>
+    </div>
+    <div class="card" style="padding:18px"><div class="row" style="justify-content:space-between"><b class="sm">RSVP summary · 125 invited</b><span class="sm muted">87 attending · 21 pending · 17 unable</span></div>
+      <div style="display:flex;height:12px;border-radius:99px;overflow:hidden;margin-top:12px;gap:2px"><div style="flex:87;background:var(--ok)"></div><div style="flex:21;background:#D9A55B"></div><div style="flex:17;background:var(--no)"></div></div></div>
+    <div class="split">
+      <div class="card">
+        <div class="row" style="justify-content:space-between;margin-bottom:8px"><h2 class="h2">What's next</h2><button class="btn btn-t btn-s" data-p="todo" onClick="{{ go }}">All tasks</button></div>
+        <sc-for list="{{ homeTasks }}" as="t" hint-placeholder-count="5">
+          <div style="display:flex;gap:12px;align-items:center;padding:12px 0;border-top:1px solid var(--line)"><span style="flex:1">{{ t.title }}</span><span class="sm muted">{{ t.due }}</span><button class="btn btn-q btn-s" data-p="{{ t.go }}" onClick="{{ go }}">Open</button></div>
+        </sc-for>
+      </div>
+      <div style="display:grid;gap:18px;align-content:start">
+        <div class="card"><h2 class="h2" style="margin-bottom:12px">Quick actions</h2>
+          <div style="display:grid;gap:8px">
+            <button class="btn" data-p="invitation" onClick="{{ go }}">Edit invitation</button>
+            <button class="btn" onClick="{{ openAddGuest }}">Add guest</button>
+            <button class="btn" data-p="events" onClick="{{ go }}">Manage events</button>
+            <button class="btn" onClick="{{ openPreview }}">View invitation</button>
+            <button class="btn" data-p="qr" onClick="{{ go }}">Generate QR code</button>
+          </div></div>
+        <div class="card"><h2 class="h2" style="margin-bottom:8px">Recent activity</h2>
+          <sc-for list="{{ activity }}" as="a" hint-placeholder-count="4"><div style="padding:9px 0;border-top:1px solid var(--line)"><div class="sm">{{ a.t }}</div><div class="sm muted">{{ a.w }}</div></div></sc-for>
+        </div>
+      </div>
+    </div>
+    <button class="btn btn-q" style="justify-self:start" onClick="{{ openOb }}">Replay onboarding</button>
+  </div>
+  </sc-if>
+
+  <!-- DESIGN -->
+  <sc-if value="{{ p.design }}" hint-placeholder-val="{{ false }}">
+  <div style="display:grid;gap:22px">
+    <div><div class="eyebrow">Design</div><h1 class="h1" style="margin-top:8px">Choose how your story looks.</h1><p class="muted" style="margin:6px 0 0">Currently using <b>Linen Vow</b>. You can change it anytime and your content stays.</p></div>
+    <input class="inp" placeholder="Search designs" value="{{ dq }}" onInput="{{ setDq }}" aria-label="Search designs" style="max-width:420px">
+    <div class="row"><sc-for list="{{ dcats }}" as="c" hint-placeholder-count="8"><button class="chip {{ c.on }}" data-v="{{ c.n }}" onClick="{{ setDcat }}">{{ c.n }}</button></sc-for></div>
+    <div class="ga" style="grid-template-columns:repeat(auto-fill,minmax(min(100%,260px),1fr));gap:22px">
+      <sc-for list="{{ designs }}" as="d" hint-placeholder-count="6">
+        <article>
+          <div style="aspect-ratio:3/4;border-radius:8px;background:{{ d.bg }};border:1px solid var(--line);display:grid;place-items:center;text-align:center;padding:20px;color:{{ d.fg }};position:relative">
+            <sc-if value="{{ d.cur }}" hint-placeholder-val="{{ false }}"><span class="badge b-ok" style="position:absolute;top:12px;left:12px;background:var(--paper)">In use</span></sc-if>
+            <div><div class="eyebrow" style="color:inherit;opacity:.8">{{ d.cat }}</div><div class="serif" style="font-size:34px;line-height:1.05;margin:10px 0">{{ d.mock }}</div><div class="sm" style="opacity:.8">12 · 12 · 2026</div></div>
+          </div>
+          <div style="padding:12px 2px"><div class="row" style="justify-content:space-between"><b>{{ d.name }}</b><span class="sm muted">{{ d.tags }}</span></div>
+            <div class="row" style="margin-top:10px"><button class="btn btn-q btn-s" onClick="{{ openPreview }}">Preview</button><button class="btn btn-p btn-s" data-v="{{ d.name }}" onClick="{{ useDesign }}">Use this design</button></div></div>
+        </article>
+      </sc-for>
+    </div>
+  </div>
+  </sc-if>
+
+  <!-- INVITATION -->
+  <sc-if value="{{ p.invitation }}" hint-placeholder-val="{{ false }}">
+  <div style="display:grid;gap:22px">
+    <div class="row" style="justify-content:space-between;align-items:end"><div><div class="eyebrow">Invitation · 82% ready</div><h1 class="h1" style="margin-top:8px">What your guests will see.</h1></div>
+      <button class="btn btn-p" onClick="{{ openPreview }}">Preview Invitation</button></div>
+    <div class="ed">
+      <nav class="edn" aria-label="Invitation sections" style="display:grid;gap:2px;align-content:start">
+        <sc-for list="{{ secs }}" as="s" hint-placeholder-count="11"><button class="nv {{ s.on }}" data-v="{{ s.id }}" onClick="{{ setSec }}"><span>{{ s.n }}</span><span class="badge {{ s.c }}" style="padding:0;width:8px;height:8px;overflow:hidden;font-size:0"></span></button></sc-for>
+      </nav>
+      <div class="card" style="display:grid;gap:16px;align-content:start">
+        <div><div class="eyebrow">Editing</div><h2 class="h2" style="margin-top:4px">{{ secName }}</h2></div>
+        <sc-if value="{{ sec.cover }}" hint-placeholder-val="{{ true }}">
+          <label class="f">Greeting line<input class="inp" value="The wedding of"></label>
+          <label class="f">Names<input class="inp" value="Raden &amp; Cilla"></label>
+          <label class="f">Tagline<input class="inp" value="Dari mula, menuju selamanya."></label>
+          <div class="ph" style="height:140px;border-radius:8px">Cover photo · drop image here</div>
+        </sc-if>
+        <sc-if value="{{ sec.main }}" hint-placeholder-val="{{ false }}">
+          <label class="f">Event type<select class="inp"><option>Wedding</option><option>Birthday</option><option>17th Birthday</option><option>Anniversary</option><option>Product Launch</option></select></label>
+          <label class="f">Host names<input class="inp" value="Raden Aditya &amp; Cilla Maharani"></label>
+          <label class="f">Opening message<textarea class="inp">With gratitude, we invite you to share the beginning of our forever.</textarea></label>
+        </sc-if>
+        <sc-if value="{{ sec.gallery }}" hint-placeholder-val="{{ false }}">
+          <div style="text-align:center;padding:30px 10px;border:1px dashed var(--taupe);border-radius:10px"><div class="h2">Bring your story to life.</div><p class="muted sm">Add up to 12 photos. They appear in a gentle carousel.</p><button class="btn btn-p" onClick="{{ toastGallery }}">Upload photos</button></div>
+        </sc-if>
+        <sc-if value="{{ sec.rsvp }}" hint-placeholder-val="{{ false }}">
+          <div class="row" style="justify-content:space-between"><span>Ask guests to RSVP</span><button class="tog on" role="switch" aria-checked="true" onClick="{{ tg }}" data-v="t"></button></div>
+          <label class="f">RSVP deadline<input class="inp" type="date" value="2026-11-25"></label>
+          <label class="f">Max guests per invitation<input class="inp" type="number" value="2"></label>
+        </sc-if>
+        <sc-if value="{{ sec.other }}" hint-placeholder-val="{{ false }}">
+          <div class="row" style="justify-content:space-between"><span>Show this section</span><button class="tog on" role="switch" aria-checked="true" onClick="{{ tg }}"></button></div>
+          <label class="f">Heading<input class="inp" value="{{ secName }}"></label>
+          <label class="f">Content<textarea class="inp">Write what guests should read here.</textarea></label>
+        </sc-if>
+        <div class="row" style="justify-content:flex-end"><button class="btn btn-q" onClick="{{ failSave }}">Discard</button><button class="btn btn-p" onClick="{{ save }}">Save changes</button></div>
+      </div>
+      <div class="pv"><div class="eyebrow" style="margin-bottom:8px">Guest view</div>
+        <div style="border:8px solid var(--ink);border-radius:28px;aspect-ratio:9/17;background:#EFE9DD;display:grid;place-items:center;text-align:center;padding:20px"><div><div class="eyebrow">The wedding of</div><div class="serif" style="font-size:34px;line-height:1.05;margin:10px 0">Raden<br>&amp; Cilla</div><div class="sm">12 December 2026</div></div></div></div>
+    </div>
+  </div>
+  </sc-if>
+
+  <!-- EVENTS -->
+  <sc-if value="{{ p.events }}" hint-placeholder-val="{{ false }}">
+  <div style="display:grid;gap:22px">
+    <div class="row" style="justify-content:space-between;align-items:end"><div><div class="eyebrow">Events</div><h1 class="h1" style="margin-top:8px">The moments your guests will remember.</h1></div><button class="btn btn-p" onClick="{{ addEvent }}">Add event</button></div>
+    <sc-if value="{{ noEvents }}" hint-placeholder-val="{{ false }}"><div class="card" style="text-align:center;padding:50px 20px"><div class="h2">Add the moments your guests should remember.</div><p class="muted">Ceremony, reception, dinner — each gets its own details.</p><button class="btn btn-p" onClick="{{ addEvent }}">Add your first event</button></div></sc-if>
+    <div style="display:grid;gap:14px">
+      <sc-for list="{{ events }}" as="e" hint-placeholder-count="3">
+        <div class="card" style="display:grid;gap:14px">
+          <div class="row" style="gap:18px;align-items:flex-start">
+            <div style="text-align:center;min-width:56px"><div class="eyebrow">{{ e.mon }}</div><div class="serif" style="font-size:34px;line-height:1">{{ e.day }}</div></div>
+            <div style="flex:1;min-width:200px"><div class="row"><h2 class="h2">{{ e.name }}</h2><span class="badge {{ e.vc }}">{{ e.vis }}</span></div><div class="muted sm" style="margin-top:4px">{{ e.time }} · {{ e.venue }}</div><div class="sm muted">Dress code: {{ e.dress }}</div></div>
+            <div class="row"><button class="btn btn-q btn-s" data-v="{{ e.id }}" onClick="{{ evUp }}" aria-label="Move up">↑</button><button class="btn btn-q btn-s" data-v="{{ e.id }}" onClick="{{ evDown }}" aria-label="Move down">↓</button><button class="btn btn-q btn-s" data-v="{{ e.id }}" onClick="{{ evEdit }}">Edit</button><button class="btn btn-q btn-s" data-v="{{ e.id }}" onClick="{{ evDup }}">Duplicate</button><button class="btn btn-q btn-s" data-v="{{ e.id }}" onClick="{{ evDel }}" style="color:var(--no)">Delete</button></div>
+          </div>
+          <sc-if value="{{ e.open }}" hint-placeholder-val="{{ false }}">
+            <div class="ga" style="border-top:1px solid var(--line);padding-top:16px">
+              <label class="f">Event name<input class="inp" value="{{ e.name }}"></label>
+              <label class="f">Date<input class="inp" type="date" value="{{ e.date }}"></label>
+              <label class="f">Start<input class="inp" type="time" value="{{ e.s }}"></label>
+              <label class="f">End<input class="inp" type="time" value="{{ e.en }}"></label>
+              <label class="f">Venue<input class="inp" value="{{ e.venue }}"></label>
+              <label class="f">Address<input class="inp" value="{{ e.addr }}"></label>
+              <label class="f">Map link<input class="inp" placeholder="Paste Google Maps link"></label>
+              <label class="f">Dress code<input class="inp" value="{{ e.dress }}"></label>
+            </div>
+            <div class="row" style="justify-content:space-between"><label class="row sm"><button class="tog on" role="switch" aria-checked="true" onClick="{{ tg }}"></button> Show “Add to calendar”</label><button class="btn btn-p btn-s" onClick="{{ save }}">Save event</button></div>
+          </sc-if>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+  </sc-if>
+
+  <!-- GUESTS -->
+  <sc-if value="{{ p.guests }}" hint-placeholder-val="{{ false }}">
+  <div style="display:grid;gap:20px">
+    <div class="row" style="justify-content:space-between;align-items:end"><div><div class="eyebrow">Guests</div><h1 class="h1" style="margin-top:8px">Your guest list.</h1></div>
+      <div class="row"><button class="btn btn-q" onClick="{{ importG }}">Import</button><button class="btn btn-q" onClick="{{ exportG }}">Export</button><button class="btn btn-p" onClick="{{ openAddGuest }}">Add guest</button></div></div>
+    <div class="ga" style="grid-template-columns:repeat(auto-fit,minmax(min(100%,150px),1fr))">
+      <sc-for list="{{ gsum }}" as="k" hint-placeholder-count="4"><button class="card" style="padding:14px 18px;text-align:left;{{ k.sel }}" data-v="{{ k.f }}" onClick="{{ setGf }}"><div class="eyebrow">{{ k.l }}</div><div class="serif" style="font-size:32px">{{ k.v }}</div></button></sc-for>
+    </div>
+    <div class="row"><input class="inp" style="flex:1;min-width:200px;max-width:360px" placeholder="Search by name or group" value="{{ gq }}" onInput="{{ setGq }}" aria-label="Search guests">
+      <select class="inp" style="width:auto" onChange="{{ setGs }}" aria-label="Sort"><option value="name">Sort: Name</option><option value="group">Sort: Group</option><option value="status">Sort: Status</option></select></div>
+    <sc-if value="{{ hasSel }}" hint-placeholder-val="{{ false }}"><div class="row card" style="padding:10px 16px;background:var(--ink);color:var(--paper)"><b>{{ selCount }} selected</b><div style="flex:1"></div><button class="btn btn-s" style="color:var(--paper);border-color:var(--taupe)" onClick="{{ bulkResend }}">Resend invitation</button><button class="btn btn-s" style="color:var(--paper);border-color:var(--taupe)" onClick="{{ bulkDel }}">Remove</button></div></sc-if>
+    <sc-if value="{{ noGuests }}" hint-placeholder-val="{{ false }}"><div class="card" style="text-align:center;padding:44px 16px"><div class="h2">No one matches yet.</div><p class="muted">Try another search, or add a guest.</p></div></sc-if>
+    <div class="card dt" style="padding:6px 10px;overflow:auto"><table class="tbl"><thead><tr><th></th><th>Guest</th><th>Group</th><th>RSVP</th><th>Party</th><th>Table</th><th></th></tr></thead><tbody>
+      <sc-for list="{{ guests }}" as="g" hint-placeholder-count="8"><tr class="rw"><td><input type="checkbox" checked="{{ g.chk }}" data-v="{{ g.id }}" onChange="{{ selG }}" aria-label="Select guest" style="width:18px;height:18px"></td><td data-v="{{ g.id }}" onClick="{{ openG }}"><b>{{ g.name }}</b><div class="sm muted">{{ g.phone }}</div></td><td>{{ g.group }}</td><td><span class="badge {{ g.cls }}">{{ g.st }}</span></td><td>{{ g.party }}</td><td>{{ g.table }}</td><td><button class="btn btn-q btn-s" data-v="{{ g.id }}" onClick="{{ openG }}">View</button></td></tr></sc-for></tbody></table></div>
+    <div class="mo">
+      <sc-for list="{{ guests }}" as="g" hint-placeholder-count="6"><div class="card" style="padding:14px;margin-bottom:10px;display:flex;gap:12px;align-items:center"><input type="checkbox" checked="{{ g.chk }}" data-v="{{ g.id }}" onChange="{{ selG }}" aria-label="Select guest" style="width:22px;height:22px"><div style="flex:1" data-v="{{ g.id }}" onClick="{{ openG }}"><b>{{ g.name }}</b><div class="sm muted">{{ g.group }} · Party of {{ g.party }}</div></div><span class="badge {{ g.cls }}">{{ g.st }}</span></div></sc-for>
+    </div>
+  </div>
+  </sc-if>
+
+  <!-- GIFT -->
+  <sc-if value="{{ p.gift }}" hint-placeholder-val="{{ false }}">
+  <div style="display:grid;gap:22px">
+    <div class="row" style="justify-content:space-between;align-items:end"><div><div class="eyebrow">Gift</div><h1 class="h1" style="margin-top:8px">Choose how guests can celebrate with you.</h1></div><button class="btn btn-p" onClick="{{ addGift }}">Add gift method</button></div>
+    <div class="split">
+      <div style="display:grid;gap:12px;align-content:start">
+        <sc-if value="{{ noGifts }}" hint-placeholder-val="{{ false }}"><div class="card" style="text-align:center;padding:40px"><div class="h2">Choose how guests can celebrate with you.</div><button class="btn btn-p" onClick="{{ addGift }}">Add gift method</button></div></sc-if>
+        <sc-for list="{{ gifts }}" as="g" hint-placeholder-count="3"><div class="card" style="padding:18px"><div class="row" style="justify-content:space-between"><div><span class="badge b-info">{{ g.type }}</span><h2 class="h2" style="margin-top:8px">{{ g.title }}</h2><div class="muted sm">{{ g.detail }}</div></div>
+          <div class="row"><button class="btn btn-q btn-s" data-v="{{ g.id }}" onClick="{{ gUp }}" aria-label="Move up">↑</button><button class="btn btn-q btn-s" data-v="{{ g.id }}" onClick="{{ gDown }}" aria-label="Move down">↓</button><button class="btn btn-q btn-s" onClick="{{ save }}">Edit</button><button class="btn btn-q btn-s" style="color:var(--no)" data-v="{{ g.id }}" onClick="{{ gDel }}">Delete</button></div></div></div></sc-for>
+        <div class="card flat"><label class="f">Gift instructions<textarea class="inp">Your presence is the greatest gift. Should you wish to give, here are a few ways.</textarea></label></div>
+      </div>
+      <div><div class="eyebrow" style="margin-bottom:8px">How guests will see it</div>
+        <div style="background:#EFE9DD;border:1px solid var(--line);border-radius:14px;padding:22px;display:grid;gap:12px;text-align:center"><div class="serif" style="font-size:26px">Wedding Gift</div><div class="sm muted">Your presence is the greatest gift.</div>
+          <sc-for list="{{ gifts }}" as="g" hint-placeholder-count="3"><div style="background:var(--paper);border-radius:8px;padding:14px;text-align:left"><div class="sm muted">{{ g.title }}</div><div style="font-weight:600;margin:2px 0 8px">{{ g.copy }}</div><button class="btn btn-s" data-v="{{ g.copy }}" onClick="{{ copy }}">Copy</button></div></sc-for></div></div>
+    </div>
+  </div>
+  </sc-if>
+
+  <!-- ADDONS -->
+  <sc-if value="{{ p.addons }}" hint-placeholder-val="{{ false }}">
+  <div style="display:grid;gap:22px">
+    <div class="row" style="justify-content:space-between;align-items:end"><div><div class="eyebrow">Add-ons</div><h1 class="h1" style="margin-top:8px">Make it yours, only as much as you need.</h1></div><button class="btn" data-p="cart" onClick="{{ go }}">Cart ({{ cartCount }})</button></div>
+    <div class="ga" style="grid-template-columns:repeat(auto-fill,minmax(min(100%,290px),1fr))">
+      <sc-for list="{{ addons }}" as="a" hint-placeholder-count="8"><div class="card" style="display:grid;gap:10px;align-content:space-between"><div><div class="row" style="justify-content:space-between"><span class="eyebrow">{{ a.cat }}</span><span class="badge {{ a.c }}">{{ a.st }}</span></div><h2 class="h2" style="margin:10px 0 6px">{{ a.name }}</h2><p class="muted sm" style="margin:0">{{ a.desc }}</p></div>
+        <div class="row" style="justify-content:space-between"><b>{{ a.price }}</b><button class="btn btn-s {{ a.bc }}" disabled="{{ a.dis }}" data-v="{{ a.id }}" onClick="{{ addCart }}">{{ a.cta }}</button></div></div></sc-for>
+    </div>
+  </div>
+  </sc-if>
+
+  <!-- CART -->
+  <sc-if value="{{ p.cart }}" hint-placeholder-val="{{ false }}">
+  <div style="display:grid;gap:22px">
+    <div><div class="eyebrow">Cart</div><h1 class="h1" style="margin-top:8px">Review and pay.</h1></div>
+    <sc-if value="{{ cartEmpty }}" hint-placeholder-val="{{ false }}"><div class="card" style="text-align:center;padding:44px"><div class="h2">Your cart is empty.</div><p class="muted">Browse add-ons whenever you need something extra.</p><button class="btn btn-p" data-p="addons" onClick="{{ go }}">Browse add-ons</button></div></sc-if>
+    <sc-if value="{{ cartFull }}" hint-placeholder-val="{{ false }}">
+    <div class="split">
+      <div class="card" style="padding:8px 22px"><sc-for list="{{ cart }}" as="c" hint-placeholder-count="2"><div class="row" style="padding:16px 0;border-bottom:1px solid var(--line)"><div style="flex:1;min-width:160px"><b>{{ c.name }}</b><div class="sm muted">{{ c.unit }} each</div></div><div class="row" style="gap:4px"><button class="btn btn-q btn-s" data-v="{{ c.id }}" onClick="{{ qMinus }}" aria-label="Decrease">−</button><span style="min-width:24px;text-align:center">{{ c.q }}</span><button class="btn btn-q btn-s" data-v="{{ c.id }}" onClick="{{ qPlus }}" aria-label="Increase">+</button></div><b style="min-width:100px;text-align:right">{{ c.line }}</b></div></sc-for></div>
+      <div class="card" style="display:grid;gap:12px;align-content:start"><h2 class="h2">Order summary</h2>
+        <div class="row"><input class="inp" style="flex:1" placeholder="Promo code" value="{{ promo }}" onInput="{{ setPromo }}" aria-label="Promo code"><button class="btn" onClick="{{ applyPromo }}">Apply</button></div>
+        <div class="row" style="justify-content:space-between"><span class="muted">Subtotal</span><span>{{ subtotal }}</span></div>
+        <div class="row" style="justify-content:space-between"><span class="muted">Discount</span><span>{{ discount }}</span></div>
+        <div class="row" style="justify-content:space-between;border-top:1px solid var(--line);padding-top:12px"><b>Total</b><b class="serif" style="font-size:26px">{{ total }}</b></div>
+        <label class="f">Payment method<select class="inp"><option>QRIS</option><option>Bank transfer (BCA)</option><option>Credit card</option><option>GoPay</option></select></label>
+        <button class="btn btn-p" onClick="{{ pay }}">Pay {{ total }}</button><div class="sm muted" style="text-align:center">Secure payment. Receipt sent to your email.</div></div>
+    </div></sc-if>
+  </div>
+  </sc-if>
+
+  <!-- TRANSACTIONS -->
+  <sc-if value="{{ p.transactions }}" hint-placeholder-val="{{ false }}">
+  <div style="display:grid;gap:20px">
+    <div><div class="eyebrow">Transactions</div><h1 class="h1" style="margin-top:8px">Your payments.</h1></div>
+    <div class="row"><input class="inp" style="flex:1;min-width:200px;max-width:340px" placeholder="Search by ID or description" value="{{ tq }}" onInput="{{ setTq }}" aria-label="Search transactions"><sc-for list="{{ tfs }}" as="f" hint-placeholder-count="5"><button class="chip {{ f.on }}" data-v="{{ f.n }}" onClick="{{ setTf }}">{{ f.n }}</button></sc-for></div>
+    <div class="card dt" style="padding:6px 10px"><table class="tbl"><thead><tr><th>ID</th><th>Date</th><th>Description</th><th>Method</th><th>Amount</th><th>Status</th><th></th></tr></thead><tbody>
+      <sc-for list="{{ txs }}" as="t" hint-placeholder-count="5"><tr><td>{{ t.id }}</td><td>{{ t.date }}</td><td>{{ t.desc }}</td><td>{{ t.method }}</td><td>{{ t.amt }}</td><td><span class="badge {{ t.cls }}">{{ t.st }}</span></td><td><button class="btn btn-q btn-s" data-v="{{ t.id }}" onClick="{{ openTx }}">Receipt</button></td></tr></sc-for></tbody></table></div>
+    <div class="mo"><sc-for list="{{ txs }}" as="t" hint-placeholder-count="4"><div class="card" style="padding:14px;margin-bottom:10px" data-v="{{ t.id }}" onClick="{{ openTx }}"><div class="row" style="justify-content:space-between"><b>{{ t.desc }}</b><b>{{ t.amt }}</b></div><div class="row sm muted" style="justify-content:space-between;margin-top:6px"><span>{{ t.date }} · {{ t.id }}</span><span class="badge {{ t.cls }}">{{ t.st }}</span></div></div></sc-for></div>
+  </div>
+  </sc-if>
+
+  <!-- QR -->
+  <sc-if value="{{ p.qr }}" hint-placeholder-val="{{ false }}">
+  <div style="display:grid;gap:22px">
+    <div><div class="eyebrow">QR Code</div><h1 class="h1" style="margin-top:8px">One scan, straight to your celebration.</h1></div>
+    <div class="row"><sc-for list="{{ qrTabs }}" as="q" hint-placeholder-count="3"><button class="chip {{ q.on }}" data-v="{{ q.id }}" onClick="{{ setQr }}">{{ q.n }}</button></sc-for></div>
+    <div class="split">
+      <div class="card" style="display:grid;place-items:center;gap:16px;padding:34px;background:#fff">
+        <div class="eyebrow">{{ qrTitle }}</div>
+        <svg viewBox="0 0 29 29" width="240" height="240" shape-rendering="crispEdges" role="img" aria-label="QR code preview"><rect width="29" height="29" fill="#fff"/><path d="{{ qrPath }}" fill="#262422"/></svg>
+        <div class="serif" style="font-size:24px">Raden &amp; Cilla</div><div class="sm muted">{{ qrHint }}</div>
+        <div class="row"><button class="btn btn-p" onClick="{{ qrDl }}">Download</button><button class="btn" onClick="{{ qrPrint }}">Print</button><button class="btn btn-q" onClick="{{ qrRegen }}">Regenerate</button></div>
+      </div>
+      <div class="card" style="display:grid;gap:14px;align-content:start"><h2 class="h2">How guests use it</h2>
+        <ol class="muted" style="margin:0;padding-left:20px;display:grid;gap:10px"><li>Guest opens their phone camera.</li><li>Points it at the QR code.</li><li>Taps the link to open the invitation, or shows it to an usher at the entrance to check in.</li></ol>
+        <div style="border-top:1px solid var(--line);padding-top:14px" class="sm muted">Works on printed invitations, entrance signage and table cards. Regenerating makes previous codes stop working.</div></div>
+    </div>
+  </div>
+  </sc-if>
+
+  <!-- LIVE -->
+  <sc-if value="{{ p.live }}" hint-placeholder-val="{{ false }}">
+  <div style="display:grid;gap:22px">
+    <div><div class="eyebrow">Live Streaming</div><h1 class="h1" style="margin-top:8px">Let loved ones join from anywhere.</h1></div>
+    <div class="row"><span class="eyebrow">Preview state</span><sc-for list="{{ liveStates }}" as="s" hint-placeholder-count="4"><button class="chip {{ s.on }}" data-v="{{ s.n }}" onClick="{{ setLive }}">{{ s.n }}</button></sc-for></div>
+    <div class="split">
+      <div style="aspect-ratio:16/9;border-radius:10px;background:var(--ink);color:var(--paper);display:grid;place-items:center;text-align:center;padding:20px"><div><span class="badge {{ liveCls }}" style="background:var(--paper)">{{ live }}</span><div class="serif" style="font-size:30px;margin:14px 0 6px">{{ liveTitle }}</div><div class="sm" style="color:var(--taupe)">{{ liveSub }}</div></div></div>
+      <div class="card" style="display:grid;gap:14px;align-content:start">
+        <div class="row" style="justify-content:space-between"><b>Show on invitation</b><button class="tog on" role="switch" aria-checked="true" onClick="{{ tg }}"></button></div>
+        <label class="f">Platform<select class="inp"><option>YouTube Live</option><option>Zoom</option><option>Instagram Live</option></select></label>
+        <label class="f">Stream URL<input class="inp" placeholder="https://youtube.com/live/…"></label>
+        <label class="f">Scheduled start<input class="inp" type="datetime-local" value="2026-12-12T10:00"></label>
+        <button class="btn btn-p" onClick="{{ save }}">Save stream</button></div>
+    </div>
+  </div>
+  </sc-if>
+
+  <!-- GUIDE -->
+  <sc-if value="{{ p.guide }}" hint-placeholder-val="{{ false }}">
+  <div style="display:grid;gap:22px">
+    <div><div class="eyebrow">Guide</div><h1 class="h1" style="margin-top:8px">How can we help you begin?</h1></div>
+    <input class="inp" style="max-width:520px" placeholder="Search guides" value="{{ hq }}" onInput="{{ setHq }}" aria-label="Search guides">
+    <div class="row"><sc-for list="{{ hcats }}" as="c" hint-placeholder-count="6"><button class="chip {{ c.on }}" data-v="{{ c.n }}" onClick="{{ setHc }}">{{ c.n }}</button></sc-for></div>
+    <div class="split">
+      <div style="display:grid;gap:10px;align-content:start"><sc-for list="{{ guides }}" as="g" hint-placeholder-count="6"><button class="card" style="text-align:left;padding:16px 18px;{{ g.sel }}" data-v="{{ g.id }}" onClick="{{ setHa }}"><span class="eyebrow">{{ g.cat }}</span><div style="font-weight:600;margin-top:2px">{{ g.t }}</div><div class="sm muted">{{ g.s }}</div></button></sc-for></div>
+      <article class="card" style="align-self:start"><div class="eyebrow">{{ ga.cat }}</div><h2 class="h2" style="margin:6px 0 14px">{{ ga.t }}</h2><ol style="margin:0;padding-left:20px;display:grid;gap:10px"><sc-for list="{{ ga.steps }}" as="s" hint-placeholder-count="3"><li>{{ s }}</li></sc-for></ol>
+        <div class="row" style="margin-top:18px"><button class="btn btn-s" data-p="{{ ga.go }}" onClick="{{ go }}">Take me there</button></div></article>
+    </div>
+  </div>
+  </sc-if>
+
+  <!-- TODO -->
+  <sc-if value="{{ p.todo }}" hint-placeholder-val="{{ false }}">
+  <div style="display:grid;gap:20px;max-width:820px">
+    <div><div class="eyebrow">To-do list</div><h1 class="h1" style="margin-top:8px">{{ todoDone }} of {{ todoTotal }} tasks completed</h1></div>
+    <div style="height:8px;border-radius:99px;background:var(--stone);overflow:hidden"><div style="height:100%;background:var(--ink);width:{{ todoPct }}"></div></div>
+    <div class="row"><input class="inp" style="flex:1;min-width:200px" placeholder="Add a task" value="{{ nt }}" onInput="{{ setNt }}" onKeyDown="{{ ntKey }}" aria-label="New task"><select class="inp" style="width:auto" onChange="{{ setNp }}" aria-label="Priority"><option>Normal</option><option>High</option><option>Low</option></select><button class="btn btn-p" onClick="{{ addTask }}">Add task</button></div>
+    <div class="row"><sc-for list="{{ tcats }}" as="c" hint-placeholder-count="5"><button class="chip {{ c.on }}" data-v="{{ c.n }}" onClick="{{ setTc }}">{{ c.n }}</button></sc-for></div>
+    <div class="card" style="padding:4px 20px"><sc-for list="{{ todos }}" as="t" hint-placeholder-count="6"><div class="row" style="padding:14px 0;border-bottom:1px solid var(--line);gap:14px"><input type="checkbox" checked="{{ t.done }}" data-v="{{ t.id }}" onChange="{{ togTask }}" aria-label="Complete" style="width:22px;height:22px"><div style="flex:1;min-width:150px;{{ t.st }}"><div>{{ t.title }}</div><div class="sm muted">{{ t.cat }} · Due {{ t.due }}</div></div><span class="badge {{ t.pc }}">{{ t.pri }}</span><button class="btn btn-t btn-s" data-v="{{ t.id }}" onClick="{{ delTask }}" aria-label="Delete task">Remove</button></div></sc-for></div>
+  </div>
+  </sc-if>
+
+  <!-- USHER -->
+  <sc-if value="{{ p.usher }}" hint-placeholder-val="{{ false }}">
+  <div style="display:grid;gap:22px">
+    <div><div class="eyebrow">Usher settings</div><h1 class="h1" style="margin-top:8px">Welcome guests smoothly at the door.</h1></div>
+    <div class="split">
+      <div style="display:grid;gap:18px;align-content:start">
+        <div class="card"><div class="row" style="justify-content:space-between;margin-bottom:8px"><h2 class="h2">Ushers</h2><button class="btn btn-s" onClick="{{ toastUsher }}">Add usher</button></div>
+          <sc-for list="{{ ushers }}" as="u" hint-placeholder-count="3"><div class="row" style="padding:12px 0;border-top:1px solid var(--line)"><div style="flex:1;min-width:150px"><b>{{ u.n }}</b><div class="sm muted">{{ u.ev }}</div></div><span class="badge {{ u.c }}">{{ u.r }}</span></div></sc-for></div>
+        <div class="card" style="display:grid;gap:14px"><h2 class="h2">Check-in settings</h2>
+          <sc-for list="{{ perms }}" as="p2" hint-placeholder-count="4"><div class="row" style="justify-content:space-between;gap:16px"><div><b class="sm">{{ p2.n }}</b><div class="sm muted">{{ p2.d }}</div></div><button class="tog {{ p2.on }}" role="switch" aria-checked="{{ p2.ar }}" data-v="{{ p2.k }}" onClick="{{ togPerm }}"></button></div></sc-for></div>
+      </div>
+      <div><div class="eyebrow" style="margin-bottom:8px">Usher's phone</div>
+        <div style="border:8px solid var(--ink);border-radius:30px;background:var(--paper);padding:18px;display:grid;gap:12px;max-width:340px">
+          <div class="row" style="justify-content:space-between"><b>Reception</b><span class="badge b-ok">{{ checked }}/180 in</span></div>
+          <div style="aspect-ratio:1;background:var(--ink);border-radius:12px;display:grid;place-items:center;color:var(--paper)"><div style="width:60%;height:60%;border:2px solid var(--paper);border-radius:10px;display:grid;place-items:center" class="sm">Point at guest QR</div></div>
+          <input class="inp" placeholder="Or search guest name" value="{{ uq }}" onInput="{{ setUq }}" aria-label="Guest lookup">
+          <sc-for list="{{ uguests }}" as="g" hint-placeholder-count="3"><div class="row" style="justify-content:space-between;border-top:1px solid var(--line);padding-top:10px"><div><b>{{ g.name }}</b><div class="sm muted">Table {{ g.table }} · Party of {{ g.party }}</div></div><button class="btn btn-p btn-s" data-v="{{ g.id }}" onClick="{{ checkIn }}">Check in</button></div></sc-for></div></div>
+    </div>
+  </div>
+  </sc-if>
+
+  <!-- TERMS -->
+  <sc-if value="{{ p.terms }}" hint-placeholder-val="{{ false }}">
+  <article style="max-width:680px;display:grid;gap:18px"><div><div class="eyebrow">Terms &amp; Conditions</div><h1 class="h1" style="margin-top:8px">The agreement between us.</h1><p class="muted sm">Last updated 1 September 2026</p></div>
+    <sc-for list="{{ terms }}" as="t" hint-placeholder-count="5"><section><h2 class="h2" style="margin-bottom:6px">{{ t.h }}</h2><p class="muted" style="margin:0">{{ t.b }}</p></section></sc-for></article>
+  </sc-if>
+
+  <!-- ACCOUNT -->
+  <sc-if value="{{ p.account }}" hint-placeholder-val="{{ false }}">
+  <div style="display:grid;gap:20px;max-width:720px"><div><div class="eyebrow">Account</div><h1 class="h1" style="margin-top:8px">Your profile.</h1></div>
+    <div class="card ga"><label class="f">Name<input class="inp" value="Aldo Prasetyo"></label><label class="f">Email<input class="inp" type="email" value="aldo@example.com"></label><label class="f">Phone<input class="inp" type="tel" value="+62 812 3456 7890"></label><label class="f">Password<input class="inp" type="password" value="password123"></label></div>
+    <div class="card" style="display:grid;gap:14px"><h2 class="h2">Notifications</h2><sc-for list="{{ notifPrefs }}" as="n" hint-placeholder-count="3"><div class="row" style="justify-content:space-between"><span>{{ n }}</span><button class="tog on" role="switch" aria-checked="true" onClick="{{ tg }}"></button></div></sc-for></div>
+    <div class="row"><button class="btn btn-p" onClick="{{ save }}">Save changes</button><button class="btn btn-q" style="color:var(--no)">Sign out</button></div></div>
+  </sc-if>
+
+  <!-- SYSTEM -->
+  <sc-if value="{{ p.system }}" hint-placeholder-val="{{ false }}">
+  <div style="display:grid;gap:22px">
+    <div><div class="eyebrow">Design system</div><h1 class="h1" style="margin-top:8px">Mula admin, in parts.</h1></div>
+    <div class="card"><div class="eyebrow">Colour</div><div class="row" style="margin-top:10px;gap:14px"><sc-for list="{{ swatches }}" as="s" hint-placeholder-count="8"><div><div style="width:72px;height:56px;border-radius:8px;border:1px solid var(--line);background:{{ s.c }}"></div><div class="sm">{{ s.n }}</div><div class="sm muted">{{ s.c }}</div></div></sc-for></div></div>
+    <div class="card" style="display:grid;gap:8px"><div class="eyebrow">Type</div><div class="h1">Newsreader — emotional moments</div><div class="h2">Headline 24</div><div>Instrument Sans — navigation, forms, tables, metadata. 15/1.5.</div><div class="sm muted">Caption 13</div></div>
+    <div class="card" style="display:grid;gap:14px"><div class="eyebrow">Buttons &amp; badges</div><div class="row"><button class="btn btn-p">Primary</button><button class="btn">Secondary</button><button class="btn btn-q">Quiet</button><span class="badge b-ok">Attending</span><span class="badge b-wait">Pending</span><span class="badge b-no">Declined</span><span class="badge b-info">Invited</span><span class="badge b-mute">Draft</span></div></div>
+    <div class="ga">
+      <div class="card" style="display:grid;gap:10px"><div class="eyebrow">Loading</div><div class="sk" style="height:18px;width:70%"></div><div class="sk" style="height:14px"></div><div class="sk" style="height:14px;width:85%"></div><div class="sm muted">Gathering your guests…</div></div>
+      <div class="card" style="display:grid;gap:8px"><div class="eyebrow">Empty</div><div class="h2">Your guest list starts here.</div><button class="btn btn-p" onClick="{{ openAddGuest }}">Add your first guest</button></div>
+      <div class="card" style="display:grid;gap:8px"><div class="eyebrow">Error</div><div class="h2">Something went wrong.</div><div class="muted sm">We couldn't save your changes.</div><div class="row"><button class="btn btn-p btn-s" onClick="{{ save }}">Try again</button><button class="btn btn-q btn-s">Go back</button></div></div>
+      <div class="card" style="display:grid;gap:8px;justify-items:start"><div class="eyebrow">Success</div><svg width="44" height="44" viewBox="0 0 44 44" style="animation:pop .4s"><circle cx="22" cy="22" r="21" fill="var(--okbg)"/><path d="M13 23l6 6 12-13" fill="none" stroke="var(--ok)" stroke-width="3" stroke-linecap="round"/></svg><div class="h2">Your invitation is ready.</div></div>
+    </div>
+    <div class="row"><button class="btn" onClick="{{ setToast }}">Show toast</button><button class="btn" onClick="{{ openAddGuest }}">Show modal</button></div>
+  </div>
+  </sc-if>
+</div>
+
+<nav class="bnav" aria-label="Primary">
+  <sc-for list="{{ bnav }}" as="b" hint-placeholder-count="5"><button class="{{ b.on }}" data-p="{{ b.id }}" onClick="{{ b.fn }}"><span style="font-size:17px;line-height:1">{{ b.ic }}</span>{{ b.n }}</button></sc-for>
+</nav>
+
+<sc-if value="{{ moreOpen }}" hint-placeholder-val="{{ false }}"><div class="scrim" style="place-items:end center" onClick="{{ closeAll }}"><div class="mod" style="border-radius:16px 16px 0 0;width:100%" onClick="{{ stop }}"><div class="h2" style="margin-bottom:12px">All of Mula</div><div class="ga" style="grid-template-columns:repeat(2,1fr);gap:8px"><sc-for list="{{ allNav }}" as="n" hint-placeholder-count="14"><button class="btn btn-q" data-p="{{ n.id }}" onClick="{{ go }}">{{ n.label }}</button></sc-for></div></div></div></sc-if>
+
+<sc-if value="{{ notifOpen }}" hint-placeholder-val="{{ false }}"><div class="pan"><div class="row" style="justify-content:space-between;padding:14px 18px;border-bottom:1px solid var(--line)"><b>Updates</b><button class="btn btn-t btn-s" onClick="{{ readAll }}">Mark all as read</button></div>
+  <sc-for list="{{ notifs }}" as="n" hint-placeholder-count="5"><div style="padding:12px 18px;border-bottom:1px solid var(--line);display:flex;gap:10px;{{ n.bg }}"><span style="width:8px;height:8px;border-radius:50%;margin-top:7px;flex:none;background:{{ n.dot }}"></span><div><div class="sm">{{ n.t }}</div><div class="sm muted">{{ n.w }}</div></div></div></sc-for></div></sc-if>
+
+<sc-if value="{{ searchOpen }}" hint-placeholder-val="{{ false }}"><div class="scrim" style="align-items:start;padding-top:12vh" onClick="{{ closeAll }}"><div class="mod" style="padding:14px" onClick="{{ stop }}"><input class="inp" autofocus placeholder="Search guests, events, tasks, transactions, guides" value="{{ sq }}" onInput="{{ setSq }}" aria-label="Global search">
+  <div style="margin-top:8px"><sc-for list="{{ sres }}" as="r" hint-placeholder-count="5"><button class="nv" style="min-height:48px" data-p="{{ r.go }}" onClick="{{ go }}"><span>{{ r.t }}</span><span class="badge b-mute">{{ r.k }}</span></button></sc-for></div></div></div></sc-if>
+
+<sc-if value="{{ modalGuest }}" hint-placeholder-val="{{ false }}"><div class="scrim" onClick="{{ closeAll }}"><form class="mod" onClick="{{ stop }}" onSubmit="{{ addGuest }}" style="display:grid;gap:14px"><h2 class="h2">Add guest</h2>
+  <label class="f">Name<input class="inp" required value="{{ ng.name }}" onInput="{{ setNgName }}"></label><label class="f">Phone or WhatsApp<input class="inp" placeholder="+62"></label>
+  <label class="f">Group<select class="inp"><option>Family</option><option>Friends</option><option>Colleagues</option><option>VIP</option></select></label>
+  <div class="row" style="justify-content:flex-end"><button type="button" class="btn btn-q" onClick="{{ closeAll }}">Cancel</button><button type="submit" class="btn btn-p">Add guest</button></div></form></div></sc-if>
+
+<sc-if value="{{ guestOpen }}" hint-placeholder-val="{{ false }}"><div class="scrim" style="place-items:stretch end;padding:0" onClick="{{ closeAll }}"><div class="drw" onClick="{{ stop }}" style="position:relative;display:grid;gap:16px;align-content:start">
+  <div class="row" style="justify-content:space-between"><span class="eyebrow">Guest</span><button class="btn btn-t btn-s" onClick="{{ closeAll }}">Close</button></div>
+  <div><h2 class="h1" style="font-size:32px">{{ gd.name }}</h2><div class="row" style="margin-top:8px"><span class="badge {{ gd.cls }}">{{ gd.st }}</span><span class="badge b-mute">{{ gd.group }}</span></div></div>
+  <div class="card" style="padding:16px;display:grid;gap:8px" ><div class="row" style="justify-content:space-between"><span class="muted">Contact</span><span>{{ gd.phone }}</span></div><div class="row" style="justify-content:space-between"><span class="muted">Party</span><span>{{ gd.party }} {{ gd.plus }}</span></div><div class="row" style="justify-content:space-between"><span class="muted">Table</span><span>{{ gd.table }}</span></div><div class="row" style="justify-content:space-between"><span class="muted">Invitation</span><span>{{ gd.deliv }}</span></div><div class="row" style="justify-content:space-between"><span class="muted">Last activity</span><span>{{ gd.last }}</span></div></div>
+  <label class="f">Notes<textarea class="inp">{{ gd.note }}</textarea></label>
+  <div class="row"><button class="btn btn-p" onClick="{{ resend }}">Resend invitation</button><button class="btn" onClick="{{ save }}">Edit</button></div>
+  <div class="row"><span class="sm muted">Change status</span><sc-for list="{{ stOpts }}" as="s" hint-placeholder-count="4"><button class="chip" data-v="{{ s }}" onClick="{{ setGSt }}">{{ s }}</button></sc-for></div></div></div></sc-if>
+
+<sc-if value="{{ txOpen }}" hint-placeholder-val="{{ false }}"><div class="scrim" onClick="{{ closeAll }}"><div class="mod" onClick="{{ stop }}" style="display:grid;gap:10px"><div class="eyebrow">Receipt</div><h2 class="h2">{{ tx.desc }}</h2><div class="row" style="justify-content:space-between"><span class="muted">{{ tx.id }} · {{ tx.date }}</span><span class="badge {{ tx.cls }}">{{ tx.st }}</span></div><div class="row" style="justify-content:space-between"><span class="muted">{{ tx.method }}</span><b class="serif" style="font-size:26px">{{ tx.amt }}</b></div><div class="row"><button class="btn btn-p" onClick="{{ dlInv }}">Download invoice</button><button class="btn btn-q" onClick="{{ closeAll }}">Close</button></div></div></div></sc-if>
+
+<sc-if value="{{ previewOpen }}" hint-placeholder-val="{{ false }}"><div class="ovl" style="background:#D8D3C8;display:grid;grid-template-rows:auto 1fr">
+  <div class="row" style="padding:12px 20px;background:var(--paper);border-bottom:1px solid var(--line);justify-content:space-between"><b>Preview · Guest view</b>
+    <div class="row"><sc-for list="{{ devices }}" as="d" hint-placeholder-count="3"><button class="chip {{ d.on }}" data-v="{{ d.n }}" onClick="{{ setDev }}">{{ d.n }}</button></sc-for></div>
+    <div class="row"><button class="btn btn-q btn-s" onClick="{{ shareP }}">Share preview</button><button class="btn btn-p btn-s" onClick="{{ closeAll }}">Close preview</button></div></div>
+  <div style="display:grid;place-items:center;padding:24px;overflow:auto"><div style="width:{{ devW }};max-width:100%;height:min(760px,78vh);background:#EFE9DD;border:8px solid var(--ink);border-radius:26px;overflow:auto;text-align:center">
+    <sc-if value="{{ !opened }}" hint-placeholder-val="{{ true }}"><div style="min-height:100%;display:grid;place-items:center;padding:30px"><div><div class="sm muted">Dear Sarah Wijaya,</div><div class="eyebrow" style="margin-top:20px">The wedding of</div><div class="serif" style="font-size:52px;line-height:1;margin:14px 0">Raden<br>&amp; Cilla</div><div class="sm">12 December 2026</div><button class="btn btn-p" style="margin-top:26px" onClick="{{ openInv }}">Open invitation</button></div></div></sc-if>
+    <sc-if value="{{ opened }}" hint-placeholder-val="{{ false }}"><div style="padding:36px 24px;display:grid;gap:22px"><div class="serif" style="font-size:30px">Dari mula, menuju selamanya.</div><p class="muted">With gratitude, we invite you to share the beginning of our forever.</p><div style="background:var(--paper);border-radius:10px;padding:18px"><div class="eyebrow">Holy Matrimony</div><div class="serif" style="font-size:24px">10:00 · Gereja Santa Maria</div></div><div style="background:var(--paper);border-radius:10px;padding:18px"><div class="eyebrow">Reception</div><div class="serif" style="font-size:24px">18:00 · The Ballroom</div></div><div class="row" style="justify-content:center"><button class="btn btn-p" onClick="{{ rsvpYes }}">I'll be there</button><button class="btn">Can't make it</button></div><div class="sm muted">Sebab setiap selamanya, pernah bermula.</div></div></sc-if>
+  </div></div></div></sc-if>
+
+<sc-if value="{{ obOpen }}" hint-placeholder-val="{{ false }}"><div class="ovl"><div style="max-width:620px;margin:0 auto;padding:28px 20px 60px;min-height:100%;display:grid;grid-template-rows:auto auto 1fr auto;gap:22px">
+  <div class="row" style="justify-content:space-between"><img src="assets/mula-lockup.png" alt="mula" style="height:30px;mix-blend-mode:multiply"><button class="btn btn-t btn-s" onClick="{{ closeAll }}">Save and exit</button></div>
+  <div><div class="sm muted">Step {{ ob.n }} of 9</div><div style="height:4px;background:var(--stone);border-radius:9px;margin-top:6px"><div style="height:100%;background:var(--ink);border-radius:9px;width:{{ obPct }};transition:width .3s"></div></div></div>
+  <div style="align-self:center;display:grid;gap:18px"><div class="eyebrow">{{ ob.kick }}</div><h1 class="h1">{{ ob.h }}</h1><p class="muted" style="margin:0">{{ ob.p }}</p>
+    <sc-if value="{{ ob.choice }}" hint-placeholder-val="{{ false }}"><div class="row"><sc-for list="{{ obTypes }}" as="t" hint-placeholder-count="8"><button class="chip {{ t.on }}" style="min-height:44px" data-v="{{ t.n }}" onClick="{{ setObType }}">{{ t.n }}</button></sc-for></div></sc-if>
+    <sc-if value="{{ ob.field }}" hint-placeholder-val="{{ false }}"><input class="inp" style="min-height:52px;font-size:17px" placeholder="{{ ob.ph }}" type="{{ ob.type }}" aria-label="{{ ob.h }}"></sc-if>
+    <sc-if value="{{ ob.done }}" hint-placeholder-val="{{ false }}"><svg width="56" height="56" viewBox="0 0 44 44" style="animation:pop .5s"><circle cx="22" cy="22" r="21" fill="var(--okbg)"/><path d="M13 23l6 6 12-13" fill="none" stroke="var(--ok)" stroke-width="3" stroke-linecap="round"/></svg></sc-if></div>
+  <div class="row" style="justify-content:space-between;position:sticky;bottom:0;background:var(--ivory);padding:12px 0"><button class="btn btn-q" onClick="{{ obBack }}">Back</button><button class="btn btn-p" onClick="{{ obNext }}">{{ ob.cta }}</button></div></div></div></sc-if>
+
+<sc-if value="{{ toast }}" hint-placeholder-val="{{ false }}"><div class="toast" role="status">{{ toast }}</div></sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = {
+    page: 'home', sec: 'cover', dq: '', dcat: 'All', gq: '', gf: 'All', gs: 'name', sel: {}, guestId: null,
+    gl: [
+      ['Sarah Wijaya','Friends','Attending',2,'A1','+62 811 2233 445'],['Budi Santoso','Family','Attending',4,'F1','+62 812 8891 002'],['Maya Anindita','Colleagues','Pending',1,'—','+62 813 4400 128'],
+      ['Reza Pratama','Friends','Not attending',1,'—','+62 857 1200 933'],['Dewi Lestari','Family','Attending',3,'F2','+62 815 6677 210'],['Kevin Halim','VIP','Invited',2,'V1','+62 819 5501 774'],
+      ['Ayu Puspita','Colleagues','Pending',2,'—','+62 821 3009 118'],['Hendra Gunawan','Family','Attending',2,'F1','+62 878 4410 065'],['Lina Marlina','Friends','Pending',1,'—','+62 852 9018 342'],['Tommy Wijaya','VIP','Attending',2,'V1','+62 811 9087 611']
+    ].map((r,i)=>({id:i+1,name:r[0],group:r[1],st:r[2],party:r[3],table:r[4],phone:r[5]})),
+    events: [
+      {id:1,name:'Holy Matrimony',date:'2026-12-12',mon:'Dec',day:12,s:'10:00',en:'11:30',venue:'Gereja Santa Maria',addr:'Jl. Merdeka 21, Jakarta',dress:'Formal, soft tones',vis:'Visible',open:false},
+      {id:2,name:'Reception',date:'2026-12-12',mon:'Dec',day:12,s:'18:00',en:'22:00',venue:'The Ballroom, Hotel Aurora',addr:'Jl. Sudirman 5, Jakarta',dress:'Black tie optional',vis:'Visible',open:false},
+      {id:3,name:'After Party',date:'2026-12-12',mon:'Dec',day:12,s:'22:30',en:'01:00',venue:'Rooftop Lounge',addr:'Hotel Aurora, Level 30',dress:'Cocktail',vis:'Invite only',open:false}],
+    gifts: [{id:1,type:'Bank account',title:'BCA · Raden Aditya',detail:'Account number, name and QR',copy:'8830 1122 45'},{id:2,type:'Digital wallet',title:'GoPay · Cilla Maharani',detail:'Phone-linked wallet',copy:'0812 3456 7890'},{id:3,type:'Physical gift',title:'Send a gift to our home',detail:'Address shared on the invitation',copy:'Jl. Melati 8, Jakarta Selatan'}],
+    addonsL: [
+      {id:1,cat:'Themes',name:'Premium themes',desc:'Ten extra editorial designs for every event type.',p:149000,st:'Available'},
+      {id:2,cat:'Gallery',name:'Gallery capacity +24',desc:'Room for more photos and a short film.',p:79000,st:'Available'},
+      {id:3,cat:'Web',name:'Custom domain',desc:'radencilla.com instead of a mula link.',p:199000,st:'Available'},
+      {id:4,cat:'Experience',name:'Live streaming',desc:'Let far-away family join the ceremony.',p:129000,st:'Purchased'},
+      {id:5,cat:'Guests',name:'RSVP enhancements',desc:'Meal choices, reminders and custom questions.',p:0,st:'Included'},
+      {id:6,cat:'Guests',name:'QR check-in',desc:'Scan guests in at the entrance.',p:99000,st:'Available'},
+      {id:7,cat:'Support',name:'Premium support',desc:'A real person helps before your date.',p:249000,st:'Available'},
+      {id:8,cat:'Sections',name:'Extra event sections',desc:'Add more days, dinners and gatherings.',p:59000,st:'Available'}],
+    cartL: [{id:3,q:1}], promo: '', disc: 0,
+    txL: [
+      {id:'TX-1042',date:'28 Sep 2026',desc:'Live streaming',method:'QRIS',amt:129000,st:'Paid'},{id:'TX-1038',date:'21 Sep 2026',desc:'Wedding plan',method:'BCA transfer',amt:990000,st:'Paid'},
+      {id:'TX-1031',date:'19 Sep 2026',desc:'Gallery capacity +24',method:'Credit card',amt:79000,st:'Failed'},{id:'TX-1027',date:'12 Sep 2026',desc:'Premium themes',method:'GoPay',amt:149000,st:'Pending'},{id:'TX-1019',date:'02 Sep 2026',desc:'Custom domain',method:'QRIS',amt:199000,st:'Refunded'}],
+    tq: '', tf: 'All', tx: null, txOpen: false,
+    todosL: [
+      {id:1,title:'Complete invitation details',cat:'Invitation',due:'5 Oct',pri:'High',done:true},{id:2,title:'Choose design',cat:'Design',due:'1 Oct',pri:'Normal',done:true},
+      {id:3,title:'Upload gallery',cat:'Invitation',due:'10 Oct',pri:'High',done:false},{id:4,title:'Add gift information',cat:'Gift',due:'15 Oct',pri:'Normal',done:false},
+      {id:5,title:'Finalize guest list',cat:'Guests',due:'30 Oct',pri:'High',done:false},{id:6,title:'Configure RSVP',cat:'Guests',due:'5 Nov',pri:'Normal',done:true},
+      {id:7,title:'Review invitation',cat:'Invitation',due:'10 Nov',pri:'Normal',done:false},{id:8,title:'Generate QR code',cat:'Event day',due:'20 Nov',pri:'Low',done:false},{id:9,title:'Share invitation',cat:'Guests',due:'25 Nov',pri:'High',done:false}],
+    nt: '', np: 'Normal', tc: 'All', qr: 'invite', qrSeed: 3, live: 'Scheduled', hq: '', hc: 'All', ha: 1,
+    perms: {scan:true,lookup:true,seat:true,offline:false}, checked: 112, uq: '',
+    notifL: [{t:'Sarah Wijaya confirmed attendance',w:'2 min ago',u:true},{t:'Payment completed for Live streaming',w:'1 day ago',u:true},{t:'Your invitation was viewed 14 times',w:'2 days ago',u:true},{t:'Task completed: Choose design',w:'3 days ago',u:false},{t:'Invitation published',w:'1 week ago',u:false}],
+    notifOpen: false, searchOpen: false, sq: '', modalGuest: false, ng: {name: ''}, guestOpen: false, moreOpen: false, previewOpen: false, dev: 'Mobile', opened: false, obOpen: false, ob: 0, obType: 'Wedding', toast: ''
+  };
+  componentDidMount() { try { const p = localStorage.getItem('mula-page'); if (p) this.setState({ page: p }); } catch (e) {} }
+  say = (m) => { this.setState({ toast: m }); clearTimeout(this._t); this._t = setTimeout(() => this.setState({ toast: '' }), 2600); };
+  idr = (n) => 'Rp ' + n.toLocaleString('id-ID');
+  d = (e) => e.currentTarget.dataset;
+  cls = (s) => ({ 'Attending': 'b-ok', 'Pending': 'b-wait', 'Not attending': 'b-no', 'Invited': 'b-info', 'Paid': 'b-ok', 'Failed': 'b-no', 'Refunded': 'b-mute' }[s] || 'b-mute');
+  qrPath(seed) {
+    let s = seed * 9301 + 49297, out = '', N = 29;
+    const fin = (x, y) => (x < 8 && y < 8) || (x > 20 && y < 8) || (x < 8 && y > 20);
+    for (let y = 0; y < N; y++) for (let x = 0; x < N; x++) {
+      s = (s * 9301 + 49297) % 233280; let on = s / 233280 > .52;
+      if (fin(x, y)) { const lx = x % 21 % 8 === x % 21 ? (x > 20 ? x - 21 : x) : x, ly = y > 20 ? y - 21 : y, ax = x > 20 ? x - 21 : x; on = !(ax === 1 || ax === 5 || ly === 1 || ly === 5) || (ax >= 2 && ax <= 4 && ly >= 2 && ly <= 4); if (ax === 7 || ly === 7) on = false; }
+      if (on) out += 'M' + x + ' ' + y + 'h1v1h-1z';
+    }
+    return out;
+  }
+  renderVals() {
+    const S = this.state, self = this;
+    const groups = [
+      ['Core', [['home','Home'],['design','Design'],['invitation','Invitation'],['events','Events'],['guests','Guests']]],
+      ['Experience', [['gift','Gift'],['qr','QR Code'],['live','Live Streaming']]],
+      ['Planning', [['todo','To-do List'],['guide','Guide']]],
+      ['Account', [['transactions','Transactions'],['addons','Add-ons'],['usher','Usher Settings'],['terms','Terms & Conditions'],['account','Profile'],['system','Design system']]]];
+    const badgeOf = { todo: S.todosL.filter(t => !t.done).length };
+    const nav = groups.map(g => ({ label: g[0], items: g[1].map(n => ({ id: n[0], label: n[1], on: S.page === n[0] ? 'on' : '', badge: badgeOf[n[0]] || '' })) }));
+    const allNav = groups.flatMap(g => g[1]).map(n => ({ id: n[0], label: n[1] }));
+    const p = {}; ['home','design','invitation','events','guests','gift','addons','cart','transactions','qr','live','guide','todo','usher','terms','account','system'].forEach(k => p[k] = S.page === k);
+    const go = (e) => { const pg = e.currentTarget.dataset.p; try { localStorage.setItem('mula-page', pg); } catch (x) {} this.setState({ page: pg, moreOpen: false, searchOpen: false, notifOpen: false, guestOpen: false }); window.scrollTo(0, 0); };
+    const bn = [['home','Home','○'],['guests','Guests','◐'],['invitation','Invite','▢'],['todo','Tasks','✓']].map(b => ({ id: b[0], n: b[1], ic: b[2], on: S.page === b[0] ? 'on' : '', fn: go }));
+    bn.push({ id: 'more', n: 'More', ic: '≡', on: '', fn: () => this.setState({ moreOpen: true }) });
+    const unread = S.notifL.filter(n => n.u).length;
+    const kpis = [{l:'Total guests',v:247,t:'Guest list',c:'b-mute'},{l:'Invited',v:247,t:'Sent',c:'b-info'},{l:'Confirmed',v:180,t:'73%',c:'b-ok'},{l:'Pending',v:42,t:'Awaiting',c:'b-wait'}];
+    const homeTasks = [['Complete event details','Today','events'],['Upload gallery','10 Oct','invitation'],['Review invitation','10 Nov','invitation'],['Add gift information','15 Oct','gift'],['Finalize guest list','30 Oct','guests']].map(t => ({ title: t[0], due: t[1], go: t[2] }));
+    const activity = [['Sarah confirmed attendance','2 min ago'],['New guest added: Tommy Wijaya','1 hour ago'],['Invitation design updated','Yesterday'],['Payment completed','28 Sep']].map(a => ({ t: a[0], w: a[1] }));
+    // design
+    const dcatsAll = ['All','Wedding','Birthday','Anniversary','17th Birthday','Brand','Product Launch','Minimal','Elegant','Editorial','Modern'];
+    const dl = [['Linen Vow','Wedding','#EFE9DD','#262422','Raden & Cilla','Minimal · Warm'],['Golden Hour','Anniversary','#3A342C','#EFE3C8','50 Years','Elegant · Dark'],['Seventeen','17th Birthday','#D9DCE0','#262422','Nadia, 17','Modern · Bold'],['Paper Margin','Editorial','#FBFAF7','#262422','A New Chapter','Editorial · Serif'],['First Light','Birthday','#E9D9C8','#262422','Happy 30','Warm · Playful'],['Signal','Product Launch','#262422','#F6F4EF','Launch 26','Modern · Mono'],['Quiet Ring','Wedding','#E4E3DA','#3F4A3A','Ana & Ken','Elegant · Botanical'],['Studio Night','Brand','#2E3338','#E6E1D6','Opening Night','Brand · Dark']];
+    const designs = dl.filter(x => (S.dcat === 'All' || x[1] === S.dcat || x[5].includes(S.dcat)) && x[0].toLowerCase().includes(S.dq.toLowerCase())).map(x => ({ name: x[0], cat: x[1], bg: x[2], fg: x[3], mock: x[4], tags: x[5], cur: x[0] === (S.design || 'Linen Vow') }));
+    // invitation
+    const secL = [['cover','Cover',1],['main','Main Information',1],['story','Story',1],['events','Events',1],['gallery','Gallery',0],['rsvp','RSVP',1],['wishes','Wishes',1],['gift','Gift',0],['live','Live Stream',1],['music','Music',1],['closing','Closing',1]];
+    const secs = secL.map(s => ({ id: s[0], n: s[1], on: S.sec === s[0] ? 'on' : '', c: s[2] ? 'b-ok' : 'b-wait' }));
+    const sec = { cover: S.sec === 'cover', main: S.sec === 'main', gallery: S.sec === 'gallery', rsvp: S.sec === 'rsvp' }; sec.other = !(sec.cover || sec.main || sec.gallery || sec.rsvp);
+    // events
+    const events = S.events.map(e => ({ ...e, time: e.s + ' – ' + e.en, vc: e.vis === 'Visible' ? 'b-ok' : 'b-mute' }));
+    // guests
+    const ord = { 'Attending': 0, 'Pending': 1, 'Invited': 2, 'Not attending': 3 };
+    let gl = S.gl.filter(g => (S.gf === 'All' || (S.gf === 'Confirmed' ? g.st === 'Attending' : S.gf === 'Pending' ? g.st === 'Pending' : S.gf === 'Declined' ? g.st === 'Not attending' : g.st === 'Invited')) && (g.name + g.group).toLowerCase().includes(S.gq.toLowerCase()));
+    gl = gl.slice().sort((a, b) => S.gs === 'status' ? ord[a.st] - ord[b.st] : String(a[S.gs]).localeCompare(String(b[S.gs])));
+    const guests = gl.map(g => ({ ...g, cls: this.cls(g.st), chk: !!S.sel[g.id] }));
+    const cnt = (s) => S.gl.filter(g => g.st === s).length;
+    const gsum = [['All','All guests',247],['Confirmed','Confirmed',180],['Pending','Pending',42],['Declined','Declined',25]].map(k => ({ f: k[0], l: k[1], v: k[2], sel: S.gf === k[0] ? 'border-color:var(--ink)' : '' }));
+    const selCount = Object.values(S.sel).filter(Boolean).length;
+    const gg = S.gl.find(g => g.id === S.guestId) || S.gl[0];
+    const gd = { ...gg, cls: this.cls(gg.st), plus: gg.party > 1 ? '(plus-one)' : '', deliv: 'WhatsApp · delivered', last: gg.st === 'Attending' ? 'Confirmed 2 days ago' : 'Opened invitation 4 days ago', note: gg.group === 'VIP' ? 'Seat near the front. Vegetarian meal.' : '' };
+    // gifts
+    const gifts = S.gifts;
+    // addons/cart
+    const inCart = (id) => S.cartL.some(c => c.id === id);
+    const addons = S.addonsL.map(a => { const st = a.st, avail = st === 'Available'; const inc = inCart(a.id); return { ...a, price: a.p ? this.idr(a.p) : 'Free', c: st === 'Available' ? 'b-info' : st === 'Purchased' ? 'b-ok' : 'b-mute', cta: avail ? (inc ? 'In cart' : 'Add to cart') : st, dis: !avail || inc, bc: avail && !inc ? 'btn-p' : 'btn-q' }; });
+    const cart = S.cartL.map(c => { const a = S.addonsL.find(x => x.id === c.id); return { id: c.id, q: c.q, name: a.name, unit: this.idr(a.p), line: this.idr(a.p * c.q) }; });
+    const sub = S.cartL.reduce((t, c) => t + S.addonsL.find(x => x.id === c.id).p * c.q, 0), dsc = Math.round(sub * S.disc);
+    // tx
+    const tfs = ['All','Paid','Pending','Failed','Refunded'].map(n => ({ n, on: S.tf === n ? 'on' : '' }));
+    const txs = S.txL.filter(t => (S.tf === 'All' || t.st === S.tf) && (t.id + t.desc).toLowerCase().includes(S.tq.toLowerCase())).map(t => ({ ...t, amt: this.idr(t.amt), cls: this.cls(t.st) }));
+    const txSel = S.txL.find(t => t.id === S.tx) || S.txL[0]; const txo = { ...txSel, amt: this.idr(txSel.amt), cls: this.cls(txSel.st) };
+    // qr
+    const qrT = { invite: ['Invitation QR','Opens the invitation on any phone.'], event: ['Event QR','Opens details for one event, with map.'], checkin: ['Check-in QR','Personal to each guest. Scanned by ushers.'] };
+    const qrTabs = [['invite','Invitation'],['event','Event'],['checkin','Check-in']].map(q => ({ id: q[0], n: q[1], on: S.qr === q[0] ? 'on' : '' }));
+    // live
+    const L = { 'Not configured': ['Nothing to show yet','Add a platform and link to begin.','b-mute'], 'Scheduled': ['Starts 12 Dec, 10:00','Guests see a countdown on the invitation.','b-info'], 'Live': ['You are live','214 guests watching.','b-no'], 'Ended': ['Thank you for joining','The recording link stays on the invitation.','b-mute'] }[S.live];
+    // guide
+    const gl2 = [{id:1,cat:'Getting started',t:'Publish your first invitation',s:'Five minutes from start to shareable link.',steps:['Open Invitation and check each section.','Preview on mobile.','Select Publish.','Copy the link or QR code.'],go:'invitation'},{id:2,cat:'Guests',t:'Import guests from a spreadsheet',s:'Bring an existing list in one go.',steps:['Open Guests and select Import.','Upload a CSV with name and phone.','Review and confirm.'],go:'guests'},{id:3,cat:'RSVP',t:'Set an RSVP deadline',s:'Decide when replies close.',steps:['Open Invitation → RSVP.','Pick a deadline.','Save changes.'],go:'invitation'},{id:4,cat:'QR code',t:'Check guests in with QR',s:'Prepare ushers for the day.',steps:['Generate check-in QR codes.','Add ushers in Usher Settings.','Test one scan.'],go:'usher'},{id:5,cat:'Gift',t:'Share bank details safely',s:'Let guests copy in one tap.',steps:['Open Gift.','Add a gift method.','Preview the guest view.'],go:'gift'},{id:6,cat:'Live streaming',t:'Schedule a live stream',s:'Connect YouTube or Zoom.',steps:['Open Live Streaming.','Paste your link.','Set a start time.'],go:'live'}];
+    const hcats = ['All','Getting started','Guests','RSVP','QR code','Gift','Live streaming'].map(n => ({ n, on: S.hc === n ? 'on' : '' }));
+    const guides = gl2.filter(g => (S.hc === 'All' || g.cat === S.hc) && (g.t + g.s).toLowerCase().includes(S.hq.toLowerCase())).map(g => ({ ...g, sel: S.ha === g.id ? 'border-color:var(--ink)' : '' }));
+    const ga = gl2.find(g => g.id === S.ha) || gl2[0];
+    // todo
+    const done = S.todosL.filter(t => t.done).length;
+    const tcats = ['All','Invitation','Design','Guests','Gift','Event day'].map(n => ({ n, on: S.tc === n ? 'on' : '' }));
+    const todos = S.todosL.filter(t => S.tc === 'All' || t.cat === S.tc).map(t => ({ ...t, pc: t.pri === 'High' ? 'b-no' : t.pri === 'Low' ? 'b-mute' : 'b-info', st: t.done ? 'text-decoration:line-through;opacity:.55' : '' }));
+    // usher
+    const pm = [['scan','QR scanning','Ushers scan guest QR codes to check in.'],['lookup','Guest lookup','Search by name if a QR is missing.'],['seat','Show seating','Display table numbers on check-in.'],['offline','Offline mode','Keep working without signal.']];
+    const uq = S.uq.toLowerCase();
+    const uguests = S.gl.filter(g => g.st === 'Attending' && (!uq || g.name.toLowerCase().includes(uq))).slice(0, 3);
+    return {
+      nav, allNav, p, go, bnav: bn, unread, kpis, homeTasks, activity,
+      openSearch: () => this.setState({ searchOpen: true }), toggleNotif: () => this.setState({ notifOpen: !S.notifOpen }),
+      openPreview: () => this.setState({ previewOpen: true, opened: false }), openAddGuest: () => this.setState({ modalGuest: true }),
+      openOb: () => this.setState({ obOpen: true, ob: 0 }),
+      dq: S.dq, setDq: e => this.setState({ dq: e.target.value }), dcats: dcatsAll.map(n => ({ n, on: S.dcat === n ? 'on' : '' })), setDcat: e => this.setState({ dcat: this.d(e).v }), designs,
+      useDesign: e => { this.setState({ design: this.d(e).v }); this.say('Your design has been updated.'); },
+      secs, sec, secName: (secL.find(s => s[0] === S.sec) || secL[0])[1], setSec: e => this.setState({ sec: this.d(e).v }),
+      tg: e => { const b = e.currentTarget, on = b.classList.toggle('on'); b.setAttribute('aria-checked', on); },
+      save: () => this.say('Your changes have been saved.'), failSave: () => this.say("We couldn't save your changes. Try again."), toastGallery: () => this.say('Choose photos from your device.'),
+      events, noEvents: !S.events.length,
+      addEvent: () => this.setState({ events: [...S.events, { id: Date.now(), name: 'New event', date: '2026-12-12', mon: 'Dec', day: 12, s: '19:00', en: '21:00', venue: 'Add venue', addr: '', dress: 'Open', vis: 'Visible', open: true }] }),
+      evEdit: e => this.setState({ events: S.events.map(x => x.id == this.d(e).v ? { ...x, open: !x.open } : x) }),
+      evDup: e => { const i = S.events.findIndex(x => x.id == this.d(e).v), a = S.events.slice(); a.splice(i + 1, 0, { ...S.events[i], id: Date.now(), name: S.events[i].name + ' (copy)' }); this.setState({ events: a }); },
+      evDel: e => this.setState({ events: S.events.filter(x => x.id != this.d(e).v) }),
+      evUp: e => this.mv('events', this.d(e).v, -1), evDown: e => this.mv('events', this.d(e).v, 1),
+      gsum, setGf: e => this.setState({ gf: this.d(e).v }), gq: S.gq, setGq: e => this.setState({ gq: e.target.value }), setGs: e => this.setState({ gs: e.target.value }),
+      guests, noGuests: !guests.length, hasSel: selCount > 0, selCount,
+      selG: e => this.setState({ sel: { ...S.sel, [this.d(e).v]: e.target.checked } }),
+      openG: e => this.setState({ guestId: +this.d(e).v, guestOpen: true }), gd, guestOpen: S.guestOpen, stOpts: ['Attending','Pending','Invited','Not attending'],
+      setGSt: e => { this.setState({ gl: S.gl.map(g => g.id === S.guestId ? { ...g, st: this.d(e).v } : g) }); this.say('Status updated.'); },
+      resend: () => this.say('Invitation sent again.'), bulkResend: () => { this.setState({ sel: {} }); this.say('Invitations sent again.'); },
+      bulkDel: () => { this.setState({ gl: S.gl.filter(g => !S.sel[g.id]), sel: {} }); this.say('Guests removed.'); },
+      importG: () => this.say('Choose a CSV or Excel file to import.'), exportG: () => this.say('Your guest list is downloading.'),
+      gifts, noGifts: !gifts.length, addGift: () => this.setState({ gifts: [...S.gifts, { id: Date.now(), type: 'Bank account', title: 'New gift method', detail: 'Add details', copy: '0000 0000' }] }),
+      gDel: e => this.setState({ gifts: S.gifts.filter(x => x.id != this.d(e).v) }), gUp: e => this.mv('gifts', this.d(e).v, -1), gDown: e => this.mv('gifts', this.d(e).v, 1),
+      copy: e => { try { navigator.clipboard.writeText(this.d(e).v); } catch (x) {} this.say('Copied to clipboard.'); },
+      addons, cartCount: S.cartL.length, addCart: e => { this.setState({ cartL: [...S.cartL, { id: +this.d(e).v, q: 1 }] }); this.say('Added to your cart.'); },
+      cart, cartEmpty: !cart.length, cartFull: cart.length > 0, subtotal: this.idr(sub), discount: dsc ? '− ' + this.idr(dsc) : '—', total: this.idr(sub - dsc),
+      qPlus: e => this.setState({ cartL: S.cartL.map(c => c.id == this.d(e).v ? { ...c, q: c.q + 1 } : c) }),
+      qMinus: e => this.setState({ cartL: S.cartL.map(c => c.id == this.d(e).v ? { ...c, q: c.q - 1 } : c).filter(c => c.q > 0) }),
+      promo: S.promo, setPromo: e => this.setState({ promo: e.target.value }),
+      applyPromo: () => S.promo.toUpperCase() === 'MULA10' ? (this.setState({ disc: .1 }), this.say('Promo applied: 10% off.')) : this.say("That code doesn't look right."),
+      pay: () => { this.setState({ cartL: [], disc: 0, page: 'transactions' }); this.say('Payment completed.'); },
+      tfs, setTf: e => this.setState({ tf: this.d(e).v }), tq: S.tq, setTq: e => this.setState({ tq: e.target.value }), txs, tx: txo, txOpen: S.txOpen,
+      openTx: e => this.setState({ tx: this.d(e).v, txOpen: true }), dlInv: () => { this.setState({ txOpen: false }); this.say('Invoice is downloading.'); },
+      qrTabs, setQr: e => this.setState({ qr: this.d(e).v, qrSeed: { invite: 3, event: 7, checkin: 11 }[this.d(e).v] }), qrTitle: qrT[S.qr][0], qrHint: qrT[S.qr][1], qrPath: this.qrPath(S.qrSeed),
+      qrDl: () => this.say('Your QR code is ready.'), qrPrint: () => this.say('Opening print view…'), qrRegen: () => { this.setState({ qrSeed: S.qrSeed + 1 }); this.say('New QR code created. Old codes no longer work.'); },
+      liveStates: ['Not configured','Scheduled','Live','Ended'].map(n => ({ n, on: S.live === n ? 'on' : '' })), setLive: e => this.setState({ live: this.d(e).v }), live: S.live, liveCls: L[2], liveTitle: L[0], liveSub: L[1],
+      hq: S.hq, setHq: e => this.setState({ hq: e.target.value }), hcats, setHc: e => this.setState({ hc: this.d(e).v }), guides, ga, setHa: e => this.setState({ ha: +this.d(e).v }),
+      todoDone: done, todoTotal: S.todosL.length, todoPct: Math.round(done / S.todosL.length * 100) + '%', tcats, setTc: e => this.setState({ tc: this.d(e).v }), todos,
+      nt: S.nt, setNt: e => this.setState({ nt: e.target.value }), setNp: e => this.setState({ np: e.target.value }), ntKey: e => { if (e.key === 'Enter') this.addTask(); },
+      addTask: () => this.addTask(), togTask: e => this.setState({ todosL: S.todosL.map(t => t.id == this.d(e).v ? { ...t, done: !t.done } : t) }), delTask: e => this.setState({ todosL: S.todosL.filter(t => t.id != this.d(e).v) }),
+      ushers: [{n:'Dimas Arya',ev:'Holy Matrimony · Reception',r:'Lead',c:'b-ok'},{n:'Putri Ayu',ev:'Reception',r:'Scanner',c:'b-info'},{n:'Fajar N.',ev:'After Party',r:'Lookup only',c:'b-mute'}], toastUsher: () => this.say('Invite an usher by phone number.'),
+      perms: pm.map(x => ({ n: x[1], d: x[2], k: x[0], on: S.perms[x[0]] ? 'on' : '', ar: S.perms[x[0]] })), togPerm: e => this.setState({ perms: { ...S.perms, [this.d(e).v]: !S.perms[this.d(e).v] } }),
+      checked: S.checked, uq: S.uq, setUq: e => this.setState({ uq: e.target.value }), uguests, checkIn: e => { this.setState({ checked: S.checked + 1 }); this.say('Checked in.'); },
+      terms: [['1. Using Mula','You may use Mula to create and manage invitations for personal and commercial celebrations.'],['2. Your content','You own the photos, text and guest information you add. You allow Mula to display them to your invited guests.'],['3. Guest privacy','Guest details are used only to deliver and manage your invitation. We never sell them.'],['4. Payments and refunds','Add-ons are charged when you check out. Refund requests are reviewed within 7 days of purchase.'],['5. Changes','We will tell you before any change to these terms takes effect.']].map(t => ({ h: t[0], b: t[1] })),
+      notifPrefs: ['New RSVP','Payment updates','Weekly summary'],
+      swatches: [['Ivory','#F6F4EF'],['Paper','#FBFAF7'],['Stone','#E9E5DC'],['Taupe','#A79B8A'],['Charcoal','#262422'],['Moss','#4F6B4A'],['Amber','#8A5A1F'],['Clay','#A2432F']].map(s => ({ n: s[0], c: s[1] })),
+      setToast: () => this.say('Your guest has been added.'),
+      moreOpen: S.moreOpen, notifOpen: S.notifOpen, searchOpen: S.searchOpen, modalGuest: S.modalGuest, previewOpen: S.previewOpen, obOpen: S.obOpen, toast: S.toast,
+      closeAll: () => this.setState({ moreOpen: false, notifOpen: false, searchOpen: false, modalGuest: false, guestOpen: false, txOpen: false, previewOpen: false, obOpen: false }), stop: e => e.stopPropagation(),
+      notifs: S.notifL.map(n => ({ ...n, bg: n.u ? 'background:var(--ivory)' : '', dot: n.u ? 'var(--no)' : 'transparent' })), readAll: () => this.setState({ notifL: S.notifL.map(n => ({ ...n, u: false })) }),
+      sq: S.sq, setSq: e => this.setState({ sq: e.target.value }), sres: this.search(S.sq),
+      ng: S.ng, setNgName: e => this.setState({ ng: { name: e.target.value } }),
+      addGuest: e => { e.preventDefault(); this.setState({ gl: [...S.gl, { id: Date.now(), name: S.ng.name, group: 'Friends', st: 'Invited', party: 1, table: '—', phone: '—' }], modalGuest: false, ng: { name: '' } }); this.say('Your guest has been added.'); },
+      devices: ['Mobile','Tablet','Desktop'].map(n => ({ n, on: S.dev === n ? 'on' : '' })), setDev: e => this.setState({ dev: this.d(e).v }), devW: { Mobile: '390px', Tablet: '768px', Desktop: '1100px' }[S.dev],
+      opened: S.opened, openInv: () => this.setState({ opened: true }), rsvpYes: () => this.say('Thank you! (Preview only)'), shareP: () => this.say('Preview link copied.'),
+      ob: this.obStep(), obPct: Math.round((S.ob + 1) / 9 * 100) + '%',
+      obTypes: ['Wedding','Birthday','17th Birthday','Anniversary','Engagement','Product Launch','Private celebration','Other'].map(n => ({ n, on: S.obType === n ? 'on' : '' })), setObType: e => this.setState({ obType: this.d(e).v }),
+      obBack: () => S.ob ? this.setState({ ob: S.ob - 1 }) : this.setState({ obOpen: false }),
+      obNext: () => S.ob >= 8 ? (this.setState({ obOpen: false, page: 'home' }), this.say('Your invitation is ready.')) : this.setState({ ob: S.ob + 1 })
+    };
+  }
+  obStep() {
+    const i = this.state.ob, F = { ph: '', type: 'text' };
+    const st = [
+      ['Let\'s begin.','First, tell us what you\'re celebrating.','Every milestone marks the start of something. Give it a name.',{ field: 1, ph: 'e.g. Raden & Cilla\'s wedding' }],
+      ['Event type','What kind of celebration is it?','This shapes the designs and sections we suggest.',{ choice: 1 }],
+      ['Hosts','Whose celebration is this?','The names guests will see on the cover.',{ field: 1, ph: 'Raden & Cilla' }],
+      ['Date','When does it begin?','You can change this later.',{ field: 1, ph: '', type: 'date' }],
+      ['Place','Where will everyone gather?','Add a venue now, or more events later.',{ field: 1, ph: 'Venue name' }],
+      ['Design','Choose a look you love.','Start with Linen Vow. Browse more in Design anytime.',{}],
+      ['Guests','Who would you like to invite first?','Add a few names now. Import the rest later.',{ field: 1, ph: 'Guest name' }],
+      ['Review','Here is your invitation so far.','Everything can be refined after you publish.',{}],
+      ['Publish','Your invitation is ready.','Share the link when you are. From here, a new story unfolds.',{ done: 1 }]];
+    const s = st[i];
+    return { n: i + 1, kick: s[0], h: s[1], p: s[2], cta: i >= 8 ? 'Go to my workspace' : i === 7 ? 'Publish' : 'Continue', choice: !!s[3].choice, field: !!s[3].field, done: !!s[3].done, ph: s[3].ph || '', type: s[3].type || 'text' };
+  }
+  addTask() { const S = this.state; if (!S.nt.trim()) return; this.setState({ todosL: [...S.todosL, { id: Date.now(), title: S.nt, cat: S.tc === 'All' ? 'Invitation' : S.tc, due: 'Soon', pri: S.np, done: false }], nt: '' }); }
+  mv(key, id, dir) { const a = this.state[key].slice(), i = a.findIndex(x => x.id == id), j = i + dir; if (j < 0 || j >= a.length) return; [a[i], a[j]] = [a[j], a[i]]; this.setState({ [key]: a }); }
+  search(q) {
+    const S = this.state; q = q.toLowerCase().trim(); if (!q) return [{ t: 'Upload gallery', k: 'Task', go: 'todo' }, { t: 'Sarah Wijaya', k: 'Guest', go: 'guests' }, { t: 'Reception', k: 'Event', go: 'events' }];
+    const r = [];
+    S.gl.forEach(g => g.name.toLowerCase().includes(q) && r.push({ t: g.name, k: 'Guest', go: 'guests' }));
+    S.events.forEach(e => e.name.toLowerCase().includes(q) && r.push({ t: e.name, k: 'Event', go: 'events' }));
+    S.todosL.forEach(t => t.title.toLowerCase().includes(q) && r.push({ t: t.title, k: 'Task', go: 'todo' }));
+    S.txL.forEach(t => (t.desc + t.id).toLowerCase().includes(q) && r.push({ t: t.desc, k: 'Transaction', go: 'transactions' }));
+    ['Publish your first invitation', 'Import guests', 'Schedule a live stream'].forEach(t => t.toLowerCase().includes(q) && r.push({ t, k: 'Guide', go: 'guide' }));
+    return r.slice(0, 7);
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet><title>Template — Mula</title><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=Manrope:wght@300;400;500;600;700&family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;0,6..96,500;1,6..96,400&family=Italiana&family=Pinyon+Script&family=Unbounded:wght@300;500;700&display=swap"><style>body{margin:0;background:#0E0C0B;-webkit-font-smoothing:antialiased}*{box-sizing:border-box}a{color:inherit;text-decoration:none}a:hover{opacity:.85}::selection{background:#C9A56E;color:#0E0C0B}em{font-style:italic}@keyframes mulaEq{0%,100%{transform:scaleY(.3)}50%{transform:scaleY(1)}}</style><script src="mula-core.js"></script><script src="mula-fx.js"></script></helmet>
+<div data-bg-root="1" style="background:{{ bg }};color:#0E0C0B;font-family:'Manrope',sans-serif;overflow-x:clip;">
+<dc-import name="MulaNav" active="templates" start-light="{{ heroLight }}" hint-size="100%,0px"></dc-import>
+<main id="main">
+  <section data-bg="{{ bg }}" data-nav="{{ heroNav }}" data-screen-label="Template hero" style="position:relative;background:{{ bg }};color:{{ fg }};overflow:hidden;">
+    <div aria-hidden="true" style="position:absolute;right:-10vw;top:-10vw;width:70vw;aspect-ratio:1;border-radius:50%;border:1px solid {{ accent }};opacity:.35;"></div>
+    <div style="position:relative;max-width:1440px;margin:0 auto;padding:clamp(130px,14vw,190px) clamp(20px,3.6vw,52px) clamp(80px,9vw,130px);display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,440px),1fr));gap:56px;align-items:center;">
+      <div style="display:flex;flex-direction:column;gap:28px;">
+        <nav aria-label="Breadcrumb" style="display:flex;gap:10px;font-size:12px;letter-spacing:.14em;text-transform:uppercase;opacity:.8;"><a href="Templates.dc.html">Templates</a><span>/</span><a href="{{ catHref }}">{{ cat }}</a></nav>
+        <h1 style="font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(72px,11vw,180px);line-height:.85;letter-spacing:-.04em;margin:0;">{{ name }}</h1>
+        <div style="display:flex;flex-wrap:wrap;gap:8px;">
+          <sc-for list="{{ tags }}" as="g" hint-placeholder-count="4"><span style="height:32px;padding:0 14px;border-radius:999px;border:1px solid {{ line }};display:inline-flex;align-items:center;font-size:12.5px;">{{ g }}</span></sc-for>
+        </div>
+        <p style="margin:0;font-size:18px;line-height:1.6;max-width:460px;opacity:.88;text-wrap:pretty;">{{ desc }}</p>
+        <label style="display:flex;flex-direction:column;gap:8px;max-width:360px;font-size:11px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;opacity:.9;">Preview with a guest name
+          <input value="{{ guest }}" onChange="{{ onGuest }}" maxlength="22" style="height:50px;border-radius:999px;border:1px solid {{ line }};background:transparent;padding:0 20px;font-family:'Manrope',sans-serif;font-size:15px;letter-spacing:0;text-transform:none;color:{{ fg }};outline:none;"></input>
+        </label>
+        <div style="display:flex;flex-wrap:wrap;gap:12px;">
+          <a href="{{ useHref }}" data-app="create" data-magnetic="1" data-cursor="Create" style="display:inline-flex;align-items:center;gap:12px;height:56px;padding:0 30px;border-radius:999px;background:{{ fg }};color:{{ bg }};font-size:14px;font-weight:600;">Use this template<span data-arrow="1">→</span></a>
+          <button onClick="{{ openModal }}" style="display:inline-flex;align-items:center;gap:10px;height:56px;padding:0 28px;border-radius:999px;border:1px solid {{ line }};background:transparent;color:{{ fg }};font:inherit;font-size:14px;cursor:pointer;">Preview invitation</button>
+        </div>
+      </div>
+      <div style="display:flex;justify-content:center;">
+        <button onClick="{{ openModal }}" data-cursor="Open" aria-label="Open full preview" style="all:unset;cursor:pointer;width:min(330px,72vw);aspect-ratio:9/19.5;display:block;"><div data-tilt="8" style="width:100%;height:100%;"><dc-import name="InviteScreen" d="{{ heroD }}" hint-size="100%,100%"></dc-import></div></button>
+      </div>
+    </div>
+  </section>
+
+  <section data-bg="#F4EEE4" data-nav="light" data-screen-label="Devices" style="background:#F4EEE4;">
+    <div style="max-width:1440px;margin:0 auto;padding:clamp(100px,12vw,170px) clamp(20px,3.6vw,52px);">
+      <div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:24px;">
+        <h2 data-reveal="blur" style="font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(44px,5.6vw,90px);line-height:.95;letter-spacing:-.025em;margin:0;">Beautiful on <em>every screen.</em></h2>
+        <p style="margin:0;font-size:16px;line-height:1.6;color:#4A423A;max-width:340px;">Most guests open on their phone. Some open on a laptop. {{ name }} is composed for both.</p>
+      </div>
+      <div style="position:relative;margin-top:64px;padding-bottom:clamp(40px,6vw,80px);">
+        <div data-reveal="scale" style="border-radius:12px;overflow:hidden;background:#FBF8F3;box-shadow:0 60px 120px -50px rgba(60,40,20,.45), 0 0 0 1px rgba(14,12,11,.07);max-width:1100px;">
+          <div style="height:40px;display:flex;align-items:center;gap:14px;padding:0 14px;background:#EFE8DD;"><div style="display:flex;gap:6px;"><span style="width:10px;height:10px;border-radius:50%;background:#E2B8A8;"></span><span style="width:10px;height:10px;border-radius:50%;background:#E8D2A6;"></span><span style="width:10px;height:10px;border-radius:50%;background:#BFD0B8;"></span></div><span style="flex:1;text-align:center;font-size:12px;color:#7A6E62;">mula.co/{{ slug }}/{{ guestSlug }}</span></div>
+          <div style="container-type:inline-size;aspect-ratio:16/9;background:{{ bg }};color:{{ fg }};display:grid;grid-template-columns:1fr 1fr;">
+            <div style="position:relative;display:flex;align-items:center;justify-content:center;border-right:1px solid {{ line }};">
+              <div style="width:22cqw;height:30cqw;border-radius:11cqw 11cqw 0 0;background:{{ photo }};border:1px solid {{ accent }};"></div>
+            </div>
+            <div style="display:flex;flex-direction:column;justify-content:center;gap:2.2cqw;padding:0 5cqw;">
+              <span style="font-size:1.1cqw;letter-spacing:.3em;text-transform:uppercase;opacity:.8;">{{ eyebrow }}</span>
+              <span style="font-family:{{ font }};font-style:{{ italic }};font-weight:{{ weight }};font-size:{{ deskSize }}cqw;line-height:1;letter-spacing:{{ ls }};">{{ title }}</span>
+              <span style="font-size:1.3cqw;opacity:.85;">{{ date }}</span>
+              <span style="font-family:'Cormorant Garamond',serif;font-size:1.8cqw;">Dear {{ guestShown }}</span>
+              <div style="display:flex;gap:2.4cqw;margin-top:1cqw;">
+                <sc-for list="{{ countdown }}" as="c" hint-placeholder-count="4"><span style="display:flex;flex-direction:column;gap:.3cqw;"><span style="font-family:'Cormorant Garamond',serif;font-size:3.4cqw;line-height:1;">{{ c.v }}</span><span style="font-size:.9cqw;letter-spacing:.2em;text-transform:uppercase;opacity:.7;">{{ c.l }}</span></span></sc-for>
+              </div>
+              <div style="display:flex;gap:1cqw;margin-top:1.4cqw;font-size:1.1cqw;"><span style="padding:1cqw 2.2cqw;border-radius:99px;background:{{ fg }};color:{{ bg }};">RSVP</span><span style="padding:1cqw 2.2cqw;border-radius:99px;border:1px solid {{ accent }};">Location</span><span style="padding:1cqw 2.2cqw;border-radius:99px;border:1px solid {{ accent }};">Gift</span></div>
+            </div>
+          </div>
+        </div>
+        <div style="position:absolute;right:clamp(0px,3vw,40px);bottom:0;width:clamp(150px,18vw,250px);aspect-ratio:9/19.5;"><dc-import name="InviteScreen" d="{{ heroD }}" hint-size="100%,100%"></dc-import></div>
+      </div>
+    </div>
+  </section>
+
+  <section data-bg="#E8D9BF" data-nav="light" data-screen-label="Included" style="background:#E8D9BF;">
+    <div style="max-width:1440px;margin:0 auto;padding:clamp(100px,12vw,170px) clamp(20px,3.6vw,52px);display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,340px),1fr));gap:20px;">
+      <div style="grid-column:1 / -1;display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:24px;margin-bottom:40px;">
+        <h2 data-reveal="blur" style="font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(44px,5.6vw,90px);line-height:.95;letter-spacing:-.025em;margin:0;">Everything <em>included.</em></h2>
+        <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px 32px;font-size:14px;max-width:460px;">
+          <sc-for list="{{ included }}" as="i" hint-placeholder-count="8"><span style="display:flex;gap:10px;padding:8px 0;border-bottom:1px solid rgba(14,12,11,.12);"><span style="color:#8A5F38;">✓</span>{{ i }}</span></sc-for>
+        </div>
+      </div>
+      <div data-reveal="up" style="background:#F6EFE3;border-radius:6px;padding:28px;display:flex;flex-direction:column;gap:20px;min-height:300px;">
+        <span style="font-size:11px;font-weight:600;letter-spacing:.22em;text-transform:uppercase;color:#7A5232;">Music preview</span>
+        <span style="font-family:'Cormorant Garamond',serif;font-size:30px;line-height:1.1;">Your song plays softly as the invitation opens.</span>
+        <button onClick="{{ toggleMusic }}" style="margin-top:auto;display:flex;align-items:center;gap:14px;padding:12px;border-radius:999px;border:1px solid rgba(14,12,11,.14);background:#FBF8F3;cursor:pointer;font:inherit;text-align:left;color:#0E0C0B;">
+          <span style="width:44px;height:44px;border-radius:50%;background:#0E0C0B;color:#F4EEE4;display:flex;align-items:center;justify-content:center;font-size:12px;flex:none;">{{ musicIcon }}</span>
+          <span style="flex:1;display:flex;flex-direction:column;gap:2px;"><span style="font-size:14px;">Gymnopédie No. 1</span><span style="font-size:12px;color:#7A6E62;">Erik Satie · sample track</span></span>
+          <span style="opacity:{{ eqOp }};padding-right:10px;">{{ eq }}</span>
+        </button>
+      </div>
+      <div data-reveal="up" data-delay="100" style="background:#F6EFE3;border-radius:6px;padding:28px;display:flex;flex-direction:column;gap:20px;min-height:300px;">
+        <span style="font-size:11px;font-weight:600;letter-spacing:.22em;text-transform:uppercase;color:#7A5232;">RSVP preview</span>
+        <span style="font-family:'Cormorant Garamond',serif;font-size:30px;line-height:1.1;">{{ rsvpTitle }}</span>
+        <div style="margin-top:auto;display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+          <button onClick="{{ rsvpYes }}" style="height:48px;border-radius:999px;border:1px solid #0E0C0B;background:{{ yesBg }};color:{{ yesFg }};font:inherit;font-size:14px;cursor:pointer;">Attending</button>
+          <button onClick="{{ rsvpNo }}" style="height:48px;border-radius:999px;border:1px solid #0E0C0B;background:{{ noBg }};color:{{ noFg }};font:inherit;font-size:14px;cursor:pointer;">Not attending</button>
+        </div>
+      </div>
+      <div data-reveal="up" data-delay="200" style="background:#F6EFE3;border-radius:6px;padding:28px;display:flex;flex-direction:column;gap:20px;min-height:300px;">
+        <span style="font-size:11px;font-weight:600;letter-spacing:.22em;text-transform:uppercase;color:#7A5232;">Guest link preview</span>
+        <span style="font-family:'Cormorant Garamond',serif;font-size:30px;line-height:1.1;">Each guest receives their own link, opening with their name.</span>
+        <div style="margin-top:auto;display:flex;flex-direction:column;gap:8px;font-size:13px;">
+          <div style="display:flex;align-items:center;gap:10px;height:48px;padding:0 16px;border-radius:999px;background:#FBF8F3;border:1px solid rgba(14,12,11,.12);overflow:hidden;white-space:nowrap;"><span style="width:7px;height:7px;border-radius:50%;background:#5C8A63;flex:none;"></span><span style="color:#7A6E62;">mula.co/{{ slug }}/</span><span style="font-weight:600;">{{ guestSlug }}</span></div>
+          <span style="color:#7A6E62;padding-left:16px;">Edit the guest name above to see it change.</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section data-bg="#F4EEE4" data-nav="light" data-screen-label="More" style="background:#F4EEE4;">
+    <div style="max-width:1440px;margin:0 auto;padding:clamp(100px,12vw,160px) clamp(20px,3.6vw,52px);">
+      <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:20px;flex-wrap:wrap;">
+        <h2 style="font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(40px,4.4vw,68px);line-height:.95;letter-spacing:-.02em;margin:0;">More like <em>{{ name }}</em></h2>
+        <a href="Templates.dc.html" style="font-size:14px;font-weight:600;border-bottom:1px solid currentColor;padding-bottom:4px;">All templates →</a>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,220px),1fr));gap:40px 20px;margin-top:48px;">
+        <sc-for list="{{ more }}" as="t" hint-placeholder-count="4">
+          <a href="{{ t.href }}" data-cursor="Preview" style="display:flex;flex-direction:column;gap:14px;">
+            <div style="background:#E6DED1;border-radius:4px;padding:32px 24px;display:flex;justify-content:center;"><div style="width:min(170px,70%);aspect-ratio:9/19.5;"><dc-import name="InviteScreen" d="{{ t.d }}" hint-size="100%,100%"></dc-import></div></div>
+            <div style="display:flex;justify-content:space-between;align-items:baseline;"><span style="font-family:'Cormorant Garamond',serif;font-size:26px;">{{ t.name }}</span><span style="font-size:11px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:#8A5F38;">{{ t.style }}</span></div>
+          </a>
+        </sc-for>
+      </div>
+    </div>
+  </section>
+</main>
+<dc-import name="MulaFooter" hint-size="100%,900px"></dc-import>
+
+<sc-if value="{{ modal }}" hint-placeholder-val="{{ false }}">
+  <div role="dialog" aria-modal="true" aria-label="Invitation preview" style="position:fixed;inset:0;z-index:140;background:rgba(10,9,8,.92);backdrop-filter:blur(10px);display:flex;align-items:center;justify-content:center;padding:20px;">
+    <button onClick="{{ closeModal }}" style="position:absolute;top:20px;right:20px;height:44px;padding:0 20px;border-radius:999px;border:1px solid rgba(244,238,228,.3);background:transparent;color:#F4EEE4;font:inherit;font-size:13px;cursor:pointer;">Close</button>
+    <div style="position:relative;height:min(86vh,760px);aspect-ratio:9/19.5;max-width:90vw;">
+      <dc-import name="InviteScreen" d="{{ heroD }}" hint-size="100%,100%"></dc-import>
+      <div style="position:absolute;inset:2.6%;border-radius:12%/5.6%;overflow:hidden;pointer-events:{{ coverPe }};">
+        <div style="position:absolute;inset:0;background:{{ bg }};color:{{ fg }};display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;text-align:center;padding:24px;transform:translateY({{ coverY }});transition:transform 1.3s cubic-bezier(.7,0,.2,1);">
+          <span style="font-size:11px;letter-spacing:.3em;text-transform:uppercase;opacity:.8;">Dear {{ guestShown }}</span>
+          <span style="width:110px;height:110px;border-radius:50%;border:1px solid {{ accent }};display:flex;align-items:center;justify-content:center;font-family:{{ font }};font-style:{{ italic }};font-size:34px;">{{ mono }}</span>
+          <span style="font-family:'Cormorant Garamond',serif;font-size:22px;">You are invited</span>
+          <button onClick="{{ openCover }}" style="height:44px;padding:0 22px;border-radius:999px;border:1px solid {{ accent }};background:transparent;color:{{ fg }};font:inherit;font-size:13px;cursor:pointer;">Open invitation</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+const INCLUDED = ['Personalized guest links', 'RSVP with guest count', 'Background music', 'Photo gallery', 'Live countdown', 'Location and maps', 'Digital gifts', 'Wishes and guestbook', 'WhatsApp sharing', 'Edit anytime after sending'];
+const lum = (hex) => { const h = (hex || '#000000').replace('#', ''); const n = parseInt(h.length === 3 ? h.split('').map((c) => c + c).join('') : h, 16); return (0.299 * ((n >> 16) & 255) + 0.587 * ((n >> 8) & 255) + 0.114 * (n & 255)) / 255; };
+
+class Component extends DCLogic {
+  state = { guest: 'Sarah', modal: false, cover: false, music: false, rsvp: '' };
+  componentDidMount() {
+    this.onData = () => this.forceUpdate();
+    addEventListener('mula:data', this.onData);
+    this.onKey = (e) => { if (e.key === 'Escape') this.setState({ modal: false }); };
+    document.addEventListener('keydown', this.onKey);
+    const t = this.tpl(); if (t) document.title = `${t.name} — Mula`;
+  }
+  componentWillUnmount() { removeEventListener('mula:data', this.onData); document.removeEventListener('keydown', this.onKey); }
+  tpl() { const M = window.MULA_DATA; if (!M) return null; const slug = new URLSearchParams(location.search).get('t') || 'serenity'; return M.bySlug[slug] || M.bySlug.serenity; }
+  renderVals() {
+    const s = this.state, M = window.MULA_DATA, t = this.tpl() || { d: { bg: '#EFE7DA', fg: '#2B2420', accent: '#A88452' }, name: 'Serenity', slug: 'serenity', cat: 'Wedding', style: '', mood: '', color: '', desc: '' };
+    const d = t.d, light = lum(d.bg) > .55;
+    const guestShown = s.guest.trim() || 'Guest';
+    const target = new Date('2027-04-12T16:00:00'), diff = Math.max(0, target - new Date());
+    const parts = d.title.split(/\s*&\s*/);
+    return {
+      bg: d.bg, fg: d.fg, accent: d.accent, line: light ? 'rgba(14,12,11,.22)' : 'rgba(255,255,255,.26)',
+      heroLight: light, heroNav: light ? 'light' : 'dark',
+      name: t.name, slug: t.slug, cat: t.cat, catHref: `Templates.dc.html?cat=${encodeURIComponent(t.cat)}`, desc: t.desc,
+      tags: [t.cat, t.style, t.mood, t.color].filter(Boolean),
+      useHref: '#app',
+      guest: s.guest, guestShown, guestSlug: guestShown.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'guest',
+      onGuest: (e) => this.setState({ guest: e.target.value }),
+      heroD: { ...d, guest: guestShown },
+      photo: d.photo || `radial-gradient(circle at 50% 40%, ${d.accent}, ${d.bg} 70%)`,
+      eyebrow: d.eyebrow, title: d.title, date: d.date, font: d.font, italic: d.italic || 'normal', weight: d.weight || 400, ls: d.ls || '0', deskSize: Math.min(7.2, (d.size || 12) * 0.42),
+      mono: parts.length > 1 ? `${parts[0][0]}${parts[1][0]}` : d.title[0],
+      countdown: [['Days', Math.floor(diff / 864e5)], ['Hours', Math.floor(diff / 36e5) % 24], ['Minutes', Math.floor(diff / 6e4) % 60]].map(([l, v]) => ({ l, v: String(v).padStart(2, '0') })),
+      included: INCLUDED,
+      musicIcon: s.music ? '❚❚' : '▶', eqOp: s.music ? 1 : 0, toggleMusic: () => this.setState({ music: !s.music }),
+      eq: this.eqEl || (this.eqEl = React.createElement('span', { style: { display: 'inline-flex', gap: 2, alignItems: 'flex-end', height: 16 } }, [0, 1, 2, 3].map((k) => React.createElement('span', { key: k, style: { width: 2, height: 16, background: '#8A5F38', transformOrigin: 'bottom', animation: `mulaEq ${0.7 + k * 0.15}s ${k * 0.1}s infinite ease-in-out` } })))),
+      rsvpTitle: s.rsvp === 'yes' ? `Wonderful, ${guestShown}. We’ll save you a seat.` : s.rsvp === 'no' ? `Thank you for letting us know, ${guestShown}.` : `Will you attend, ${guestShown}?`,
+      rsvpYes: () => this.setState({ rsvp: 'yes' }), rsvpNo: () => this.setState({ rsvp: 'no' }),
+      yesBg: s.rsvp === 'yes' ? '#0E0C0B' : 'transparent', yesFg: s.rsvp === 'yes' ? '#F4EEE4' : '#0E0C0B', noBg: s.rsvp === 'no' ? '#0E0C0B' : 'transparent', noFg: s.rsvp === 'no' ? '#F4EEE4' : '#0E0C0B',
+      more: (M ? M.templates : []).filter((x) => x.slug !== t.slug && (x.cat === t.cat || x.style === t.style)).concat((M ? M.templates : []).filter((x) => x.slug !== t.slug)).filter((x, i, a) => a.indexOf(x) === i).slice(0, 4).map((x) => ({ ...x, href: `Template.dc.html?t=${x.slug}` })),
+      modal: s.modal, openModal: () => this.setState({ modal: true, cover: false }), closeModal: () => this.setState({ modal: false }),
+      openCover: () => this.setState({ cover: true }), coverY: s.cover ? '-101%' : '0%', coverPe: s.cover ? 'none' : 'auto'
+    };
+  }
+}
+</script>
+</body>
+</html>

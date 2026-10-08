@@ -1,0 +1,70 @@
+.hero {
+  display: grid;
+  gap: 2rem;
+  align-items: center;
+  padding: 3rem clamp(20px, 3.6vw, 52px) 4rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+.copy {
+  display: grid;
+  gap: 1.25rem;
+  max-width: 34rem;
+}
+.eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--mut);
+}
+.eyebrow span {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--dot);
+}
+.title {
+  font-family: var(--serif);
+  font-weight: 300;
+  font-size: clamp(50px, 6.4vw, 108px);
+  line-height: 0.94;
+  letter-spacing: -0.028em;
+  margin: 0;
+  max-width: 7.6em;
+  text-wrap: balance;
+}
+.title em {
+  font-style: italic;
+  color: var(--dotd);
+}
+.lede {
+  margin: 0;
+  color: var(--mut);
+  font-size: 1.125rem;
+  line-height: 1.6;
+  max-width: 36rem;
+}
+.ctas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 0.5rem;
+}
+.hint {
+  font-size: 13px;
+  color: var(--mut);
+  min-height: 1.2em;
+  transition: opacity 0.4s var(--eo);
+}
+
+@media (min-width: 900px) {
+  .hero {
+    grid-template-columns: 1.1fr 0.9fr;
+    gap: 3rem;
+    padding-top: 4rem;
+  }
+}

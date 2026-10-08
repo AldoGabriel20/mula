@@ -1,0 +1,23 @@
+/* Shared by EmptyState / ErrorState. */
+.state {
+  display: grid;
+  justify-items: center;
+  gap: 12px;
+  text-align: center;
+  padding: 48px 24px;
+  color: var(--mut);
+}
+.illus {
+  color: var(--dot);
+}
+.title {
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: 20px;
+  color: var(--ink);
+  margin: 0;
+}
+.message {
+  margin: 0;
+  max-width: 42rem;
+}

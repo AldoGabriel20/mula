@@ -1,0 +1,75 @@
+.section {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: clamp(48px, 7vw, 96px) clamp(20px, 3.6vw, 52px);
+}
+.eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--mut);
+  margin-bottom: 14px;
+}
+.eyebrow span {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--dot);
+}
+.title {
+  font-family: var(--serif);
+  font-weight: 300;
+  font-size: clamp(32px, 5vw, 64px);
+  line-height: 1.02;
+  letter-spacing: -0.02em;
+  margin: 0;
+  max-width: 14em;
+  text-wrap: balance;
+}
+.lede {
+  margin: 16px 0 0;
+  color: var(--mut);
+  font-size: 1.0625rem;
+  line-height: 1.6;
+  max-width: 42rem;
+}
+.grid {
+  display: grid;
+  gap: 20px;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 16rem), 1fr));
+  margin-top: 40px;
+}
+.card {
+  background: var(--sf);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 22px;
+  display: grid;
+  gap: 10px;
+  align-content: start;
+}
+.cardTitle {
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: 20px;
+  margin: 0;
+}
+.cardBody {
+  margin: 0;
+  color: var(--mut);
+  line-height: 1.6;
+  font-size: 14px;
+}
+.prose {
+  max-width: 42rem;
+  margin: 32px 0 0;
+  line-height: 1.7;
+  color: var(--ink2);
+}
+.prose p {
+  margin: 0 0 1rem;
+}

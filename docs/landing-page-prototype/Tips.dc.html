@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet><title>Tips — Mula</title><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=Manrope:wght@300;400;500;600;700&display=swap"><style>html{scroll-padding-top:100px}body{margin:0;background:#EFE5D3;-webkit-font-smoothing:antialiased}*{box-sizing:border-box}a{color:inherit;text-decoration:none}a:hover{color:#8A5F38}::selection{background:#C9A56E;color:#0E0C0B}em{font-style:italic}</style><script src="mula-core.js"></script><script src="mula-fx.js"></script></helmet>
+<div data-bg-root="1" style="background:#EFE5D3;color:#0E0C0B;font-family:'Manrope',sans-serif;overflow-x:clip;">
+<dc-import name="MulaNav" active="tips" start-light="{{ true }}" hint-size="100%,0px"></dc-import>
+<main id="main">
+  <section data-bg="#EFE5D3" data-nav="light" data-screen-label="Tips hero" style="background:#EFE5D3;">
+    <div style="max-width:1440px;margin:0 auto;padding:clamp(150px,17vw,230px) clamp(20px,3.6vw,52px) clamp(60px,7vw,100px);display:flex;flex-direction:column;gap:28px;">
+      <div style="font-size:11px;font-weight:600;letter-spacing:.28em;text-transform:uppercase;color:#7A5232;">Tips · Planning something beautiful?</div>
+      <h1 data-reveal="blur" data-i18n="page.tips.title" style="font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(56px,8vw,132px);line-height:.9;letter-spacing:-.035em;margin:0;max-width:1100px;">Little things that make <em>a big difference.</em></h1>
+    </div>
+  </section>
+
+  <section data-bg="#0E0C0B" data-screen-label="Featured tip" style="background:#0E0C0B;color:#F4EEE4;">
+    <a href="{{ featHref }}" onClick="{{ openFeat }}" data-cursor="Read" style="max-width:1440px;margin:0 auto;padding:clamp(80px,9vw,130px) clamp(20px,3.6vw,52px);display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr));gap:40px clamp(40px,6vw,96px);align-items:center;color:#F4EEE4;" style-hover="color:#F4EEE4;">
+      <div data-reveal="mask" style="aspect-ratio:5/4;border-radius:4px;background:{{ featPhoto }};position:relative;"><span style="position:absolute;left:18px;top:18px;font-size:10px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;background:rgba(14,12,11,.6);padding:6px 10px;border-radius:999px;">Photo placeholder</span></div>
+      <div style="display:flex;flex-direction:column;gap:22px;">
+        <span style="font-size:11px;font-weight:600;letter-spacing:.24em;text-transform:uppercase;color:#C9A56E;">Featured · {{ feat.cat }} · {{ feat.read }}</span>
+        <h2 style="font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(40px,4.6vw,74px);line-height:.98;letter-spacing:-.02em;margin:0;">{{ feat.title }}</h2>
+        <p style="margin:0;font-size:17px;line-height:1.65;color:#C8BEB2;max-width:480px;">{{ feat.excerpt }}</p>
+        <span style="font-size:14px;font-weight:600;">Read the guide →</span>
+      </div>
+    </a>
+  </section>
+
+  <section data-bg="#F4EEE4" data-nav="light" data-screen-label="All tips" style="background:#F4EEE4;">
+    <div style="max-width:1100px;margin:0 auto;padding:clamp(90px,10vw,140px) clamp(20px,3.6vw,52px);">
+      <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:40px;">
+        <sc-for list="{{ cats }}" as="c" hint-placeholder-count="7"><button onClick="{{ c.pick }}" style="height:36px;padding:0 16px;border-radius:999px;border:1px solid {{ c.bd }};background:{{ c.bg }};color:{{ c.fg }};font:inherit;font-size:13px;cursor:pointer;">{{ c.label }}</button></sc-for>
+      </div>
+      <div style="display:flex;flex-direction:column;border-top:1px solid rgba(14,12,11,.16);">
+        <sc-for list="{{ tips }}" as="t" hint-placeholder-count="6">
+          <article id="{{ t.slug }}" style="border-bottom:1px solid rgba(14,12,11,.16);">
+            <button onClick="{{ t.toggle }}" aria-expanded="{{ t.open }}" style="all:unset;cursor:pointer;width:100%;box-sizing:border-box;display:grid;grid-template-columns:48px minmax(0,1fr) auto;gap:16px;padding:32px 0;align-items:start;">
+              <span style="font-size:12px;font-weight:600;color:#8A5F38;padding-top:12px;">{{ t.num }}</span>
+              <span style="display:flex;flex-direction:column;gap:10px;"><span style="font-size:11px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:#8A5F38;">{{ t.cat }} · {{ t.read }}</span><span style="font-family:'Cormorant Garamond',serif;font-size:clamp(28px,3vw,42px);line-height:1.08;">{{ t.title }}</span></span>
+              <span style="width:44px;height:44px;border-radius:50%;border:1px solid rgba(14,12,11,.25);display:flex;align-items:center;justify-content:center;font-size:16px;transform:rotate({{ t.rot }});transition:transform .4s;">+</span>
+            </button>
+            <sc-if value="{{ t.open }}" hint-placeholder-val="{{ false }}">
+              <div style="display:grid;grid-template-columns:48px minmax(0,1fr);gap:16px;padding:0 0 40px;">
+                <span></span>
+                <div style="display:flex;flex-direction:column;gap:22px;max-width:640px;">
+                  <p style="margin:0;font-family:'Cormorant Garamond',serif;font-size:24px;line-height:1.4;color:#2A241F;">{{ t.excerpt }}</p>
+                  <div style="display:flex;flex-direction:column;border-top:1px solid rgba(14,12,11,.1);">
+                    <sc-for list="{{ t.points }}" as="p" hint-placeholder-count="3"><div style="display:flex;gap:14px;padding:12px 0;border-bottom:1px solid rgba(14,12,11,.1);font-size:15px;line-height:1.55;color:#3A332D;"><span style="color:#B8925F;">—</span>{{ p }}</div></sc-for>
+                  </div>
+                </div>
+              </div>
+            </sc-if>
+          </article>
+        </sc-for>
+      </div>
+    </div>
+  </section>
+
+  <section data-bg="#E8D9BF" data-nav="light" data-screen-label="Tips CTA" style="background:#E8D9BF;">
+    <div style="max-width:1440px;margin:0 auto;padding:clamp(90px,10vw,140px) clamp(20px,3.6vw,52px);display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:32px;">
+      <h2 data-reveal="blur" style="font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(42px,5vw,80px);line-height:.95;letter-spacing:-.025em;margin:0;max-width:760px;">Put it into <em>practice.</em></h2>
+      <a href="Templates.dc.html" data-magnetic="1" style="display:inline-flex;align-items:center;gap:12px;height:54px;padding:0 28px;border-radius:999px;background:#0E0C0B;color:#F4EEE4;font-size:14px;font-weight:600;"><span data-i18n="cta.explore">Explore designs</span><span data-arrow="1">→</span></a>
+    </div>
+  </section>
+</main>
+<dc-import name="MulaFooter" hint-size="100%,900px"></dc-import>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+const POINTS = {
+  'choose-design': ['Describe the day in three words before you browse, then filter by the mood that matches.', 'Pick the template first and the palette second. Structure is harder to change than colour.', 'Preview it on your own phone. That is where most guests will see it.'],
+  'what-to-include': ['Essentials: names, date, start time, venue and how to reply.', 'Helpful extras: map link, dress code, schedule, parking and a contact person.', 'Leave out anything guests don’t need to arrive well. It can live on a second page.'],
+  'when-to-send': ['Six to eight weeks for most celebrations, ten to twelve for destination events.', 'Set your RSVP deadline two to three weeks before the day.', 'Send a gentle reminder one week before the deadline to anyone who has not replied.'],
+  'guest-experience': ['Greet each guest by name with personal links.', 'Keep the first screen simple: who, when, where, and a single button to open.', 'Thank guests after they reply. It costs nothing and is always noticed.'],
+  'choosing-music': ['Instrumental pieces sit under the words without competing with them.', 'Choose something that loops gracefully, without a sudden ending.', 'Keep the volume low and let guests pause it easily.'],
+  personalized: ['Personal links raise response rates because guests feel expected.', 'You can see exactly who opened the invitation and who still needs a nudge.', 'Seat counts per guest keep plus-ones under control.']
+};
+class Component extends DCLogic {
+  state = { open: '', cat: 'All' };
+  componentDidMount() {
+    this.onData = () => this.forceUpdate(); addEventListener('mula:data', this.onData);
+    const h = location.hash.slice(1); if (h) this.setState({ open: h });
+  }
+  componentWillUnmount() { removeEventListener('mula:data', this.onData); }
+  renderVals() {
+    const s = this.state, M = window.MULA_DATA || { tips: [], PHOTOS: {} }, all = M.tips;
+    const feat = all[3] || { title: '', cat: '', read: '', excerpt: '', slug: '' };
+    const cats = ['All', ...all.map((t) => t.cat)];
+    return {
+      feat, featHref: `#${feat.slug}`, featPhoto: M.PHOTOS.dusk || '#8C5546', openFeat: () => this.setState({ open: feat.slug, cat: 'All' }),
+      cats: cats.map((c) => ({ label: c, bg: c === s.cat ? '#0E0C0B' : 'transparent', fg: c === s.cat ? '#F4EEE4' : '#0E0C0B', bd: c === s.cat ? '#0E0C0B' : 'rgba(14,12,11,.18)', pick: () => this.setState({ cat: c }) })),
+      tips: all.filter((t) => s.cat === 'All' || t.cat === s.cat).map((t, i) => ({ ...t, num: String(all.indexOf(t) + 1).padStart(2, '0'), open: s.open === t.slug, rot: s.open === t.slug ? '45deg' : '0deg', points: POINTS[t.slug] || [], toggle: () => this.setState({ open: s.open === t.slug ? '' : t.slug }) }))
+    };
+  }
+}
+</script>
+</body>
+</html>

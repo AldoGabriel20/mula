@@ -1,0 +1,140 @@
+/*
+ * Design tokens — exact values from the prototype :root (docs/03, source of truth:
+ * dashboard-admin-prototype "Mula Admin v3").
+ * --serif/--sans are intentionally NOT set here: next/font owns them (layout.tsx)
+ * so the self-hosted faces load with no layout shift (docs/11).
+ */
+:root {
+  --bg: #f5f3ee;
+  --bg2: #ece8e0;
+  --sf: #fbfaf7;
+  --rs: #ffffff;
+  --line: #e3ded4;
+  --line2: #cfc8bb;
+  --ink: #272523;
+  --ink2: #4a4540;
+  --mut: #6f685e;
+  --dot: #a69a89;
+  --dotd: #7a6e5e;
+  --onink: #f5f3ee;
+  /* status */
+  --ok: #4c6a4e;
+  --okb: #e3eadf;
+  --wt: #8a5d1e;
+  --wtb: #f2e7d2;
+  --no: #a3462f;
+  --nob: #f3dfd7;
+  --in: #3e5868;
+  --inb: #dee6ea;
+  /* shadows + glow */
+  --sh: 0 1px 2px rgba(39, 37, 35, 0.04), 0 18px 40px -22px rgba(39, 37, 35, 0.25);
+  --sh2: 0 40px 80px -34px rgba(39, 37, 35, 0.42), 0 8px 22px -10px rgba(39, 37, 35, 0.14);
+  --glow: rgba(166, 154, 137, 0.1);
+  /* motion easings */
+  --eo: cubic-bezier(0.16, 1, 0.3, 1);
+  --sp: cubic-bezier(0.34, 1.56, 0.64, 1);
+  color-scheme: light;
+}
+
+/* dark token set — shared by explicit choice and system-preference fallback */
+:root[data-theme="dark"] {
+  --bg: #12110f;
+  --bg2: #1c1a18;
+  --sf: #191816;
+  --rs: #211f1d;
+  --line: rgba(238, 233, 223, 0.09);
+  --line2: rgba(238, 233, 223, 0.18);
+  --ink: #eee9df;
+  --ink2: #d2cbbf;
+  --mut: #a39b8e;
+  --dot: #b8ab97;
+  --dotd: #cdbfa9;
+  --onink: #12110f;
+  --ok: #a3c29e;
+  --okb: rgba(163, 194, 158, 0.13);
+  --wt: #ddb474;
+  --wtb: rgba(221, 180, 116, 0.13);
+  --no: #e89580;
+  --nob: rgba(232, 149, 128, 0.14);
+  --in: #9dbacb;
+  --inb: rgba(157, 186, 203, 0.13);
+  --sh: 0 20px 40px -22px rgba(0, 0, 0, 0.7);
+  --sh2: 0 50px 100px -34px rgba(0, 0, 0, 0.85), 0 0 0 1px rgba(238, 233, 223, 0.06);
+  --glow: rgba(184, 171, 151, 0.13);
+  color-scheme: dark;
+}
+
+/* System default before JS sets data-theme (prevents a wrong-theme flash).
+   User choice (data-theme=light) opts out. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #12110f;
+    --bg2: #1c1a18;
+    --sf: #191816;
+    --rs: #211f1d;
+    --line: rgba(238, 233, 223, 0.09);
+    --line2: rgba(238, 233, 223, 0.18);
+    --ink: #eee9df;
+    --ink2: #d2cbbf;
+    --mut: #a39b8e;
+    --dot: #b8ab97;
+    --dotd: #cdbfa9;
+    --onink: #12110f;
+    --ok: #a3c29e;
+    --okb: rgba(163, 194, 158, 0.13);
+    --wt: #ddb474;
+    --wtb: rgba(221, 180, 116, 0.13);
+    --no: #e89580;
+    --nob: rgba(232, 149, 128, 0.14);
+    --in: #9dbacb;
+    --inb: rgba(157, 186, 203, 0.13);
+    --sh: 0 20px 40px -22px rgba(0, 0, 0, 0.7);
+    --sh2: 0 50px 100px -34px rgba(0, 0, 0, 0.85), 0 0 0 1px rgba(238, 233, 223, 0.06);
+    --glow: rgba(184, 171, 151, 0.13);
+    color-scheme: dark;
+  }
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--sans, system-ui, sans-serif);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--serif, Georgia, serif);
+  font-weight: 500;
+}
+
+/* gold focus ring, prototype value (docs/03 focus ring) */
+:focus-visible {
+  outline: 2px solid var(--dot);
+  outline-offset: 2px;
+}
+
+/* reduced motion — exact prototype rule */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-delay: 0s !important;
+    transition-duration: 0.01ms !important;
+  }
+}

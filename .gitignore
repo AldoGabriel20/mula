@@ -1,0 +1,28 @@
+# local config / secrets
+.env
+.env.*
+!.env.example
+
+# runtime data
+api/var/
+*.log
+
+# build output
+web/.next/
+web/.next-dev/
+web/node_modules/
+web/next-env.d.ts
+web/tsconfig.tsbuildinfo
+api/seed
+api/api
+api/migrate
+
+# editor / OS
+.DS_Store
+.idea/
+.vscode/
+
+web/.next.root-owned/
+web/node_modules.root-owned/
+web/.next-build/
+web/test-results/

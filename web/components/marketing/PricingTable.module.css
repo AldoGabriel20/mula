@@ -1,0 +1,68 @@
+.plans {
+  display: grid;
+  gap: 20px;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
+  margin-top: 40px;
+}
+.plan {
+  position: relative;
+  background: var(--sf);
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  padding: 26px;
+  display: grid;
+  gap: 12px;
+  align-content: start;
+}
+.featured {
+  border-color: var(--dot);
+  box-shadow: var(--sh);
+}
+.badge {
+  position: absolute;
+  top: -11px;
+  left: 26px;
+  background: var(--ink);
+  color: var(--onink);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: 99px;
+}
+.planName {
+  font-family: var(--serif);
+  font-size: 24px;
+  margin: 0;
+}
+.price {
+  font-size: 28px;
+  font-weight: 500;
+}
+.blurb {
+  color: var(--mut);
+  font-size: 14px;
+  line-height: 1.5;
+  margin: 0;
+}
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 56px;
+  font-size: 14px;
+}
+.table th,
+.table td {
+  text-align: left;
+  padding: 12px 10px;
+  border-bottom: 1px solid var(--line);
+}
+.table th {
+  color: var(--mut);
+  font-weight: 600;
+}
+.table td:not(:first-child),
+.table th:not(:first-child) {
+  text-align: center;
+}

@@ -1,0 +1,180 @@
+openapi: 3.1.0
+info:
+  title: mula API
+  version: 0.1.0
+  description: >
+    Contract between the Go backend and the Next.js frontend (see docs/08).
+    Skeleton authored for FND-003 — resources are filled in by their BE tasks.
+servers:
+  - url: /
+    description: same-origin; health at root, API under /api/v1
+
+tags:
+  - name: health
+  - name: me
+  - name: events
+
+paths:
+  /healthz:
+    get:
+      tags: [health]
+      summary: Liveness probe
+      operationId: getHealthz
+      security: []
+      responses:
+        "200":
+          description: service is up
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HealthStatus"
+
+  /api/v1/me:
+    get:
+      tags: [me]
+      summary: Current authenticated user
+      operationId: getMe
+      responses:
+        "200":
+          description: the current user
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+
+  /api/v1/events:
+    get:
+      tags: [events]
+      summary: List events the caller is a member of
+      operationId: listEvents
+      parameters:
+        - $ref: "#/components/parameters/Limit"
+        - $ref: "#/components/parameters/Cursor"
+      responses:
+        "200":
+          description: a page of events
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EventList"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+    post:
+      tags: [events]
+      summary: Create an event (caller becomes owner)
+      operationId: createEvent
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/EventCreate"
+      responses:
+        "201":
+          description: created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Event"
+        "400":
+          $ref: "#/components/responses/ValidationError"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+
+components:
+  securitySchemes:
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: session
+    csrfToken:
+      type: apiKey
+      in: header
+      name: X-CSRF-Token
+
+  parameters:
+    Limit:
+      name: limit
+      in: query
+      required: false
+      schema: { type: integer, minimum: 1, maximum: 200, default: 50 }
+    Cursor:
+      name: cursor
+      in: query
+      required: false
+      schema: { type: string }
+
+  responses:
+    Unauthorized:
+      description: not authenticated
+      content:
+        application/json:
+          schema: { $ref: "#/components/schemas/Error" }
+    ValidationError:
+      description: request failed validation
+      content:
+        application/json:
+          schema: { $ref: "#/components/schemas/Error" }
+
+  schemas:
+    HealthStatus:
+      type: object
+      required: [status]
+      properties:
+        status: { type: string, example: ok }
+
+    Error:
+      type: object
+      required: [error]
+      properties:
+        error:
+          type: object
+          required: [code, message]
+          properties:
+            code: { type: string, example: validation_error }
+            message: { type: string }
+            fields:
+              type: object
+              additionalProperties: { type: string }
+            request_id: { type: string }
+
+    User:
+      type: object
+      required: [id, email, name]
+      properties:
+        id: { type: string, format: uuid }
+        email: { type: string, format: email }
+        name: { type: string }
+        avatar_url: { type: string, nullable: true }
+
+    Event:
+      type: object
+      required: [id, name, type, created_at]
+      properties:
+        id: { type: string, format: uuid }
+        name: { type: string }
+        type: { type: string, example: wedding }
+        event_date: { type: string, format: date, nullable: true }
+        created_at: { type: string, format: date-time }
+
+    EventCreate:
+      type: object
+      required: [name, type]
+      properties:
+        name: { type: string, minLength: 1 }
+        type: { type: string }
+        event_date: { type: string, format: date, nullable: true }
+
+    EventList:
+      type: object
+      required: [data]
+      properties:
+        data:
+          type: array
+          items: { $ref: "#/components/schemas/Event" }
+        next_cursor: { type: string, nullable: true }
+
+security:
+  - cookieAuth: []

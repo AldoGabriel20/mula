@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet><title>Pricing — Mula</title><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=Manrope:wght@300;400;500;600;700&display=swap"><style>body{margin:0;background:#F4EEE4;-webkit-font-smoothing:antialiased}*{box-sizing:border-box}a{color:inherit;text-decoration:none}a:hover{color:#8A5F38}::selection{background:#C9A56E;color:#0E0C0B}em{font-style:italic}</style><script src="mula-core.js"></script><script src="mula-fx.js"></script></helmet>
+<div data-bg-root="1" style="background:#F4EEE4;color:#0E0C0B;font-family:'Manrope',sans-serif;overflow-x:clip;">
+<dc-import name="MulaNav" active="pricing" start-light="{{ true }}" hint-size="100%,0px"></dc-import>
+<main id="main">
+  <section data-bg="#F4EEE4" data-nav="light" data-screen-label="Pricing hero" style="background:#F4EEE4;">
+    <div style="max-width:1440px;margin:0 auto;padding:clamp(150px,17vw,230px) clamp(20px,3.6vw,52px) 64px;display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:32px;">
+      <div style="display:flex;flex-direction:column;gap:28px;">
+        <div style="font-size:11px;font-weight:600;letter-spacing:.28em;text-transform:uppercase;color:#8A5F38;">Pricing</div>
+        <h1 data-reveal="blur" data-i18n="page.pricing.title" style="font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(56px,8vw,132px);line-height:.9;letter-spacing:-.035em;margin:0;max-width:1000px;">Simple pricing, <em>per celebration.</em></h1>
+      </div>
+      <p style="margin:0;font-size:16px;line-height:1.6;color:#4A423A;max-width:340px;">Pay once for each event. No subscription and no per-guest fees. <strong style="font-weight:600;">Prices shown are placeholders</strong> until launch pricing is confirmed.</p>
+    </div>
+  </section>
+
+  <section data-bg="#F4EEE4" data-nav="light" data-screen-label="Plans" style="background:#F4EEE4;">
+    <div style="max-width:1440px;margin:0 auto;padding:0 clamp(20px,3.6vw,52px) clamp(100px,12vw,160px);display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr));gap:14px;align-items:stretch;">
+      <sc-for list="{{ tiers }}" as="t" hint-placeholder-count="3">
+        <div data-placeholder="pricing" style="display:flex;flex-direction:column;gap:28px;padding:clamp(28px,3vw,44px);border-radius:6px;background:{{ t.bg }};color:{{ t.fg }};border:1px solid {{ t.bd }};">
+          <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;"><span style="font-family:'Cormorant Garamond',serif;font-size:36px;">{{ t.name }}</span><span style="font-size:10px;font-weight:600;letter-spacing:.18em;padding:6px 10px;border-radius:999px;background:#C9A56E;color:#0E0C0B;opacity:{{ t.tag }};">MOST CHOSEN</span></div>
+          <div style="display:flex;flex-direction:column;gap:8px;"><span style="font-family:'Cormorant Garamond',serif;font-weight:300;font-size:64px;line-height:1;letter-spacing:-.02em;">{{ t.price }}</span><span style="font-size:14px;color:{{ t.muted }};">{{ t.note }}</span></div>
+          <div style="display:flex;flex-direction:column;border-top:1px solid {{ t.line }};">
+            <sc-for list="{{ t.items }}" as="it" hint-placeholder-count="5"><div style="display:flex;gap:12px;padding:13px 0;border-bottom:1px solid {{ t.line }};font-size:14.5px;"><span style="color:#C9A56E;">—</span>{{ it }}</div></sc-for>
+          </div>
+          <a href="{{ t.href }}" data-app="{{ t.app }}" data-magnetic="1" style="margin-top:auto;height:54px;border-radius:999px;display:flex;align-items:center;justify-content:center;gap:10px;font-size:14px;font-weight:600;background:{{ t.btnBg }};color:{{ t.btnFg }};border:1px solid {{ t.btnBd }};">{{ t.cta }}<span data-arrow="1">→</span></a>
+        </div>
+      </sc-for>
+    </div>
+  </section>
+
+  <section data-bg="#E8D9BF" data-nav="light" data-screen-label="Compare" style="background:#E8D9BF;">
+    <div style="max-width:1440px;margin:0 auto;padding:clamp(100px,12vw,160px) clamp(20px,3.6vw,52px);">
+      <h2 data-reveal="blur" style="font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(44px,5.6vw,90px);line-height:.95;letter-spacing:-.025em;margin:0 0 56px;">Compare <em>everything.</em></h2>
+      <div style="overflow-x:auto;">
+        <div role="table" aria-label="Plan comparison" style="min-width:640px;font-size:14.5px;">
+          <div role="row" style="display:grid;grid-template-columns:minmax(0,1.4fr) repeat(3,minmax(0,1fr));gap:12px;padding-bottom:18px;">
+            <span role="columnheader"></span><span role="columnheader" style="font-family:'Cormorant Garamond',serif;font-size:26px;">Essential</span><span role="columnheader" style="font-family:'Cormorant Garamond',serif;font-size:26px;">Signature</span><span role="columnheader" style="font-family:'Cormorant Garamond',serif;font-size:26px;">Custom</span>
+          </div>
+          <sc-for list="{{ rows }}" as="r" hint-placeholder-count="12">
+            <div role="row" style="display:grid;grid-template-columns:minmax(0,1.4fr) repeat(3,minmax(0,1fr));gap:12px;padding:16px 0;border-top:1px solid rgba(14,12,11,.14);">
+              <span role="rowheader" style="font-weight:500;">{{ r.k }}</span><span role="cell" style="color:{{ r.c0 }};">{{ r.a }}</span><span role="cell" style="color:{{ r.c1 }};">{{ r.b }}</span><span role="cell" style="color:{{ r.c2 }};">{{ r.c }}</span>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="faq" data-bg="#F4EEE4" data-nav="light" data-screen-label="FAQ" style="background:#F4EEE4;">
+    <div style="max-width:1440px;margin:0 auto;padding:clamp(100px,12vw,160px) clamp(20px,3.6vw,52px);display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,400px),1fr));gap:48px clamp(40px,7vw,120px);align-items:start;">
+      <h2 data-reveal="blur" style="font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(44px,5.6vw,86px);line-height:.95;letter-spacing:-.025em;margin:0;">Questions, <em>answered.</em></h2>
+      <div style="display:flex;flex-direction:column;border-top:1px solid rgba(14,12,11,.14);">
+        <sc-for list="{{ faqs }}" as="f" hint-placeholder-count="6">
+          <div style="border-bottom:1px solid rgba(14,12,11,.14);">
+            <button onClick="{{ f.toggle }}" aria-expanded="{{ f.open }}" style="all:unset;cursor:pointer;width:100%;box-sizing:border-box;display:flex;justify-content:space-between;align-items:center;gap:24px;padding:24px 0;font-family:'Cormorant Garamond',serif;font-size:clamp(21px,1.9vw,26px);">
+              <span>{{ f.q }}</span><span style="flex:none;width:34px;height:34px;border-radius:50%;border:1px solid rgba(14,12,11,.2);display:flex;align-items:center;justify-content:center;font-family:'Manrope',sans-serif;font-size:15px;transform:rotate({{ f.rot }});transition:transform .4s;">+</span>
+            </button>
+            <sc-if value="{{ f.open }}" hint-placeholder-val="{{ false }}"><p style="margin:0;padding:0 56px 26px 0;font-size:15.5px;line-height:1.65;color:#4A423A;">{{ f.a }}</p></sc-if>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+  </section>
+</main>
+<dc-import name="MulaFooter" hint-size="100%,900px"></dc-import>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+const Y = '✓', N = '—';
+const ROWS = [
+  ['Invitation creation', Y, Y, Y], ['Templates', 'Essential selection', 'Full collection', 'Designed for you'], ['Customization', 'Text, photos, colours', 'Everything, incl. type', 'Brand guidelines'],
+  ['RSVP', Y, Y, Y], ['Personalized guest links', N, Y, Y], ['Guest management', 'Basic list', 'Groups, seats, status', 'Groups, seats, status'],
+  ['WhatsApp sharing', 'Single link', 'Personal messages', 'Personal messages'], ['Music, gallery, countdown', N, Y, Y], ['Digital gifts and wishes', N, Y, Y],
+  ['Custom domain', N, N, Y], ['Event analytics', N, N, Y], ['Support', 'Email', 'Priority', 'Dedicated']
+];
+const FAQS = [
+  ['Is it a one-time payment?', 'Yes. Each package is paid once per event. There is no subscription to cancel.'],
+  ['Can I upgrade later?', 'You can move from Essential to Signature at any time and pay only the difference.'],
+  ['Is there a limit on guests?', 'No. Invite as many guests as your event needs, on every package.'],
+  ['Can I edit after sending?', 'Yes. Changes appear instantly on the same links, so guests always see the latest details.'],
+  ['How long does the invitation stay online?', 'Your invitation stays live through your event and for a period afterwards. Exact durations will be confirmed with launch pricing.'],
+  ['What payment methods are accepted?', 'QRIS, bank transfer, e-wallets and cards. Final payment partners will be listed at launch.']
+];
+class Component extends DCLogic {
+  state = { faq: 0 };
+  componentDidMount() { this.onData = () => this.forceUpdate(); addEventListener('mula:data', this.onData); }
+  componentWillUnmount() { removeEventListener('mula:data', this.onData); }
+  renderVals() {
+    const tiers = (window.MULA_DATA || { tiers: [] }).tiers;
+    const col = (v) => (v === N ? '#9C8F80' : v === Y ? '#3F6A47' : '#0E0C0B');
+    return {
+      tiers: tiers.map((t) => t.featured
+        ? { ...t, bg: '#0E0C0B', fg: '#F4EEE4', bd: '#0E0C0B', muted: '#B5AA9E', line: 'rgba(244,238,228,.12)', tag: 1, btnBg: '#F4EEE4', btnFg: '#0E0C0B', btnBd: '#F4EEE4', cta: 'Choose your plan', href: '#app', app: 'plan' }
+        : { ...t, bg: 'transparent', fg: '#0E0C0B', bd: 'rgba(14,12,11,.16)', muted: '#5E554C', line: 'rgba(14,12,11,.1)', tag: 0, btnBg: 'transparent', btnFg: '#0E0C0B', btnBd: 'rgba(14,12,11,.3)', cta: t.key === 'custom' ? 'Talk to us' : 'Choose your plan', href: '#app', app: t.key === 'custom' ? 'contact' : 'plan' }),
+      rows: ROWS.map(([k, a, b, c]) => ({ k, a, b, c, c0: col(a), c1: col(b), c2: col(c) })),
+      faqs: FAQS.map(([q, a], i) => ({ q, a, open: this.state.faq === i, rot: this.state.faq === i ? '45deg' : '0deg', toggle: () => this.setState({ faq: this.state.faq === i ? -1 : i }) }))
+    };
+  }
+}
+</script>
+</body>
+</html>

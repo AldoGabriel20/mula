@@ -1,0 +1,195 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  # ---------------------------------------------------------------- backend
+  api:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: api
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: mula
+          POSTGRES_PASSWORD: mula
+          POSTGRES_DB: mula_test
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U mula -d mula_test"
+          --health-interval 3s --health-timeout 3s --health-retries 20
+    env:
+      DATABASE_URL: postgres://mula:mula@localhost:5432/mula_test?sslmode=disable
+      TEST_DATABASE_URL: postgres://mula:mula@localhost:5432/mula_test?sslmode=disable
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: api/go.mod
+          cache-dependency-path: api/go.sum
+      - name: gofmt
+        run: test -z "$(gofmt -l .)" || (gofmt -l . && exit 1)
+      - run: go vet ./...
+      - name: migrate up (also proves the migrations apply to an empty DB)
+        run: go run ./cmd/migrate up
+      - name: migrate down-all → up (proves every down migration works)
+        # down-all (not "down N") so the step can't go stale or fail on a different starting state.
+        run: go run ./cmd/migrate down-all && go run ./cmd/migrate up && go run ./cmd/migrate version
+      # Includes the authorization matrix, CSRF-on-every-write, publish rules, public invite,
+      # billing webhook signing, and the rate limiter. -count=1 defeats the test cache.
+      - name: test
+        run: go test -count=1 -race -coverprofile=cover.out -coverpkg=./internal/... ./...
+      - name: coverage summary
+        run: go tool cover -func=cover.out | tail -1
+      - name: fail if the integration tests were silently skipped
+        # The DB tests t.Skip when TEST_DATABASE_URL is unset; a skipped suite must never look green.
+        run: |
+          out=$(go test -count=1 -run 'TestAuthzMatrix$|TestPublicInvite|TestPublish' -v ./internal/transport/http)
+          echo "$out" | tail -5
+          echo "$out" | grep -q -- '--- PASS: TestAuthzMatrix' || { echo "authz matrix did not run"; exit 1; }
+          echo "$out" | grep -q 'SKIP' && { echo "integration tests were skipped"; exit 1; } || true
+
+  # --------------------------------------------------------------- frontend
+  web:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: web
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+      # NOTE: needs web/package-lock.json committed (generate with `npm install` on a clean
+      # glibc machine). `npm ci` is deliberately strict: it fails if the lockfile is missing
+      # or out of sync, which is what we want in CI.
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm run lint
+      - run: npm test
+
+  # ------------------------------------------------------------- end-to-end
+  e2e:
+    needs: [api, web]
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: mula
+          POSTGRES_PASSWORD: mula
+          POSTGRES_DB: mula
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U mula -d mula"
+          --health-interval 3s --health-timeout 3s --health-retries 20
+    env:
+      APP_ENV: dev # the seed + e2e-user helper refuse to run otherwise
+      DATABASE_URL: postgres://mula:mula@localhost:5432/mula?sslmode=disable
+      API_ADDR: ":8080"
+      API_ORIGIN: http://localhost:8080
+      CORS_ORIGIN: http://localhost:3000
+      MEDIA_DIR: ${{ runner.temp }}/media
+      E2E_FULL_STACK: "1"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: api/go.mod
+          cache-dependency-path: api/go.sum
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+      - name: build api + seed binaries (the e2e helper shells out to the seed)
+        working-directory: api
+        run: |
+          go build -o "$RUNNER_TEMP/mula-api" ./cmd/api
+          go build -o "$RUNNER_TEMP/mula-seed" ./cmd/seed
+          go run ./cmd/migrate up
+      - name: start api
+        run: |
+          "$RUNNER_TEMP/mula-api" > "$RUNNER_TEMP/api.log" 2>&1 &
+          for i in $(seq 1 40); do curl -sf localhost:8080/readyz && break; sleep 0.5; done
+          curl -sf localhost:8080/readyz
+      - run: npm ci
+        working-directory: web
+      - run: npx playwright install --with-deps chromium
+        working-directory: web
+      - name: e2e (critical flows, responsive, a11y)
+        working-directory: web
+        env:
+          E2E_SEED_BIN: ${{ runner.temp }}/mula-seed
+        run: npx playwright test
+      - name: upload report + api log on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: e2e-debug
+          path: |
+            web/playwright-report
+            web/test-results
+            ${{ runner.temp }}/api.log
+          if-no-files-found: ignore
+
+  # ---------------------------------------------------- contract drift (advisory)
+  # The generated client only covers the OpenAPI skeleton (FND-003); most endpoints are typed
+  # by hand in the frontend. Until api/openapi.yaml describes the real API this check cannot be
+  # a hard gate, so it reports drift without failing the build. Flip `continue-on-error` to
+  # false once the contract is synced.
+  contract:
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    defaults:
+      run:
+        working-directory: web
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+      - run: npm ci
+      - run: npm run api:check
+
+  # ------------------------------------------------------------ performance budget
+  # Thresholds are Core Web Vitals "good" values — the docs don't state numeric targets, so these
+  # are a proposal (see web/lighthouserc.json). Performance/LCP/TBT only WARN until we have a
+  # baseline from a real run; CLS and accessibility are hard failures. NOTE: the desktop preset
+  # likely RUNS the 3D hero (fine pointer + wide viewport + software WebGL), so desktop numbers
+  # include three.js; the mobile preset takes the poster path and is the lightweight baseline.
+  lighthouse:
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    defaults:
+      run:
+        working-directory: web
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+      - run: npm ci
+      - run: npm run build
+      - name: lighthouse — desktop (likely runs the 3D hero)
+        run: npx --yes @lhci/cli@0.14.x autorun --config=lighthouserc.json
+      - name: lighthouse — mobile (poster path; the lightweight baseline)
+        run: npx --yes @lhci/cli@0.14.x autorun --config=lighthouserc.mobile.json

@@ -1,0 +1,865 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet><title>Mula — Digital invitations for every beginning</title><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=Manrope:wght@300;400;500;600;700&family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;0,6..96,500;1,6..96,400&family=Italiana&family=Pinyon+Script&family=Unbounded:wght@300;500;700&display=swap"><style>html{scroll-padding-top:80px;scroll-behavior:smooth}body{margin:0;background:#0E0C0B;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}*{box-sizing:border-box}a{color:inherit;text-decoration:none}a:hover{color:#C9A56E}::selection{background:#C9A56E;color:#0E0C0B}em{font-style:italic}@keyframes mulaEq{0%,100%{transform:scaleY(.3)}50%{transform:scaleY(1)}}@keyframes mulaDot{0%,80%,100%{opacity:.25}40%{opacity:1}}@keyframes mulaPulse{0%{transform:scale(.6);opacity:.9}100%{transform:scale(2.2);opacity:0}}</style><script src="mula-core.js"></script><script src="mula-fx.js"></script></helmet>
+<div data-bg-root="1" style="background:#0E0C0B;color:#F4EEE4;font-family:'Manrope',sans-serif;overflow-x:clip;">
+<dc-import name="MulaNav" active="" hint-size="100%,0px"></dc-import>
+<main id="main">
+
+<section data-bg="#0E0C0B" data-screen-label="01 Hero" style="position:relative;height:100svh;min-height:640px;background:#0E0C0B;overflow:hidden;">
+  <div aria-hidden="true" style="position:absolute;inset:0;background:radial-gradient(55% 60% at 70% 46%, rgba(201,165,110,.17), rgba(14,12,11,0) 70%), radial-gradient(45% 45% at 12% 88%, rgba(74,29,36,.45), rgba(14,12,11,0) 70%);"></div>
+  <div style="position:absolute;inset:0;">
+    <canvas ref="{{ canvasRef }}" role="img" aria-label="A folded ivory wedding invitation with gold foil names, Raka and Celine, floating and slowly turning" style="width:100%;height:100%;display:block;"></canvas>
+  </div>
+  <sc-if value="{{ no3d }}" hint-placeholder-val="{{ false }}">
+    <div style="position:absolute;right:6%;top:16%;width:min(250px,30vw);aspect-ratio:9/19.5;transform:rotate(4deg);"><dc-import name="InviteScreen" d="{{ heroFallback }}" hint-size="100%,100%"></dc-import></div>
+  </sc-if>
+  <div aria-hidden="true" style="position:absolute;inset:0;pointer-events:none;background:radial-gradient(120% 90% at 50% 45%, rgba(0,0,0,0) 55%, rgba(0,0,0,.6) 100%);"></div>
+  <div ref="{{ heroTextRef }}" style="position:absolute;left:0;right:0;bottom:0;z-index:3;pointer-events:none;">
+    <div style="max-width:1440px;margin:0 auto;padding:0 clamp(20px,3.6vw,52px) clamp(40px,9vh,96px);display:flex;flex-direction:column;gap:26px;max-width:1440px;">
+      <div style="display:flex;align-items:center;gap:14px;font-size:11px;font-weight:600;letter-spacing:.3em;text-transform:uppercase;color:#C9A56E;opacity:{{ heroA }};transition:opacity 1s ease;">
+        <span>Mula</span><span style="width:36px;height:1px;background:rgba(201,165,110,.6);"></span><span data-i18n="hero.label">Digital invitations</span>
+      </div>
+      <h1 data-no-i18n="1" style="font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(50px,6.4vw,108px);line-height:.94;letter-spacing:-.028em;margin:0;max-width:7.6em;text-wrap:balance;">
+        <sc-for list="{{ heroWords }}" as="w" hint-placeholder-count="6"><span style="display:inline-block;margin-right:.2em;font-style:{{ w.it }};opacity:{{ heroA }};filter:blur({{ heroBlur }});transform:translateY({{ heroY }});transition:opacity 1.2s ease {{ w.delay }}, filter 1.4s ease {{ w.delay }}, transform 1.6s cubic-bezier(.2,.75,.15,1) {{ w.delay }};">{{ w.w }}</span></sc-for>
+      </h1>
+      <div style="display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:28px;opacity:{{ heroB }};transform:translateY({{ heroBy }});transition:opacity 1.1s ease, transform 1.3s cubic-bezier(.2,.75,.15,1);pointer-events:{{ heroPe }};">
+        <div style="display:flex;flex-direction:column;gap:26px;">
+          <p data-i18n="hero.sub" style="margin:0;max-width:430px;font-size:clamp(15px,1.2vw,18px);line-height:1.6;color:#C8BEB2;text-wrap:pretty;">Digital invitations designed to make every celebration feel unforgettable.</p>
+          <div style="display:flex;flex-wrap:wrap;gap:12px;">
+            <a href="#app" data-app="create" data-magnetic="1" data-cursor="Create" style="display:inline-flex;align-items:center;gap:12px;height:56px;padding:0 30px;border-radius:999px;background:#F4EEE4;color:#0E0C0B;font-size:14px;font-weight:600;box-shadow:0 0 0 rgba(201,165,110,0);" style-hover="background:#E8D9BF;color:#0E0C0B;box-shadow:0 10px 40px -10px rgba(201,165,110,.6);"><span data-i18n="cta.create">Create your invitation</span><span data-arrow="1">→</span></a>
+            <a href="Templates.dc.html" style="display:inline-flex;align-items:center;height:56px;padding:0 28px;border-radius:999px;border:1px solid rgba(244,238,228,.26);color:#F4EEE4;font-size:14px;backdrop-filter:blur(6px);" style-hover="border-color:#F4EEE4;color:#F4EEE4;"><span data-i18n="cta.explore">Explore designs</span></a>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:14px;font-size:11px;letter-spacing:.24em;text-transform:uppercase;color:#9C9186;">
+          <span>Shown · Serenity template</span><span style="width:1px;height:44px;background:linear-gradient(to bottom, rgba(201,165,110,0), #C9A56E);"></span><span>Scroll</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section data-bg="#F4EEE4" data-nav="light" data-screen-label="02 Intro" style="background:#F4EEE4;color:#0E0C0B;">
+  <div style="max-width:1440px;margin:0 auto;padding:clamp(120px,15vw,220px) clamp(20px,3.6vw,52px) clamp(100px,12vw,180px);display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:40px;">
+    <div style="font-size:11px;font-weight:600;letter-spacing:.28em;text-transform:uppercase;color:#8A5F38;padding-top:18px;" data-i18n="home.intro.label">What is Mula</div>
+    <p ref="{{ introRef }}" data-no-i18n="1" style="grid-column:span 3;min-width:min(100%,640px);margin:0;font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(32px,4.1vw,66px);line-height:1.12;letter-spacing:-.018em;text-wrap:pretty;">
+      <sc-for list="{{ introTokens }}" as="k" hint-placeholder-count="30"><sc-if value="{{ k.isW }}" hint-placeholder-val="{{ true }}"><span data-w="1" style="opacity:.16;transition:opacity .35s linear;">{{ k.w }}</span></sc-if><sc-if value="{{ k.isSw }}" hint-placeholder-val="{{ false }}"><span data-w="1" style="display:inline-flex;vertical-align:middle;gap:4px;margin:0 .3em 0 0;transform:translateY(-4px);opacity:.16;transition:opacity .35s linear;"><span style="width:.62em;height:1.1em;border-radius:.1em;background:#EFE7DA;box-shadow:inset 0 0 0 1px rgba(168,132,82,.6);"></span><span style="width:.62em;height:1.1em;border-radius:.1em;background:#2B1631;"></span><span style="width:.62em;height:1.1em;border-radius:.1em;background:#3E1A20;"></span></span></sc-if><sc-if value="{{ k.isDear }}" hint-placeholder-val="{{ false }}"><span data-w="1" style="display:inline-flex;vertical-align:middle;align-items:center;margin:0 .3em 0 0;padding:.12em .5em;border-radius:999px;background:#3E1A20;color:#F1E3D3;font-family:'Manrope',sans-serif;font-size:.36em;font-weight:500;letter-spacing:.02em;transform:translateY(-6px);opacity:.16;transition:opacity .35s linear;">{{ k.w }}</span></sc-if><sc-if value="{{ k.isAtt }}" hint-placeholder-val="{{ false }}"><span data-w="1" style="display:inline-flex;vertical-align:middle;align-items:center;margin:0 .3em 0 0;padding:.12em .5em;border-radius:999px;background:#DDE8DB;color:#2F5A3A;font-family:'Manrope',sans-serif;font-size:.36em;font-weight:600;transform:translateY(-6px);opacity:.16;transition:opacity .35s linear;">{{ k.w }}</span></sc-if></sc-for>
+    </p>
+  </div>
+</section>
+
+<section ref="{{ showSecRef }}" data-bg="#171412" data-screen-label="03 Showcase" style="position:relative;height:500vh;background:#171412;color:#F4EEE4;">
+  <div style="position:sticky;top:0;height:100svh;overflow:hidden;">
+    <div aria-hidden="true" style="position:absolute;left:50%;top:50%;width:min(80vh,900px);aspect-ratio:1;transform:translate(-50%,-50%);border-radius:50%;background:radial-gradient(closest-side, rgba(201,165,110,.14), rgba(23,20,18,0));"></div>
+    <div style="position:relative;max-width:1440px;height:100%;margin:0 auto;padding:110px clamp(20px,3.6vw,52px) 48px;display:grid;grid-template-columns:{{ showCols }};gap:clamp(24px,4vw,64px);align-items:center;">
+      <sc-if value="{{ desktop }}" hint-placeholder-val="{{ true }}">
+        <div style="display:flex;flex-direction:column;gap:28px;">
+          <div style="font-size:11px;font-weight:600;letter-spacing:.28em;text-transform:uppercase;color:#C9A56E;" data-i18n="home.show.label">One invitation</div>
+          <h2 data-i18n="home.show.title" style="font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(44px,4.4vw,74px);line-height:.96;letter-spacing:-.025em;margin:0;">Watch an invitation <em>take shape.</em></h2>
+          <div style="display:flex;gap:18px;margin-top:12px;">
+            <div style="width:1px;background:rgba(244,238,228,.12);position:relative;"><div style="position:absolute;left:0;top:0;width:1px;height:{{ showProgPct }};background:#C9A56E;transition:height .5s ease;"></div></div>
+            <div style="display:flex;flex-direction:column;gap:16px;">
+              <sc-for list="{{ showSteps }}" as="st" hint-placeholder-count="5">
+                <div style="display:flex;gap:16px;align-items:baseline;opacity:{{ st.op }};transition:opacity .5s;"><span style="font-size:11px;color:#C9A56E;letter-spacing:.1em;">{{ st.num }}</span><span style="font-family:'Cormorant Garamond',serif;font-size:26px;">{{ st.name }}</span></div>
+              </sc-for>
+            </div>
+          </div>
+        </div>
+      </sc-if>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:22px;">
+        <div ref="{{ showPhoneRef }}" style="position:relative;width:{{ showPhoneW }};aspect-ratio:9/19.5;will-change:transform;">
+          <dc-import name="InviteScreen" d="{{ showD }}" hint-size="100%,100%"></dc-import>
+          <div style="position:absolute;left:5%;right:5%;bottom:3%;border-radius:22px;background:rgba(251,247,241,.97);color:#2B2420;padding:18px 16px;box-shadow:0 30px 60px -20px rgba(0,0,0,.6);display:flex;flex-direction:column;gap:12px;font-size:12px;opacity:{{ showRsvpOp }};transform:translateY({{ showRsvpY }});transition:opacity .6s ease, transform .8s cubic-bezier(.2,.75,.15,1);">
+            <div style="font-family:'Cormorant Garamond',serif;font-size:22px;text-align:center;">Will you attend?</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;"><span style="height:38px;border-radius:999px;background:#2B2420;color:#F4EEE4;display:flex;align-items:center;justify-content:center;">Attending</span><span style="height:38px;border-radius:999px;border:1px solid rgba(43,36,32,.25);display:flex;align-items:center;justify-content:center;">Not attending</span></div>
+            <div style="display:flex;justify-content:space-between;color:#6B5A48;"><span>Guests</span><span>− 2 +</span></div>
+          </div>
+        </div>
+        <sc-if value="{{ mobile }}" hint-placeholder-val="{{ false }}">
+          <div style="display:flex;gap:6px;">
+            <sc-for list="{{ showSteps }}" as="st" hint-placeholder-count="5"><span style="width:22px;height:2px;background:#C9A56E;opacity:{{ st.op }};"></span></sc-for>
+          </div>
+        </sc-if>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:18px;max-width:340px;justify-self:end;">
+        <div style="font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(70px,8vw,140px);line-height:.8;color:transparent;-webkit-text-stroke:1px rgba(201,165,110,.7);">{{ showNum }}</div>
+        <div style="font-family:'Cormorant Garamond',serif;font-size:clamp(26px,2.2vw,34px);line-height:1.1;">{{ showTitle }}</div>
+        <p style="margin:0;font-size:15px;line-height:1.6;color:#B5AA9E;">{{ showCopy }}</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section data-bg="#E8D9BF" data-nav="light" data-screen-label="04 Templates" style="background:#E8D9BF;color:#0E0C0B;overflow:hidden;">
+  <div style="max-width:1440px;margin:0 auto;padding:clamp(110px,13vw,190px) clamp(20px,3.6vw,52px) 40px;display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:32px;">
+    <div style="display:flex;flex-direction:column;gap:26px;">
+      <div style="font-size:11px;font-weight:600;letter-spacing:.28em;text-transform:uppercase;color:#7A5232;" data-i18n="home.gallery.label">The collection</div>
+      <h2 data-reveal="blur" data-i18n="home.gallery.title" style="font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(46px,6.2vw,100px);line-height:.95;letter-spacing:-.025em;margin:0;max-width:900px;">Designs that feel <em>like the moment.</em></h2>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:20px;max-width:340px;">
+      <p style="margin:0;font-size:16px;line-height:1.6;color:#4F463D;">Every template is designed in-house for a specific kind of celebration, then made fully editable by you.</p>
+      <a href="Templates.dc.html" data-magnetic="1" style="align-self:flex-start;display:inline-flex;align-items:center;gap:12px;height:52px;padding:0 26px;border-radius:999px;background:#0E0C0B;color:#F4EEE4;font-size:14px;font-weight:600;"><span data-i18n="cta.explore">Explore designs</span><span data-arrow="1">→</span></a>
+    </div>
+  </div>
+  <sc-if value="{{ desktop }}" hint-placeholder-val="{{ true }}">
+    <div style="position:relative;max-width:1400px;margin:0 auto;aspect-ratio:2/1.2;">
+      <sc-for list="{{ gal }}" as="g" hint-placeholder-count="5">
+        <div onMouseEnter="{{ g.enter }}" onMouseLeave="{{ galLeave }}" style="position:absolute;left:{{ g.left }};top:{{ g.top }};width:{{ g.w }};z-index:{{ g.z }};">
+          <div ref="{{ g.ref }}" style="will-change:transform;">
+            <a href="{{ g.href }}" data-cursor="Preview" onFocus="{{ g.enter }}" aria-label="{{ g.aria }}" style="display:block;transform:rotate({{ g.rot }}) scale({{ g.scale }});opacity:{{ g.op }};filter:saturate({{ g.sat }});transition:transform .9s cubic-bezier(.2,.75,.15,1), opacity .6s, filter .6s;">
+              <div style="width:100%;aspect-ratio:9/19.5;"><dc-import name="InviteScreen" d="{{ g.d }}" hint-size="100%,100%"></dc-import></div>
+            </a>
+            <div style="position:absolute;left:50%;top:100%;margin-top:26px;transform:translate(-50%, {{ g.infoY }});opacity:{{ g.infoOp }};pointer-events:{{ g.pe }};transition:opacity .45s ease, transform .6s cubic-bezier(.2,.75,.15,1);display:flex;flex-direction:column;align-items:center;gap:12px;white-space:nowrap;">
+              <div style="display:flex;align-items:baseline;gap:12px;"><span style="font-family:'Cormorant Garamond',serif;font-size:30px;">{{ g.name }}</span><span style="font-size:11px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:#7A5232;">{{ g.meta }}</span></div>
+              <div style="display:flex;gap:8px;">
+                <a href="{{ g.href }}" style="height:40px;padding:0 18px;border-radius:999px;border:1px solid rgba(14,12,11,.3);display:inline-flex;align-items:center;font-size:13px;" data-i18n="cta.preview">Preview template</a>
+                <a href="{{ g.use }}" data-app="create" style="height:40px;padding:0 18px;border-radius:999px;background:#0E0C0B;color:#F4EEE4;display:inline-flex;align-items:center;font-size:13px;" data-i18n="cta.use">Use this design</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </sc-for>
+    </div>
+  </sc-if>
+  <sc-if value="{{ mobile }}" hint-placeholder-val="{{ false }}">
+    <div style="display:flex;gap:18px;overflow-x:auto;scroll-snap-type:x mandatory;padding:20px 20px 40px;scrollbar-width:none;">
+      <sc-for list="{{ galMobile }}" as="g" hint-placeholder-count="4">
+        <a href="{{ g.href }}" style="flex:none;width:62vw;scroll-snap-align:center;display:flex;flex-direction:column;gap:14px;">
+          <div style="width:100%;aspect-ratio:9/19.5;"><dc-import name="InviteScreen" d="{{ g.d }}" hint-size="100%,100%"></dc-import></div>
+          <div style="display:flex;justify-content:space-between;align-items:baseline;"><span style="font-family:'Cormorant Garamond',serif;font-size:26px;">{{ g.name }}</span><span style="font-size:10px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:#7A5232;">{{ g.meta }}</span></div>
+        </a>
+      </sc-for>
+    </div>
+  </sc-if>
+  <div style="height:clamp(60px,8vw,120px);"></div>
+</section>
+
+<section ref="{{ edSecRef }}" data-bg="#F4EEE4" data-nav="light" data-screen-label="05 Editor" style="background:#F4EEE4;color:#0E0C0B;">
+  <div style="max-width:1440px;margin:0 auto;padding:clamp(110px,13vw,190px) clamp(20px,3.6vw,52px);">
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr));gap:32px 64px;align-items:end;">
+      <div style="display:flex;flex-direction:column;gap:26px;">
+        <div style="font-size:11px;font-weight:600;letter-spacing:.28em;text-transform:uppercase;color:#8A5F38;" data-i18n="home.editor.label">The editor</div>
+        <h2 data-reveal="blur" data-i18n="home.editor.title" style="font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(56px,8vw,132px);line-height:.9;letter-spacing:-.03em;margin:0;">Make it <em>yours.</em></h2>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:20px;max-width:440px;">
+        <p style="margin:0;font-size:17px;line-height:1.6;color:#4A423A;">Mula isn't just a collection of pretty templates. It is a complete invitation platform: design, words, photos, music, RSVP and guests, edited in one place and previewed live.</p>
+        <a href="#how" style="align-self:flex-start;display:inline-flex;align-items:center;gap:10px;font-size:14px;font-weight:600;border-bottom:1px solid currentColor;padding-bottom:4px;"><span data-i18n="cta.how">See how it works</span><span>→</span></a>
+      </div>
+    </div>
+
+    <div data-reveal="scale" style="margin-top:64px;border-radius:12px;background:#FBF8F3;box-shadow:0 60px 120px -50px rgba(60,40,20,.45), 0 0 0 1px rgba(14,12,11,.07);overflow:hidden;">
+      <div style="height:48px;display:flex;align-items:center;gap:16px;padding:0 16px;border-bottom:1px solid rgba(14,12,11,.07);background:#F6F1E9;">
+        <div style="display:flex;gap:7px;"><span style="width:11px;height:11px;border-radius:50%;background:#E2B8A8;"></span><span style="width:11px;height:11px;border-radius:50%;background:#E8D2A6;"></span><span style="width:11px;height:11px;border-radius:50%;background:#BFD0B8;"></span></div>
+        <div style="flex:1;display:flex;justify-content:center;"><span style="font-size:12px;color:#7A6E62;background:#FBF8F3;border-radius:6px;padding:6px 14px;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">app.mula.co/editor/{{ edSlugTitle }}</span></div>
+        <div style="display:flex;gap:8px;font-size:12px;"><span style="height:30px;padding:0 12px;border-radius:999px;border:1px solid rgba(14,12,11,.15);display:flex;align-items:center;">Preview</span><span style="height:30px;padding:0 12px;border-radius:999px;background:#0E0C0B;color:#F4EEE4;display:flex;align-items:center;">Publish</span></div>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,340px),1fr));">
+        <div style="display:flex;flex-direction:column;gap:22px;padding:clamp(20px,2.4vw,32px);border-right:1px solid rgba(14,12,11,.07);">
+          <div role="tablist" aria-label="Editor sections" style="display:flex;flex-wrap:wrap;gap:6px;">
+            <sc-for list="{{ edTabs }}" as="tb" hint-placeholder-count="8">
+              <button role="tab" aria-selected="{{ tb.on }}" onClick="{{ tb.pick }}" style="height:36px;padding:0 14px;border-radius:999px;border:1px solid {{ tb.bd }};background:{{ tb.bg }};color:{{ tb.fg }};font:inherit;font-size:13px;cursor:pointer;transition:all .3s;">{{ tb.name }}</button>
+            </sc-for>
+          </div>
+          <div style="height:1px;background:rgba(14,12,11,.07);"></div>
+          <div style="min-height:300px;display:flex;flex-direction:column;gap:16px;font-size:13px;">
+            <div style="font-size:11px;font-weight:600;letter-spacing:.22em;text-transform:uppercase;color:#8A5F38;">{{ edTabName }}</div>
+            <sc-if value="{{ edIs0 }}" hint-placeholder-val="{{ true }}">
+              <div style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;">
+                <sc-for list="{{ edTpls }}" as="o" hint-placeholder-count="4">
+                  <button onClick="{{ o.pick }}" style="all:unset;cursor:pointer;display:flex;flex-direction:column;gap:8px;align-items:center;">
+                    <span style="width:100%;aspect-ratio:3/4;border-radius:6px;background:{{ o.bg }};box-shadow:0 0 0 2px #FBF8F3, 0 0 0 3px {{ o.ring }};display:flex;align-items:center;justify-content:center;font-family:{{ o.font }};font-style:{{ o.italic }};font-size:20px;color:{{ o.fg }};">Aa</span>
+                    <span style="font-size:12px;">{{ o.name }}</span>
+                  </button>
+                </sc-for>
+              </div>
+            </sc-if>
+            <sc-if value="{{ edIs1 }}" hint-placeholder-val="{{ false }}">
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+                <label style="display:flex;flex-direction:column;gap:6px;color:#7A6E62;">First name<input value="{{ n1 }}" onChange="{{ onN1 }}" maxlength="14" style="height:46px;border:1px solid rgba(14,12,11,.16);border-radius:6px;background:#fff;padding:0 12px;font:inherit;font-size:15px;color:#0E0C0B;outline:none;" style-focus="border-color:#0E0C0B;"></input></label>
+                <label style="display:flex;flex-direction:column;gap:6px;color:#7A6E62;">Second name<input value="{{ n2 }}" onChange="{{ onN2 }}" maxlength="14" style="height:46px;border:1px solid rgba(14,12,11,.16);border-radius:6px;background:#fff;padding:0 12px;font:inherit;font-size:15px;color:#0E0C0B;outline:none;" style-focus="border-color:#0E0C0B;"></input></label>
+                <label style="grid-column:1 / -1;display:flex;flex-direction:column;gap:6px;color:#7A6E62;">Date<input value="{{ edDate }}" onChange="{{ onDate }}" maxlength="34" style="height:46px;border:1px solid rgba(14,12,11,.16);border-radius:6px;background:#fff;padding:0 12px;font:inherit;font-size:15px;color:#0E0C0B;outline:none;" style-focus="border-color:#0E0C0B;"></input></label>
+              </div>
+            </sc-if>
+            <sc-if value="{{ edIs2 }}" hint-placeholder-val="{{ false }}">
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+                <sc-for list="{{ edTypes }}" as="o" hint-placeholder-count="4">
+                  <button onClick="{{ o.pick }}" style="height:84px;border-radius:8px;border:1px solid {{ o.bd }};background:{{ o.bg }};cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;color:#0E0C0B;font:inherit;">
+                    <span style="font-family:{{ o.font }};font-style:{{ o.italic }};font-weight:{{ o.weight }};font-size:26px;line-height:1;">Raka</span><span style="font-size:11px;color:#7A6E62;">{{ o.name }}</span>
+                  </button>
+                </sc-for>
+              </div>
+            </sc-if>
+            <sc-if value="{{ edIs3 }}" hint-placeholder-val="{{ false }}">
+              <div style="display:flex;flex-wrap:wrap;gap:14px;">
+                <sc-for list="{{ edPals }}" as="o" hint-placeholder-count="5">
+                  <button onClick="{{ o.pick }}" style="all:unset;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:8px;">
+                    <span style="width:48px;height:48px;border-radius:50%;background:{{ o.bg }};box-shadow:0 0 0 3px #FBF8F3, 0 0 0 4px {{ o.ring }}, inset 0 0 0 1px rgba(14,12,11,.1);display:flex;align-items:center;justify-content:center;"><span style="width:14px;height:14px;border-radius:50%;background:{{ o.accent }};"></span></span>
+                    <span style="font-size:12px;">{{ o.name }}</span>
+                  </button>
+                </sc-for>
+              </div>
+            </sc-if>
+            <sc-if value="{{ edIs4 }}" hint-placeholder-val="{{ false }}">
+              <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;">
+                <sc-for list="{{ edPhotos }}" as="o" hint-placeholder-count="4">
+                  <button onClick="{{ o.pick }}" aria-label="{{ o.name }}" style="all:unset;cursor:pointer;display:flex;flex-direction:column;gap:6px;">
+                    <span style="aspect-ratio:4/5;border-radius:6px;background:{{ o.bg }};box-shadow:0 0 0 2px #FBF8F3, 0 0 0 3px {{ o.ring }};"></span><span style="font-size:12px;">{{ o.name }}</span>
+                  </button>
+                </sc-for>
+              </div>
+              <span style="color:#7A6E62;">Sample photo moods. Upload your own in the editor.</span>
+            </sc-if>
+            <sc-if value="{{ edIs5 }}" hint-placeholder-val="{{ false }}">
+              <div style="display:flex;flex-direction:column;">
+                <sc-for list="{{ edTracks }}" as="o" hint-placeholder-count="3">
+                  <button onClick="{{ o.pick }}" style="all:unset;cursor:pointer;display:flex;align-items:center;gap:14px;padding:12px 0;border-bottom:1px solid rgba(14,12,11,.07);">
+                    <span style="width:36px;height:36px;border-radius:50%;background:{{ o.btnBg }};color:{{ o.btnFg }};display:flex;align-items:center;justify-content:center;font-size:11px;flex:none;">{{ o.icon }}</span>
+                    <span style="flex:1;display:flex;flex-direction:column;gap:2px;"><span style="font-size:14px;">{{ o.name }}</span><span style="font-size:12px;color:#7A6E62;">{{ o.by }}</span></span>
+                    <span style="opacity:{{ o.eqOp }};">{{ eq }}</span>
+                  </button>
+                </sc-for>
+              </div>
+            </sc-if>
+            <sc-if value="{{ edIs6 }}" hint-placeholder-val="{{ false }}">
+              <div style="display:flex;flex-direction:column;">
+                <sc-for list="{{ edRsvp }}" as="o" hint-placeholder-count="3">
+                  <button onClick="{{ o.pick }}" style="all:unset;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 0;border-bottom:1px solid rgba(14,12,11,.07);">
+                    <span style="font-size:14px;">{{ o.name }}</span>
+                    <span style="width:40px;height:24px;border-radius:999px;background:{{ o.track }};position:relative;transition:background .3s;"><span style="position:absolute;top:3px;left:{{ o.knob }};width:18px;height:18px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.2);transition:left .3s;"></span></span>
+                  </button>
+                </sc-for>
+                <div style="display:flex;justify-content:space-between;padding:14px 0;color:#7A6E62;"><span>Reply by</span><span style="color:#0E0C0B;">1 March 2027</span></div>
+              </div>
+            </sc-if>
+            <sc-if value="{{ edIs7 }}" hint-placeholder-val="{{ false }}">
+              <div style="display:flex;flex-direction:column;">
+                <sc-for list="{{ edGuests }}" as="o" hint-placeholder-count="5">
+                  <button onClick="{{ o.pick }}" style="all:unset;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:11px 10px;margin:0 -10px;border-radius:6px;background:{{ o.bg }};">
+                    <span style="display:flex;flex-direction:column;gap:2px;"><span style="font-size:14px;">{{ o.name }}</span><span style="font-size:11px;color:#7A6E62;">mula.co/{{ edSlug }}/{{ o.slug }}</span></span>
+                    <span style="font-size:11px;padding:4px 10px;border-radius:999px;background:{{ o.sBg }};color:{{ o.sFg }};">{{ o.status }}</span>
+                  </button>
+                </sc-for>
+              </div>
+            </sc-if>
+          </div>
+        </div>
+        <div style="position:relative;display:flex;align-items:center;justify-content:center;padding:clamp(32px,4vw,64px) 20px;background:#EFE8DD;min-height:560px;">
+          <div aria-hidden="true" style="position:absolute;inset:0;background-image:radial-gradient(rgba(14,12,11,.09) 1px, transparent 1px);background-size:18px 18px;"></div>
+          <div style="position:relative;width:min(270px,62vw);aspect-ratio:9/19.5;">
+            <dc-import name="InviteScreen" d="{{ edD }}" hint-size="100%,100%"></dc-import>
+            <div style="position:absolute;top:8%;right:-14%;display:flex;align-items:center;gap:8px;padding:8px 12px;border-radius:999px;background:#0E0C0B;color:#F4EEE4;font-size:11px;box-shadow:0 14px 30px -12px rgba(0,0,0,.5);opacity:{{ edMusicOp }};transform:translateY({{ edMusicY }});transition:opacity .4s, transform .5s;">♪ {{ edTrackName }}</div>
+            <div style="position:absolute;left:-16%;bottom:16%;padding:12px 14px;border-radius:10px;background:#FBF8F3;color:#0E0C0B;font-size:11px;box-shadow:0 20px 40px -16px rgba(0,0,0,.35);display:flex;flex-direction:column;gap:6px;opacity:{{ edRsvpOp }};transform:translateY({{ edRsvpY }});transition:opacity .4s, transform .5s;">
+              <span style="font-weight:600;">RSVP enabled</span><span style="color:#7A6E62;">Guests reply from the invitation</span>
+            </div>
+          </div>
+          <div style="position:absolute;left:16px;bottom:14px;font-size:11px;color:#7A6E62;display:flex;align-items:center;gap:8px;"><span style="width:6px;height:6px;border-radius:50%;background:#5C8A63;"></span>Live preview</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section ref="{{ perSecRef }}" data-bg="#3E1A20" data-screen-label="06 Personalization" style="position:relative;background:#3E1A20;color:#F1E3D3;overflow:hidden;">
+  <div aria-hidden="true" ref="{{ perBigRef }}" style="position:absolute;left:-2vw;bottom:-4vw;font-family:'Pinyon Script',cursive;font-size:clamp(160px,30vw,520px);line-height:1;color:rgba(241,227,211,.06);white-space:nowrap;pointer-events:none;">Sarah</div>
+  <div style="position:relative;max-width:1440px;margin:0 auto;padding:clamp(110px,13vw,190px) clamp(20px,3.6vw,52px);display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr));gap:64px;align-items:center;">
+    <div style="display:flex;flex-direction:column;gap:28px;">
+      <div style="font-size:11px;font-weight:600;letter-spacing:.28em;text-transform:uppercase;color:#D9B98A;" data-i18n="home.person.label">Personalized invitations</div>
+      <h2 data-reveal="blur" data-i18n="home.person.title" style="font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(46px,5.6vw,92px);line-height:.95;letter-spacing:-.025em;margin:0;text-wrap:balance;">Every guest can receive a <em>personal invitation.</em></h2>
+      <p style="margin:0;font-size:17px;line-height:1.6;color:#D6BFAE;max-width:460px;">Each guest gets their own link. When they open it, the invitation greets them by name, and you can see who has opened it.</p>
+      <div style="display:flex;flex-direction:column;gap:10px;margin-top:8px;">
+        <div style="display:flex;align-items:center;gap:12px;height:56px;padding:0 20px;border-radius:999px;background:rgba(241,227,211,.07);border:1px solid rgba(241,227,211,.14);font-size:clamp(14px,1.3vw,17px);max-width:460px;">
+          <span style="width:8px;height:8px;border-radius:50%;background:#7FB08A;flex:none;"></span>
+          <span style="color:#BFA796;">mula.co/radandcil/</span><span ref="{{ perUrlRef }}" style="color:#F1E3D3;font-weight:600;">sarah</span><span style="width:1px;height:20px;background:#D9B98A;margin-left:-8px;"></span>
+        </div>
+        <span style="font-size:12px;color:#BFA796;padding-left:20px;">Personal link · visual concept</span>
+      </div>
+    </div>
+    <div style="display:flex;justify-content:center;">
+      <div style="position:relative;width:min(300px,70vw);aspect-ratio:9/19.5;">
+        <dc-import name="InviteScreen" d="{{ perD }}" hint-size="100%,100%"></dc-import>
+        <div style="position:absolute;right:-22%;top:20%;display:flex;flex-direction:column;gap:8px;">
+          <sc-for list="{{ perList }}" as="o" hint-placeholder-count="3">
+            <div style="display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:999px;background:{{ o.bg }};color:{{ o.fg }};font-size:12px;box-shadow:0 14px 30px -14px rgba(0,0,0,.5);transform:translateX({{ o.x }});transition:all .5s cubic-bezier(.2,.75,.15,1);"><span style="width:6px;height:6px;border-radius:50%;background:{{ o.dot }};"></span>{{ o.name }}</div>
+          </sc-for>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section ref="{{ rsvpSecRef }}" data-bg="#EBD3CB" data-nav="light" data-screen-label="07 RSVP" style="background:#EBD3CB;color:#1E1412;">
+  <div style="max-width:1440px;margin:0 auto;padding:clamp(110px,13vw,190px) clamp(20px,3.6vw,52px);">
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr));gap:32px 64px;align-items:end;">
+      <div style="display:flex;flex-direction:column;gap:26px;">
+        <div style="font-size:11px;font-weight:600;letter-spacing:.28em;text-transform:uppercase;color:#7E3F3A;" data-i18n="home.rsvp.label">RSVP</div>
+        <h2 data-reveal="blur" data-i18n="home.rsvp.title" style="font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(46px,5.6vw,92px);line-height:.95;letter-spacing:-.025em;margin:0;text-wrap:balance;">From their reply <em>to your guest list.</em></h2>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-size:12px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;">
+        <sc-for list="{{ flow }}" as="f" hint-placeholder-count="4">
+          <span style="display:flex;align-items:center;gap:10px;opacity:{{ f.op }};transition:opacity .5s;"><span style="width:8px;height:8px;border-radius:50%;background:{{ f.dot }};transition:background .5s;"></span>{{ f.name }}<span style="width:24px;height:1px;background:rgba(30,20,18,.3);opacity:{{ f.line }};"></span></span>
+        </sc-for>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,340px),1fr));gap:48px;margin-top:64px;align-items:center;">
+      <div style="display:flex;justify-content:center;">
+        <div style="container-type:inline-size;width:min(300px,76vw);aspect-ratio:9/19.5;padding:2.6%;background:#0c0b0a;border-radius:15% / 7%;box-shadow:0 60px 100px -40px rgba(80,30,30,.55);">
+          <div style="position:relative;width:100%;height:100%;border-radius:12.5cqw;overflow:hidden;background:#F6EEE7;color:#2A1D1A;display:flex;flex-direction:column;">
+            <div style="height:38%;background:{{ blushPhoto }};position:relative;"><div style="position:absolute;inset:auto 0 0 0;height:50%;background:linear-gradient(to bottom, rgba(246,238,231,0), #F6EEE7);"></div><div style="position:absolute;top:3.4cqw;left:50%;transform:translateX(-50%);width:27cqw;height:7.6cqw;border-radius:8cqw;background:#0c0b0a;"></div></div>
+            <div style="flex:1;display:flex;flex-direction:column;align-items:center;text-align:center;padding:2cqw 8cqw 8cqw;gap:3cqw;">
+              <span style="font-size:3cqw;letter-spacing:.24em;text-transform:uppercase;color:#8A5A50;">The engagement of</span>
+              <span style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:12cqw;line-height:1;">Rad &amp; Cil</span>
+              <span style="font-size:3.4cqw;color:#7A625A;">Dear Sarah</span>
+              <div style="width:100%;margin-top:auto;display:flex;flex-direction:column;gap:3cqw;">
+                <sc-if value="{{ rs0 }}" hint-placeholder-val="{{ true }}">
+                  <span style="font-family:'Cormorant Garamond',serif;font-size:7cqw;">Will you attend?</span>
+                  <button onClick="{{ rsYes }}" style="height:13cqw;border-radius:99px;border:none;background:#2A1D1A;color:#F6EEE7;font:inherit;font-size:4cqw;cursor:pointer;">Attending</button>
+                  <button onClick="{{ rsNo }}" style="height:13cqw;border-radius:99px;border:1px solid rgba(42,29,26,.25);background:transparent;color:#2A1D1A;font:inherit;font-size:4cqw;cursor:pointer;">Not attending</button>
+                </sc-if>
+                <sc-if value="{{ rs1 }}" hint-placeholder-val="{{ false }}">
+                  <span style="font-family:'Cormorant Garamond',serif;font-size:7cqw;">How many guests?</span>
+                  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:2cqw;">
+                    <sc-for list="{{ rsCounts }}" as="c" hint-placeholder-count="4">
+                      <button onClick="{{ c.pick }}" style="height:12cqw;border-radius:3cqw;border:1px solid {{ c.bd }};background:{{ c.bg }};color:{{ c.fg }};font:inherit;font-size:4.4cqw;cursor:pointer;">{{ c.n }}</button>
+                    </sc-for>
+                  </div>
+                  <button onClick="{{ rsConfirm }}" style="height:13cqw;border-radius:99px;border:none;background:#2A1D1A;color:#F6EEE7;font:inherit;font-size:4cqw;cursor:pointer;">Confirm</button>
+                </sc-if>
+                <sc-if value="{{ rs2 }}" hint-placeholder-val="{{ false }}">
+                  <div style="display:flex;flex-direction:column;align-items:center;gap:3cqw;padding-bottom:4cqw;">
+                    <span style="width:16cqw;height:16cqw;border-radius:50%;border:1px solid #8A5A50;display:flex;align-items:center;justify-content:center;font-size:6cqw;color:#8A5A50;">✓</span>
+                    <span style="font-family:'Cormorant Garamond',serif;font-size:7cqw;line-height:1.1;">{{ rsThanks }}</span>
+                    <button onClick="{{ rsReset }}" style="border:none;background:none;font:inherit;font-size:3.4cqw;color:#8A5A50;text-decoration:underline;cursor:pointer;">Change reply</button>
+                  </div>
+                </sc-if>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div style="background:#FBF6F2;border-radius:12px;box-shadow:0 50px 100px -50px rgba(80,30,30,.5), 0 0 0 1px rgba(30,20,18,.06);padding:clamp(20px,2.4vw,32px);display:flex;flex-direction:column;gap:20px;font-size:13px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;"><span style="font-family:'Cormorant Garamond',serif;font-size:26px;">Guest list · Rad &amp; Cil</span><span style="font-size:11px;color:#7A625A;display:flex;align-items:center;gap:6px;"><span style="width:6px;height:6px;border-radius:50%;background:#5C8A63;"></span>Live</span></div>
+        <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;">
+          <div style="background:#E4EDE2;border-radius:8px;padding:14px;display:flex;flex-direction:column;gap:4px;"><span style="font-family:'Cormorant Garamond',serif;font-size:36px;line-height:1;">{{ rsC }}</span><span style="color:#3F6A47;">Confirmed</span></div>
+          <div style="background:#F2EAE0;border-radius:8px;padding:14px;display:flex;flex-direction:column;gap:4px;"><span style="font-family:'Cormorant Garamond',serif;font-size:36px;line-height:1;">{{ rsP }}</span><span style="color:#7A6A52;">Pending</span></div>
+          <div style="background:#F3E2DC;border-radius:8px;padding:14px;display:flex;flex-direction:column;gap:4px;"><span style="font-family:'Cormorant Garamond',serif;font-size:36px;line-height:1;">{{ rsD }}</span><span style="color:#8C4A36;">Declined</span></div>
+        </div>
+        <div style="display:flex;flex-direction:column;">
+          <sc-for list="{{ rsRows }}" as="r" hint-placeholder-count="5">
+            <div style="display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:14px;align-items:center;padding:12px 10px;margin:0 -10px;border-radius:6px;background:{{ r.bg }};transition:background 1s;">
+              <span style="display:flex;flex-direction:column;gap:2px;min-width:0;"><span style="font-size:14px;">{{ r.name }}</span><span style="font-size:11px;color:#7A625A;">{{ r.when }}</span></span>
+              <span style="color:#7A625A;">{{ r.n }}</span>
+              <span style="font-size:11px;padding:4px 10px;border-radius:999px;background:{{ r.sBg }};color:{{ r.sFg }};">{{ r.status }}</span>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section ref="{{ waSecRef }}" data-bg="#0E0C0B" data-screen-label="08 WhatsApp" style="background:#0E0C0B;color:#F4EEE4;">
+  <div style="max-width:1440px;margin:0 auto;padding:clamp(110px,13vw,190px) clamp(20px,3.6vw,52px);display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr));gap:64px;align-items:center;">
+    <div style="display:flex;flex-direction:column;gap:28px;">
+      <div style="font-size:11px;font-weight:600;letter-spacing:.28em;text-transform:uppercase;color:#C9A56E;" data-i18n="home.wa.label">Sharing</div>
+      <h2 data-reveal="blur" data-i18n="home.wa.title" style="font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(46px,5.6vw,92px);line-height:.95;letter-spacing:-.025em;margin:0;text-wrap:balance;">Sent where your guests <em>already are.</em></h2>
+      <p style="margin:0;font-size:17px;line-height:1.6;color:#B5AA9E;max-width:460px;">Mula prepares a WhatsApp message for every guest, with their name and their own link already in place. Send one by one or in batches, then follow who opened it.</p>
+    </div>
+    <div style="display:flex;justify-content:center;">
+      <div style="position:relative;width:min(380px,100%);height:560px;border-radius:24px;overflow:hidden;background:#12100F;box-shadow:0 60px 120px -50px rgba(0,0,0,.9), 0 0 0 1px rgba(244,238,228,.07);display:flex;flex-direction:column;">
+        <div style="height:64px;flex:none;display:flex;align-items:center;gap:12px;padding:0 18px;background:#1A1715;border-bottom:1px solid rgba(244,238,228,.06);">
+          <span style="width:36px;height:36px;border-radius:50%;background:#C99A93;display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-size:18px;color:#2A1D1A;">S</span>
+          <div style="display:flex;flex-direction:column;gap:2px;"><span style="font-size:14px;font-weight:600;">Sarah</span><span style="font-size:11px;color:#9C9186;">{{ waStatus }}</span></div>
+        </div>
+        <div style="flex:1;padding:22px 16px;display:flex;flex-direction:column;justify-content:flex-end;gap:10px;background-image:radial-gradient(rgba(244,238,228,.035) 1px, transparent 1px);background-size:16px 16px;">
+          <div style="align-self:flex-start;padding:10px 14px;border-radius:14px 14px 14px 4px;background:#221E1B;font-size:13px;color:#C8BEB2;max-width:70%;">Can't wait for the big news!</div>
+          <div style="align-self:flex-end;display:flex;gap:4px;padding:12px 14px;border-radius:14px;background:#1F4A3D;opacity:{{ waTypingOp }};transition:opacity .3s;">
+            <span style="width:6px;height:6px;border-radius:50%;background:#CFE3D8;animation:mulaDot 1.2s infinite;"></span><span style="width:6px;height:6px;border-radius:50%;background:#CFE3D8;animation:mulaDot 1.2s .2s infinite;"></span><span style="width:6px;height:6px;border-radius:50%;background:#CFE3D8;animation:mulaDot 1.2s .4s infinite;"></span>
+          </div>
+          <div style="align-self:flex-end;max-width:84%;border-radius:14px 14px 4px 14px;background:#1F4A3D;color:#EAF3EE;padding:8px;display:flex;flex-direction:column;gap:8px;opacity:{{ waMsgOp }};transform:translateY({{ waMsgY }});transition:opacity .5s ease, transform .7s cubic-bezier(.2,.75,.15,1);">
+            <div style="position:relative;border-radius:10px;overflow:hidden;background:#173A30;opacity:{{ waPrevOp }};max-height:{{ waPrevH }};transition:opacity .5s, max-height .7s cubic-bezier(.2,.75,.15,1);">
+              <div style="height:110px;background:#D9DAD5;display:flex;align-items:center;justify-content:center;font-family:'Manrope',sans-serif;font-weight:300;font-size:30px;letter-spacing:-.04em;color:#22272A;">Rad &amp; Cil</div>
+              <div style="padding:10px 12px;display:flex;flex-direction:column;gap:2px;font-size:12px;"><span style="font-weight:600;">You're invited · Rad &amp; Cil</span><span style="color:#A9C6B9;">mula.co</span></div>
+              <span style="position:absolute;left:50%;top:55px;width:44px;height:44px;margin:-22px 0 0 -22px;border-radius:50%;border:2px solid #EAF3EE;opacity:{{ waTapOp }};animation:mulaPulse 1s infinite;"></span>
+            </div>
+            <div style="padding:4px 6px;font-size:13.5px;line-height:1.45;white-space:pre-line;">Hi Sarah 👋
+
+You're invited to
+Rad &amp; Cil's wedding.
+
+Open invitation:
+<span style="color:#9FD9C0;text-decoration:underline;">mula.co/radandcil/sarah</span></div>
+            <div style="align-self:flex-end;font-size:10px;color:#A9C6B9;padding:0 6px 2px;">19.42 ✓✓</div>
+          </div>
+        </div>
+        <div style="height:58px;flex:none;display:flex;align-items:center;gap:10px;padding:0 14px;background:#1A1715;"><span style="flex:1;height:38px;border-radius:999px;background:#221E1B;display:flex;align-items:center;padding:0 14px;font-size:13px;color:#7D736A;">Message</span><span style="width:38px;height:38px;border-radius:50%;background:#1F4A3D;display:flex;align-items:center;justify-content:center;font-size:14px;">➤</span></div>
+        <div style="position:absolute;inset:0;background:#D9DAD5;clip-path:{{ waClip }};transition:clip-path 1.1s cubic-bezier(.7,0,.2,1);display:flex;align-items:center;justify-content:center;">
+          <div style="width:62%;aspect-ratio:9/19.5;"><dc-import name="InviteScreen" d="{{ waD }}" hint-size="100%,100%"></dc-import></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section ref="{{ catSecRef }}" data-bg="#171412" data-screen-label="09 Categories" style="position:relative;background:#171412;color:#F4EEE4;">
+  <div style="position:{{ catPos }};top:0;height:{{ catH }};overflow:hidden;display:flex;flex-direction:column;justify-content:center;gap:clamp(24px,4vh,48px);padding:96px 0 40px;">
+    <div style="max-width:1440px;width:100%;margin:0 auto;padding:0 clamp(20px,3.6vw,52px);display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:20px;">
+      <div style="display:flex;flex-direction:column;gap:20px;">
+        <div style="font-size:11px;font-weight:600;letter-spacing:.28em;text-transform:uppercase;color:#C9A56E;" data-i18n="home.cats.label">For every beginning</div>
+        <h2 data-i18n="home.cats.title" style="font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(40px,4.6vw,76px);line-height:.95;letter-spacing:-.025em;margin:0;max-width:900px;">A new age, a new chapter, <em>a new adventure.</em></h2>
+      </div>
+      <span style="font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:#9C9186;">09 occasions</span>
+    </div>
+    <div style="overflow-x:{{ catOverflow }};scrollbar-width:none;scroll-snap-type:x mandatory;">
+      <div ref="{{ catTrackRef }}" style="display:flex;gap:16px;width:max-content;padding:0 clamp(20px,3.6vw,52px);will-change:transform;">
+        <sc-for list="{{ cats }}" as="c" hint-placeholder-count="5">
+          <a href="{{ c.href }}" data-cursor="View" style="position:relative;flex:none;width:{{ catW }};height:min(62vh,600px);min-height:420px;border-radius:6px;overflow:hidden;background:{{ c.bg }};color:{{ c.fg }};display:flex;flex-direction:column;padding:28px;scroll-snap-align:start;" style-hover="color:{{ c.fg }};">
+            <div style="display:flex;justify-content:space-between;font-size:11px;font-weight:600;letter-spacing:.2em;opacity:.8;"><span>{{ c.num }} / 09</span><span>{{ c.tpl }}</span></div>
+            <div style="font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(36px,3.2vw,52px);line-height:.95;letter-spacing:-.02em;margin-top:22px;max-width:80%;">{{ c.name }}</div>
+            <div style="font-size:14px;opacity:.82;margin-top:12px;max-width:62%;">{{ c.line }}</div>
+            <div style="position:absolute;right:-6%;bottom:-24%;width:54%;aspect-ratio:9/19.5;transform:rotate(-6deg);"><dc-import name="InviteScreen" d="{{ c.d }}" hint-size="100%,100%"></dc-import></div>
+            <span style="margin-top:auto;font-size:13px;font-weight:600;display:flex;gap:8px;position:relative;">Explore <span>→</span></span>
+          </a>
+        </sc-for>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="how" data-bg="#F4EEE4" data-nav="light" data-screen-label="10 How it works" style="background:#F4EEE4;color:#0E0C0B;">
+  <div style="max-width:1440px;margin:0 auto;padding:clamp(110px,13vw,190px) clamp(20px,3.6vw,52px);">
+    <div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:28px;">
+      <div style="display:flex;flex-direction:column;gap:26px;">
+        <div style="font-size:11px;font-weight:600;letter-spacing:.28em;text-transform:uppercase;color:#8A5F38;" data-i18n="home.how.label">How it works</div>
+        <h2 data-reveal="blur" data-i18n="home.how.title" style="font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(46px,6vw,96px);line-height:.95;letter-spacing:-.025em;margin:0;">Three steps to <em>every guest.</em></h2>
+      </div>
+      <a href="#how" style="display:inline-flex;align-items:center;gap:10px;font-size:14px;font-weight:600;border-bottom:1px solid currentColor;padding-bottom:4px;"><span data-i18n="cta.how">See how it works</span><span>→</span></a>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr));gap:0;margin-top:72px;border-top:1px solid rgba(14,12,11,.14);">
+      <div data-reveal="up" style="display:flex;flex-direction:column;gap:18px;padding:36px 32px 36px 0;border-right:1px solid rgba(14,12,11,.1);">
+        <span style="font-family:'Cormorant Garamond',serif;font-style:italic;font-weight:300;font-size:96px;line-height:.8;color:#B8925F;">i.</span>
+        <h3 style="font-family:'Cormorant Garamond',serif;font-weight:400;font-size:34px;letter-spacing:-.01em;margin:0;">Choose a design</h3>
+        <p style="margin:0;font-size:15.5px;line-height:1.6;color:#4A423A;">Browse by occasion and style, and preview every template on your own phone before deciding.</p>
+      </div>
+      <div data-reveal="up" data-delay="120" style="display:flex;flex-direction:column;gap:18px;padding:36px 32px;border-right:1px solid rgba(14,12,11,.1);">
+        <span style="font-family:'Cormorant Garamond',serif;font-style:italic;font-weight:300;font-size:96px;line-height:.8;color:#B8925F;">ii.</span>
+        <h3 style="font-family:'Cormorant Garamond',serif;font-weight:400;font-size:34px;letter-spacing:-.01em;margin:0;">Make it yours</h3>
+        <p style="margin:0;font-size:15.5px;line-height:1.6;color:#4A423A;">Add names, photos, wording, schedule and music in a guided editor that previews every change live.</p>
+      </div>
+      <div data-reveal="up" data-delay="240" style="display:flex;flex-direction:column;gap:18px;padding:36px 0 36px 32px;">
+        <span style="font-family:'Cormorant Garamond',serif;font-style:italic;font-weight:300;font-size:96px;line-height:.8;color:#B8925F;">iii.</span>
+        <h3 style="font-family:'Cormorant Garamond',serif;font-weight:400;font-size:34px;letter-spacing:-.01em;margin:0;">Share and manage</h3>
+        <p style="margin:0;font-size:15.5px;line-height:1.6;color:#4A423A;">Send personal links through WhatsApp, then follow opens and RSVPs as they come in.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section data-bg="#D9DAD5" data-nav="light" data-screen-label="11 Stories" style="background:#D9DAD5;color:#14181A;">
+  <div style="max-width:1440px;margin:0 auto;padding:clamp(110px,13vw,190px) clamp(20px,3.6vw,52px);">
+    <div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:28px;">
+      <div style="display:flex;flex-direction:column;gap:26px;">
+        <div style="font-size:11px;font-weight:600;letter-spacing:.28em;text-transform:uppercase;color:#4E585B;" data-i18n="home.stories.label">Stories</div>
+        <h2 data-reveal="blur" data-i18n="home.stories.title" style="font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(46px,6vw,96px);line-height:.95;letter-spacing:-.025em;margin:0;">Beginnings, <em>shared.</em></h2>
+      </div>
+      <a href="Inspiration.dc.html" style="display:inline-flex;align-items:center;gap:10px;font-size:14px;font-weight:600;border-bottom:1px solid currentColor;padding-bottom:4px;">More inspiration <span>→</span></a>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,360px),1fr));gap:48px clamp(32px,5vw,80px);margin-top:72px;align-items:start;">
+      <figure data-reveal="up" data-placeholder="testimonial" style="margin:0;display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1fr);gap:28px;align-items:end;">
+        <div data-tilt="6" style="aspect-ratio:4/5;border-radius:4px;background:{{ storyPhoto }};box-shadow:0 40px 80px -40px rgba(20,24,26,.6);"></div>
+        <div style="display:flex;flex-direction:column;gap:22px;">
+          <blockquote style="margin:0;font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(26px,2.4vw,36px);line-height:1.18;letter-spacing:-.01em;">“Half our guests replied the same evening. They kept saying the invitation felt exactly like us.”</blockquote>
+          <figcaption style="font-size:13px;display:flex;flex-direction:column;gap:3px;"><span style="font-weight:600;">Rad &amp; Cil</span><span style="color:#4E585B;">Engagement · Linen · placeholder story</span></figcaption>
+        </div>
+      </figure>
+      <div style="display:flex;flex-direction:column;gap:40px;">
+        <figure data-reveal="up" data-delay="120" data-placeholder="testimonial" style="margin:0;display:flex;flex-direction:column;gap:16px;padding-top:28px;border-top:1px solid rgba(20,24,26,.16);">
+          <blockquote style="margin:0;font-family:'Cormorant Garamond',serif;font-weight:300;font-size:26px;line-height:1.25;">“We sent one link to three hundred guests, and every one of them was still greeted by name.”</blockquote>
+          <figcaption style="font-size:13px;color:#4E585B;">Bram &amp; Sekar · Tenth Anniversary · placeholder story</figcaption>
+        </figure>
+        <figure data-reveal="up" data-delay="200" data-placeholder="testimonial" style="margin:0;display:flex;flex-direction:column;gap:16px;padding-top:28px;border-top:1px solid rgba(20,24,26,.16);">
+          <blockquote style="margin:0;font-family:'Cormorant Garamond',serif;font-weight:300;font-size:26px;line-height:1.25;">“Our launch invitation looked like part of the product. It set the tone before anyone arrived.”</blockquote>
+          <figcaption style="font-size:13px;color:#4E585B;">Atlas team · Product Launch · placeholder story</figcaption>
+        </figure>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section data-bg="#EFE5D3" data-nav="light" data-screen-label="12 Tips" style="background:#EFE5D3;color:#0E0C0B;">
+  <div style="max-width:1440px;margin:0 auto;padding:clamp(110px,13vw,190px) clamp(20px,3.6vw,52px);display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,380px),1fr));gap:56px clamp(40px,6vw,100px);align-items:start;">
+    <div style="display:flex;flex-direction:column;gap:26px;position:sticky;top:120px;">
+      <div style="font-size:11px;font-weight:600;letter-spacing:.28em;text-transform:uppercase;color:#7A5232;" data-i18n="home.tips.label">Tips</div>
+      <h2 data-reveal="blur" data-i18n="home.tips.title" style="font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(46px,5.4vw,86px);line-height:.95;letter-spacing:-.025em;margin:0;">Little things that make <em>a big difference.</em></h2>
+      <p style="margin:0;font-size:16px;line-height:1.6;color:#4F463D;max-width:380px;">Planning something beautiful? Short guides from the Mula studio on design, timing and hosting.</p>
+      <a href="Tips.dc.html" style="align-self:flex-start;display:inline-flex;align-items:center;gap:10px;font-size:14px;font-weight:600;border-bottom:1px solid currentColor;padding-bottom:4px;">All tips <span>→</span></a>
+    </div>
+    <div style="display:flex;flex-direction:column;border-top:1px solid rgba(14,12,11,.16);">
+      <sc-for list="{{ tips }}" as="t" hint-placeholder-count="4">
+        <a href="{{ t.href }}" onMouseEnter="{{ t.enter }}" onFocus="{{ t.enter }}" data-cursor="Read" style="display:grid;grid-template-columns:44px minmax(0,1fr) auto;gap:16px;padding:28px 0;border-bottom:1px solid rgba(14,12,11,.16);align-items:start;" style-hover="color:#0E0C0B;">
+          <span style="font-size:12px;font-weight:600;color:#7A5232;padding-top:10px;">{{ t.num }}</span>
+          <span style="display:flex;flex-direction:column;gap:10px;">
+            <span style="font-size:11px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:#7A5232;">{{ t.cat }} · {{ t.read }}</span>
+            <span style="font-family:'Cormorant Garamond',serif;font-weight:400;font-size:clamp(24px,2.2vw,32px);line-height:1.12;">{{ t.title }}</span>
+            <span style="font-size:15px;line-height:1.6;color:#4F463D;max-height:{{ t.h }};opacity:{{ t.op }};overflow:hidden;transition:max-height .6s cubic-bezier(.2,.75,.15,1), opacity .5s;">{{ t.excerpt }}</span>
+          </span>
+          <span style="width:40px;height:40px;border-radius:50%;border:1px solid rgba(14,12,11,.25);display:flex;align-items:center;justify-content:center;background:{{ t.arBg }};color:{{ t.arFg }};transition:all .4s;">→</span>
+        </a>
+      </sc-for>
+    </div>
+  </div>
+</section>
+
+<section data-bg="#F4EEE4" data-nav="light" data-screen-label="13 Pricing" style="background:#F4EEE4;color:#0E0C0B;">
+  <div style="max-width:1440px;margin:0 auto;padding:clamp(110px,13vw,190px) clamp(20px,3.6vw,52px);">
+    <div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:28px;">
+      <div style="display:flex;flex-direction:column;gap:26px;">
+        <div style="font-size:11px;font-weight:600;letter-spacing:.28em;text-transform:uppercase;color:#8A5F38;" data-i18n="home.pricing.label">Pricing</div>
+        <h2 data-reveal="blur" data-i18n="home.pricing.title" style="font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(46px,6vw,96px);line-height:.95;letter-spacing:-.025em;margin:0;">One invitation, <em>everything included.</em></h2>
+      </div>
+      <p style="margin:0;font-size:15px;line-height:1.6;color:#4A423A;max-width:320px;">Pay once per celebration. Prices shown are placeholders until launch pricing is confirmed.</p>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:14px;margin-top:64px;">
+      <sc-for list="{{ tiers }}" as="t" hint-placeholder-count="3">
+        <div data-placeholder="pricing" style="display:flex;flex-direction:column;gap:24px;padding:clamp(26px,2.8vw,40px);border-radius:6px;background:{{ t.bg }};color:{{ t.fg }};border:1px solid {{ t.bd }};">
+          <div style="display:flex;justify-content:space-between;align-items:center;"><span style="font-family:'Cormorant Garamond',serif;font-size:32px;">{{ t.name }}</span><span style="font-size:10px;font-weight:600;letter-spacing:.18em;padding:6px 10px;border-radius:999px;background:#C9A56E;color:#0E0C0B;opacity:{{ t.tag }};">MOST CHOSEN</span></div>
+          <div style="display:flex;flex-direction:column;gap:6px;"><span style="font-family:'Cormorant Garamond',serif;font-weight:300;font-size:56px;line-height:1;letter-spacing:-.02em;">{{ t.price }}</span><span style="font-size:14px;color:{{ t.muted }};">{{ t.note }}</span></div>
+          <div style="display:flex;flex-direction:column;gap:10px;font-size:14px;">
+            <sc-for list="{{ t.top }}" as="it" hint-placeholder-count="3"><span style="display:flex;gap:10px;"><span style="color:#C9A56E;">—</span>{{ it }}</span></sc-for>
+          </div>
+        </div>
+      </sc-for>
+    </div>
+    <div style="display:flex;justify-content:center;margin-top:40px;">
+      <a href="Pricing.dc.html" data-magnetic="1" style="display:inline-flex;align-items:center;gap:12px;height:56px;padding:0 30px;border-radius:999px;background:#0E0C0B;color:#F4EEE4;font-size:14px;font-weight:600;"><span data-i18n="cta.plan">Choose your plan</span><span data-arrow="1">→</span></a>
+    </div>
+  </div>
+</section>
+
+<section data-bg="#0E0C0B" data-screen-label="14 Final CTA" style="position:relative;min-height:max(118svh,820px);background:#0E0C0B;overflow:hidden;display:flex;flex-direction:column;align-items:center;padding:clamp(110px,15vh,170px) 20px clamp(48px,8vh,88px);">
+  <div aria-hidden="true" style="position:absolute;inset:0;background:radial-gradient(46% 42% at 50% 60%, rgba(201,165,110,.16), rgba(14,12,11,0) 70%);"></div>
+  <h2 data-reveal="blur" data-i18n="home.final.title" style="position:relative;text-align:center;font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(52px,8.4vw,150px);line-height:.9;letter-spacing:-.035em;margin:0;max-width:1200px;color:#E8D9BF;text-wrap:balance;">Everything begins <em>somewhere.</em></h2>
+  <div style="position:relative;flex:1;width:100%;min-height:clamp(320px,46vh,560px);"><canvas ref="{{ ctaCanvasRef }}" aria-hidden="true" style="position:absolute;inset:0;width:100%;height:100%;display:block;"></canvas></div>
+  <div style="position:relative;display:flex;flex-direction:column;align-items:center;gap:22px;text-align:center;">
+    <p style="margin:0;font-size:16px;color:#C8BEB2;max-width:420px;line-height:1.6;">Mula is made to celebrate what begins from here.</p>
+    <a href="#app" data-app="create" data-magnetic="1" data-cursor="Create" style="display:inline-flex;align-items:center;gap:12px;height:58px;padding:0 32px;border-radius:999px;background:#F4EEE4;color:#0E0C0B;font-size:14px;font-weight:600;" style-hover="background:#E8D9BF;color:#0E0C0B;box-shadow:0 10px 50px -10px rgba(201,165,110,.7);"><span data-i18n="cta.start">Start your next beginning</span><span data-arrow="1">→</span></a>
+  </div>
+</section>
+</main>
+<dc-import name="MulaFooter" hint-size="100%,900px"></dc-import>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;heroTitle&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Every beginning deserves its own story.&quot;,&quot;Beautiful beginnings, beautifully invited.&quot;,&quot;A beginning, beautifully told.&quot;],&quot;default&quot;:&quot;Every beginning deserves its own story.&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Hero&quot;},&quot;playIntro&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Hero&quot;},&quot;autoplayDemos&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Motion&quot;}}">
+const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
+const NAMES = ['Sarah', 'Michael', 'Amanda'];
+const STEPS = [
+  { name: 'Template', title: 'Start from a design made by our studio.', copy: 'Every template is composed by hand for a particular kind of celebration.' },
+  { name: 'Typography', title: 'Change the type, and the mood follows.', copy: 'Swap between classic serifs, modern sans and flowing scripts in one tap.' },
+  { name: 'Colour', title: 'Pick a palette, or bring your own.', copy: 'Curated palettes keep every combination balanced and legible.' },
+  { name: 'Photo', title: 'Add your portrait. Every layout makes room.', copy: 'Photos are framed by the design, so it always looks intentional.' },
+  { name: 'RSVP', title: 'Guests reply from the invitation itself.', copy: 'Attendance and number of guests go straight to your guest list.' }
+];
+const GAL = [
+  { slug: 'noir', left: '2%', top: '20%', w: '14%', rot: -7, f: 60 },
+  { slug: 'velvet', left: '16.5%', top: '7%', w: '16.5%', rot: -3, f: 30 },
+  { slug: 'serenity', left: '36.5%', top: '0%', w: '21%', rot: 0, f: 0, featured: true },
+  { slug: 'maison', left: '61%', top: '7%', w: '16.5%', rot: 3, f: 30 },
+  { slug: 'aurum', left: '81.5%', top: '20%', w: '14%', rot: 7, f: 60 }
+];
+const ED_TABS = ['Template', 'Text', 'Typography', 'Colours', 'Photos', 'Music', 'RSVP', 'Guests'];
+const ED_TPLS = ['serenity', 'arunika', 'maison', 'linen'];
+const ED_TYPES = [
+  { name: 'Classic', font: "'Bodoni Moda', serif", italic: 'italic', weight: 400, size: 15, ls: '-0.01em' },
+  { name: 'Script', font: "'Pinyon Script', cursive", italic: 'normal', weight: 400, size: 16, ls: '0' },
+  { name: 'Display', font: "'Italiana', serif", italic: 'normal', weight: 400, size: 13.5, ls: '0' },
+  { name: 'Modern', font: "'Manrope', sans-serif", italic: 'normal', weight: 300, size: 12.5, ls: '-0.045em' }
+];
+const ED_PALS = [
+  { name: 'Ivory', bg: '#EFE7DA', fg: '#2B2420', accent: '#A88452' },
+  { name: 'Forest', bg: '#1E2A24', fg: '#EDE6D6', accent: '#C9A96E' },
+  { name: 'Wine', bg: '#3E1A20', fg: '#EBD9C0', accent: '#C9A56E' },
+  { name: 'Blush', bg: '#F1DCD6', fg: '#4E2630', accent: '#B5676F' },
+  { name: 'Midnight', bg: '#16213A', fg: '#ECE6D8', accent: '#E0875A' }
+];
+const ED_PHOTOS = [['None', null], ['Dusk', 'dusk'], ['Garden', 'garden'], ['Blush', 'blush'], ['Noir', 'noir'], ['Sea', 'sea']];
+const TRACKS = [['Gymnopédie No. 1', 'Erik Satie'], ['Clair de Lune', 'Claude Debussy'], ['Bengawan Solo', 'Instrumental']];
+const GUESTS = [['Sarah', 'sarah', 'Opened'], ['Michael', 'michael', 'Confirmed'], ['Amanda', 'amanda', 'Invited'], ['Pak Hendra', 'hendra', 'Declined'], ['Tara Wijaya', 'tara', 'Confirmed']];
+const STATUS = { Invited: ['#ECE6DC', '#6B5E50'], Opened: ['#E6E3EF', '#4F4A7A'], Confirmed: ['#E1ECDF', '#3F6A47'], Declined: ['#F3E2DC', '#8C4A36'], Pending: ['#F2EAE0', '#7A6A52'] };
+const RS_BASE = [['Michael Tan', '2', 'Confirmed', 'Yesterday'], ['Amanda Lee', '1', 'Pending', 'Opened 2h ago'], ['Pak Hendra', '1', 'Declined', 'Monday'], ['Tara Wijaya', '3', 'Confirmed', 'Monday']];
+const TITLES = { a: 'Every beginning deserves its own story.', b: 'Beautiful beginnings, beautifully invited.', c: 'A beginning, beautifully told.' };
+
+class Component extends DCLogic {
+  state = {
+    mobile: false, heroIn: 0, no3d: false, lang: 'en', step: 0, prog: 0, galHover: -1,
+    edTab: 0, edAuto: true, edTpl: 0, n1: 'Raka', n2: 'Celine', edDate: 'Saturday · 12 April 2027', edType: -1, edPal: -1, edPhoto: 0, track: -1, rsvp: [true, true, false], guest: 0,
+    pIdx: 0, rs: 0, rsChoice: 'yes', rsCount: 2, rsAuto: true, wa: 0, tipHover: 0,
+    edIn: false, perIn: false, rsIn: false, waIn: false
+  };
+  galEls = [];
+  galRefs = GAL.map((_, i) => (el) => { this.galEls[i] = el; });
+  acc = { ed: 0, rs: 0, wa: 0 };
+  ty = { i: 0, n: 5, mode: 'hold', hold: 0 };
+  canvasRef = (el) => { this.canvasEl = el; };
+  ctaCanvasRef = (el) => { this.ctaCanvasEl = el; };
+  heroTextRef = (el) => { this.heroText = el; };
+  introRef = (el) => { this.introEl = el; };
+  showSecRef = (el) => { this.showSec = el; };
+  showPhoneRef = (el) => { this.showPhone = el; };
+  edSecRef = (el) => { this.edSec = el; };
+  perSecRef = (el) => { this.perSec = el; };
+  perUrlRef = (el) => { this.perUrl = el; };
+  perBigRef = (el) => { this.perBig = el; };
+  rsvpSecRef = (el) => { this.rsSec = el; };
+  waSecRef = (el) => { this.waSec = el; };
+  catSecRef = (el) => { this.catSec = el; };
+  catTrackRef = (el) => { this.catTrack = el; };
+
+  componentDidMount() {
+    this.onData = () => this.forceUpdate();
+    this.onLang = (e) => this.setState({ lang: e.detail });
+    this.onResize = () => { const m = innerWidth < 900; if (m !== this.state.mobile) this.setState({ mobile: m }); this.tick(); };
+    this.onScroll = () => { if (this.raf) return; this.raf = requestAnimationFrame(() => { this.raf = 0; this.tick(); }); };
+    addEventListener('mula:data', this.onData); addEventListener('mula:lang', this.onLang);
+    addEventListener('resize', this.onResize); addEventListener('scroll', this.onScroll, { passive: true });
+    if (window.MulaI18n) this.setState({ lang: window.MulaI18n.lang });
+    this.onResize();
+    this.iv = setInterval(() => this.timers(), 100);
+    this.fallback = setTimeout(() => this.setState((s) => ({ heroIn: 2 })), 5200);
+    setTimeout(() => this.setState((s) => ({ heroIn: Math.max(s.heroIn, 1) })), 2600);
+    this.mount3D();
+  }
+  componentDidUpdate() { if (this._lang !== this.state.lang) { this._lang = this.state.lang; requestAnimationFrame(() => this.tick()); } }
+  componentWillUnmount() {
+    removeEventListener('mula:data', this.onData); removeEventListener('mula:lang', this.onLang);
+    removeEventListener('resize', this.onResize); removeEventListener('scroll', this.onScroll);
+    clearInterval(this.iv); clearTimeout(this.fallback);
+    this.hero3d && this.hero3d.destroy(); this.cta3d && this.cta3d.destroy();
+  }
+  async mount3D() {
+    try {
+      const mod = await import(new URL('mula-3d.js', document.baseURI).href);
+      const halfW = (w, h) => 2.545 * (w / h);
+      this.hero3d = await mod.mountInvitation(this.canvasEl, {
+        mode: this.props.playIntro === false ? 'float' : 'hero',
+        layout: (w, h) => (w < 900 ? { x: 0, y: .95, s: Math.min(.72, (halfW(w, h) * 1.7) / 3.7), rot: -.12 } : { x: Math.min(halfW(w, h) * .42, 2.3), y: .12, s: 1, rot: -.34 }),
+        onPhase: (n) => {
+          if (n === 'material') this.setState((s) => ({ heroIn: Math.max(s.heroIn, 1) }));
+          if (n === 'ready') setTimeout(() => this.setState({ heroIn: 2 }), 300);
+        }
+      });
+      if (this.props.playIntro === false) this.setState({ heroIn: 2 });
+      this.cta3d = await mod.mountInvitation(this.ctaCanvasEl, { mode: 'float', layout: (w, h) => ({ x: 0, y: 0, s: Math.min(1.05, (2.545 * (w / h) * 2 * .82) / 3.9), rot: 0 }) });
+      this.tick();
+    } catch (e) {
+      console.warn('Mula 3D unavailable', e);
+      this.setState({ no3d: true, heroIn: 2 });
+    }
+  }
+  splitIntro() {
+    const root = this.introEl;
+    if (!root || root.__split) return;
+    root.__split = true;
+    const walk = (node) => {
+      [...node.childNodes].forEach((n) => {
+        if (n.nodeType === 3) {
+          const parts = n.textContent.split(/(\s+)/);
+          const frag = document.createDocumentFragment();
+          parts.forEach((p) => { if (!p) return; if (/^\s+$/.test(p)) frag.appendChild(document.createTextNode(' ')); else { const s = document.createElement('span'); s.textContent = p; s.style.transition = 'opacity .35s linear'; s.setAttribute('data-w', ''); frag.appendChild(s); } });
+          n.replaceWith(frag);
+        } else if (n.nodeType === 1 && !n.hasAttribute('data-nosplit')) walk(n);
+        else if (n.nodeType === 1) n.setAttribute('data-w', '');
+      });
+    };
+    walk(root);
+    this.words = [...root.querySelectorAll('[data-w]')];
+  }
+  inView(el, a = .82, b = .18) { if (!el) return false; const r = el.getBoundingClientRect(), vh = innerHeight; return r.top < vh * a && r.bottom > vh * b; }
+  tick() {
+    const y = scrollY, vh = innerHeight, vw = innerWidth;
+    this.hero3d && this.hero3d.setScroll(y / vh);
+    if (this.heroText) { this.heroText.style.transform = `translate3d(0,${(y * .32).toFixed(1)}px,0)`; this.heroText.style.opacity = String(Math.max(0, 1 - (y / vh) * 1.5)); }
+    if (this.introEl) this.words = [...this.introEl.querySelectorAll('[data-w]')];
+    if (this.words && this.words.length && this.introEl) {
+      const r = this.introEl.getBoundingClientRect();
+      const p = clamp((vh * .88 - r.top) / (r.height + vh * .25));
+      const lit = p * this.words.length * 1.12;
+      this.words.forEach((w, i) => { const o = (.16 + .84 * clamp(lit - i)).toFixed(2); if (w.__o !== o) { w.__o = o; w.style.opacity = o; } });
+    }
+    if (this.showSec) {
+      const r = this.showSec.getBoundingClientRect();
+      const p = clamp(-r.top / Math.max(1, r.height - vh));
+      const step = Math.min(4, Math.floor(p * 5));
+      if (step !== this.state.step || Math.abs(p - this.state.prog) > .04) this.setState({ step, prog: p });
+      if (this.showPhone) this.showPhone.style.transform = `perspective(1400px) rotateY(${((p - .5) * -26).toFixed(2)}deg) rotateX(${(5 - p * 8).toFixed(2)}deg)`;
+    }
+    this.galEls.forEach((el, i) => { if (!el) return; const r = el.parentElement.getBoundingClientRect(); const c = (r.top + r.height / 2 - vh / 2) / vh; el.style.transform = `translate3d(0,${(-c * GAL[i].f).toFixed(1)}px,0)`; });
+    const flags = { edIn: this.inView(this.edSec), perIn: this.inView(this.perSec), rsIn: this.inView(this.rsSec), waIn: this.inView(this.waSec) };
+    if (Object.keys(flags).some((k) => flags[k] !== this.state[k])) this.setState(flags);
+    if (this.catSec && this.catTrack) {
+      if (!this.state.mobile) {
+        const tw = this.catTrack.offsetWidth, need = Math.max(vh, tw - vw + vh);
+        if (this.catSec.__h !== need) { this.catSec.__h = need; this.catSec.style.height = need + 'px'; }
+        const r = this.catSec.getBoundingClientRect();
+        const p = clamp(-r.top / Math.max(1, need - vh));
+        this.catTrack.style.transform = `translate3d(${(-p * Math.max(0, tw - vw)).toFixed(1)}px,0,0)`;
+      } else if (this.catSec.__h) { this.catSec.__h = 0; this.catSec.style.height = ''; this.catTrack.style.transform = 'none'; }
+    }
+  }
+  timers() {
+    const s = this.state, auto = this.props.autoplayDemos !== false;
+    if (auto && s.edIn && s.edAuto) { this.acc.ed += 100; if (this.acc.ed >= 2600) { this.acc.ed = 0; this.edAdvance(); } }
+    if (s.perIn && auto) this.typeTick();
+    if (auto && s.rsIn && s.rsAuto) { this.acc.rs += 100; if (this.acc.rs >= 2100) { this.acc.rs = 0; this.rsAdvance(); } }
+    if (s.waIn && auto) { this.acc.wa += 100; const dur = [1300, 1400, 1700, 900, 3600][s.wa]; if (this.acc.wa >= dur) { this.acc.wa = 0; this.setState({ wa: (s.wa + 1) % 5 }); } }
+  }
+  edAdvance() {
+    const s = this.state, t = (s.edTab + 1) % ED_TABS.length, u = { edTab: t };
+    if (t === 0) u.edTpl = (s.edTpl + 1) % ED_TPLS.length;
+    if (t === 2) u.edType = (s.edType + 1) % ED_TYPES.length;
+    if (t === 3) u.edPal = (s.edPal + 1) % ED_PALS.length;
+    if (t === 4) u.edPhoto = (s.edPhoto % (ED_PHOTOS.length - 1)) + 1;
+    if (t === 5) u.track = 0;
+    if (t === 7) u.guest = 0;
+    this.setState(u);
+  }
+  typeTick() {
+    const T = this.ty, name = NAMES[T.i];
+    if (T.mode === 'type') { T.n++; if (T.n >= name.length) { T.n = name.length; T.mode = 'hold'; T.hold = 0; this.setState({ pIdx: T.i }); } }
+    else if (T.mode === 'hold') { T.hold += 100; if (T.hold >= 1900) T.mode = 'del'; }
+    else { T.n -= 2; if (T.n <= 0) { T.n = 0; T.i = (T.i + 1) % NAMES.length; T.mode = 'type'; } }
+    const txt = NAMES[T.i].slice(0, Math.max(0, T.n));
+    if (this.perUrl) this.perUrl.textContent = txt.toLowerCase();
+    if (this.perBig) this.perBig.textContent = txt || '\u00a0';
+  }
+  rsAdvance() {
+    const s = this.state;
+    if (s.rs === 0) this.setState({ rs: 1, rsChoice: 'yes', rsCount: 1 });
+    else if (s.rs === 1) { if (s.rsCount < 2) this.setState({ rsCount: 2 }); else this.setState({ rs: 2 }); }
+    else this.setState({ rs: 0 });
+  }
+
+  renderVals() {
+    const s = this.state, M = window.MULA_DATA || { templates: [], bySlug: {}, categories: [], tips: [], tiers: [], PHOTOS: {} };
+    const by = M.bySlug, P = M.PHOTOS;
+    const tr = (k, fb) => (window.MulaI18n ? window.MulaI18n.t(k) : fb);
+    const pick = this.props.heroTitle;
+    const title = !pick || pick === TITLES.a ? tr('hero.title', TITLES.a) : pick;
+    const words = title.split(' ');
+    const base = by.serenity ? by.serenity.d : {};
+
+    const showDs = [base, { ...base, font: "'Pinyon Script', cursive", italic: 'normal', size: 16 }];
+    showDs.push({ ...showDs[1], bg: '#3E1A20', fg: '#EBD9C0', accent: '#C9A56E' });
+    showDs.push({ ...showDs[2], variant: 'photo', photo: P.dusk });
+    showDs.push({ ...showDs[3], guest: 'Sarah' });
+
+    // editor
+    const tpl = by[ED_TPLS[s.edTpl]] || { d: base, name: '' };
+    let edD = { ...tpl.d, title: `${s.n1 || 'Raka'} & ${s.n2 || 'Celine'}`, date: s.edDate };
+    if (s.edType >= 0) { const ty = ED_TYPES[s.edType]; edD = { ...edD, font: ty.font, italic: ty.italic, weight: ty.weight, size: ty.size, ls: ty.ls }; }
+    if (s.edPal >= 0) { const p = ED_PALS[s.edPal]; edD = { ...edD, bg: p.bg, fg: p.fg, accent: p.accent }; }
+    const ph = ED_PHOTOS[s.edPhoto];
+    if (ph && ph[1]) edD = { ...edD, photo: P[ph[1]], variant: edD.variant === 'cover' ? 'cover' : 'photo' };
+    else if (s.edPhoto === 0 && edD.variant === 'photo') edD = { ...edD, variant: 'arch' };
+    if (s.edTab === 7) edD = { ...edD, guest: GUESTS[s.guest][0] };
+    const stop = { edAuto: false };
+    const edSlug = `${(s.n1 || 'raka').toLowerCase().replace(/[^a-z]/g, '')}-${(s.n2 || 'celine').toLowerCase().replace(/[^a-z]/g, '')}`;
+
+    // rsvp
+    const sarah = s.rs === 2 ? [['Sarah', String(s.rsChoice === 'yes' ? s.rsCount : 0), s.rsChoice === 'yes' ? 'Confirmed' : 'Declined', 'Just now', true]] : [];
+    const rsRows = [...sarah, ...RS_BASE].slice(0, 5).map(([name, n, status, when, fresh]) => ({ name, n: n === '0' ? '—' : `${n} guest${n === '1' ? '' : 's'}`, status, when, sBg: STATUS[status][0], sFg: STATUS[status][1], bg: fresh ? 'rgba(201,165,110,.16)' : 'transparent' }));
+    const yes = s.rs === 2 && s.rsChoice === 'yes', no = s.rs === 2 && s.rsChoice === 'no';
+    const flowLit = [1, 2, 4][s.rs];
+
+    const linen = by.linen ? by.linen.d : {};
+    const gal = GAL.map((g, i) => {
+      const t = by[g.slug] || { d: {}, name: '', style: '', cat: '' };
+      const active = s.galHover === -1 ? !!g.featured : s.galHover === i;
+      const dim = s.galHover !== -1 && s.galHover !== i;
+      return {
+        ...g, d: t.d, name: t.name, meta: `${t.cat} · ${t.style}`, aria: `${t.name}, ${t.cat} template`, href: `Template.dc.html?t=${g.slug}`, use: '#app',
+        ref: this.galRefs[i], rot: `${active && s.galHover !== -1 ? 0 : g.rot}deg`, scale: active && s.galHover !== -1 ? 1.07 : 1, op: dim ? .55 : 1, sat: dim ? .6 : 1,
+        z: active ? 10 : g.featured ? 5 : 2, infoOp: active ? 1 : 0, infoY: active ? '0px' : '-10px', pe: active ? 'auto' : 'none',
+        enter: () => { if (this.state.galHover !== i) this.setState({ galHover: i }); }
+      };
+    });
+
+    const INTRO = {
+      en: ['Mula is a digital invitation platform. Choose a design', '#sw', 'made for your moment, make it entirely yours, then send a personal invitation', '#dear:Dear Sarah', 'to every guest and watch each reply', '#att:✓ Attending · 2', 'arrive in one place.'],
+      id: ['Mula adalah platform undangan digital. Pilih desain', '#sw', 'yang dibuat untuk momenmu, jadikan sepenuhnya milikmu, lalu kirim undangan personal', '#dear:Kepada Sarah', 'ke setiap tamu dan lihat setiap balasan', '#att:✓ Hadir · 2', 'terkumpul di satu tempat.'],
+      my: ['Mula ialah platform jemputan digital. Pilih reka bentuk', '#sw', 'yang dicipta untuk detik anda, jadikan ia milik anda sepenuhnya, kemudian hantar jemputan peribadi', '#dear:Kepada Sarah', 'kepada setiap tetamu dan lihat setiap balasan', '#att:✓ Hadir · 2', 'tiba di satu tempat.']
+    };
+    const introTokens = [];
+    (INTRO[s.lang] || INTRO.en).forEach((part) => {
+      if (part === '#sw') introTokens.push({ isSw: true });
+      else if (part.startsWith('#dear:')) introTokens.push({ isDear: true, w: part.slice(6) });
+      else if (part.startsWith('#att:')) introTokens.push({ isAtt: true, w: part.slice(5) });
+      else part.split(' ').forEach((w) => introTokens.push({ isW: true, w: w + ' ' }));
+    });
+    return {
+      introTokens,
+      desktop: !s.mobile, mobile: s.mobile, no3d: s.no3d,
+      canvasRef: this.canvasRef, ctaCanvasRef: this.ctaCanvasRef, heroTextRef: this.heroTextRef, introRef: this.introRef,
+      showSecRef: this.showSecRef, showPhoneRef: this.showPhoneRef, edSecRef: this.edSecRef, perSecRef: this.perSecRef, perUrlRef: this.perUrlRef, perBigRef: this.perBigRef,
+      rsvpSecRef: this.rsvpSecRef, waSecRef: this.waSecRef, catSecRef: this.catSecRef, catTrackRef: this.catTrackRef,
+      heroFallback: { ...base, guest: 'Anindya & Family' },
+      heroWords: words.map((w, i) => ({ w, it: i >= words.length - 3 ? 'italic' : 'normal', delay: `${i * 110}ms` })),
+      heroA: s.heroIn >= 1 ? 1 : 0, heroBlur: s.heroIn >= 1 ? '0px' : '16px', heroY: s.heroIn >= 1 ? '0px' : '34px',
+      heroB: s.heroIn >= 2 ? 1 : 0, heroBy: s.heroIn >= 2 ? '0px' : '22px', heroPe: s.heroIn >= 2 ? 'auto' : 'none',
+
+      showCols: s.mobile ? 'minmax(0,1fr)' : 'minmax(0,1fr) auto minmax(0,1fr)',
+      showPhoneW: s.mobile ? 'min(230px,58vw)' : 'min(300px,24vw)',
+      showSteps: STEPS.map((st, i) => ({ name: st.name, num: `0${i + 1}`, op: i === s.step ? 1 : .32 })),
+      showProgPct: `${Math.round(s.prog * 100)}%`, showD: showDs[s.step] || base, showNum: `0${s.step + 1}`, showTitle: STEPS[s.step].title, showCopy: STEPS[s.step].copy,
+      showRsvpOp: s.step === 4 ? 1 : 0, showRsvpY: s.step === 4 ? '0px' : '30px',
+
+      gal, galLeave: () => this.setState({ galHover: -1 }),
+      galMobile: M.templates.slice(0, 8).map((t) => ({ d: t.d, name: t.name, meta: t.cat, href: `Template.dc.html?t=${t.slug}` })),
+
+      edTabs: ED_TABS.map((n, i) => ({ name: n, on: i === s.edTab, bg: i === s.edTab ? '#0E0C0B' : 'transparent', fg: i === s.edTab ? '#F4EEE4' : '#0E0C0B', bd: i === s.edTab ? '#0E0C0B' : 'rgba(14,12,11,.16)', pick: () => this.setState({ ...stop, edTab: i }) })),
+      edTabName: ED_TABS[s.edTab], edIs0: s.edTab === 0, edIs1: s.edTab === 1, edIs2: s.edTab === 2, edIs3: s.edTab === 3, edIs4: s.edTab === 4, edIs5: s.edTab === 5, edIs6: s.edTab === 6, edIs7: s.edTab === 7,
+      edTpls: ED_TPLS.map((slug, i) => { const t = by[slug] || { d: {} }; return { name: t.name, bg: t.d.bg, fg: t.d.fg, font: t.d.font, italic: t.d.italic || 'normal', ring: i === s.edTpl ? '#0E0C0B' : 'transparent', pick: () => this.setState({ ...stop, edTpl: i, edType: -1, edPal: -1 }) }; }),
+      n1: s.n1, n2: s.n2, edDate: s.edDate,
+      onN1: (e) => this.setState({ ...stop, n1: e.target.value }), onN2: (e) => this.setState({ ...stop, n2: e.target.value }), onDate: (e) => this.setState({ ...stop, edDate: e.target.value }),
+      edTypes: ED_TYPES.map((t, i) => ({ ...t, bd: i === s.edType ? '#0E0C0B' : 'rgba(14,12,11,.12)', bg: i === s.edType ? '#fff' : 'transparent', pick: () => this.setState({ ...stop, edType: i }) })),
+      edPals: ED_PALS.map((p, i) => ({ ...p, ring: i === s.edPal ? '#0E0C0B' : 'transparent', pick: () => this.setState({ ...stop, edPal: i }) })),
+      edPhotos: ED_PHOTOS.map(([name, key], i) => ({ name, bg: key ? P[key] : 'repeating-linear-gradient(45deg, #EDE6DB 0 6px, #F6F1E9 6px 12px)', ring: i === s.edPhoto ? '#0E0C0B' : 'transparent', pick: () => this.setState({ ...stop, edPhoto: i }) })),
+      edTracks: TRACKS.map(([name, by2], i) => ({ name, by: by2, icon: s.track === i ? '❚❚' : '▶', btnBg: s.track === i ? '#0E0C0B' : '#EFE8DD', btnFg: s.track === i ? '#F4EEE4' : '#0E0C0B', eqOp: s.track === i ? 1 : 0, pick: () => this.setState({ ...stop, track: s.track === i ? -1 : i }) })),
+      eq: this.eqEl || (this.eqEl = React.createElement('span', { style: { display: 'inline-flex', gap: 2, alignItems: 'flex-end', height: 14 } }, [0, 1, 2, 3].map((k) => React.createElement('span', { key: k, style: { width: 2, height: 14, background: '#8A5F38', transformOrigin: 'bottom', animation: `mulaEq ${0.7 + k * 0.15}s ${k * 0.1}s infinite ease-in-out` } })))),
+      edRsvp: ['Collect RSVP', 'Ask number of guests', 'Collect dietary notes'].map((n, i) => ({ name: n, track: s.rsvp[i] ? '#0E0C0B' : 'rgba(14,12,11,.16)', knob: s.rsvp[i] ? '19px' : '3px', pick: () => { const r = [...s.rsvp]; r[i] = !r[i]; this.setState({ ...stop, rsvp: r }); } })),
+      edGuests: GUESTS.map(([name, slug, status], i) => ({ name, slug, status, sBg: STATUS[status][0], sFg: STATUS[status][1], bg: i === s.guest ? 'rgba(201,165,110,.16)' : 'transparent', pick: () => this.setState({ ...stop, guest: i }) })),
+      edSlug, edSlugTitle: edSlug, edD,
+      edTrackName: s.track >= 0 ? TRACKS[s.track][0] : '', edMusicOp: s.track >= 0 ? 1 : 0, edMusicY: s.track >= 0 ? '0px' : '8px',
+      edRsvpOp: s.edTab === 6 && s.rsvp[0] ? 1 : 0, edRsvpY: s.edTab === 6 ? '0px' : '10px',
+
+      perD: { ...linen, guest: NAMES[s.pIdx] },
+      perList: NAMES.map((n, i) => ({ name: n, bg: i === s.pIdx ? '#F1E3D3' : 'rgba(241,227,211,.08)', fg: i === s.pIdx ? '#3E1A20' : '#D6BFAE', dot: i === s.pIdx ? '#5C8A63' : 'rgba(241,227,211,.3)', x: i === s.pIdx ? '-12px' : '0px' })),
+
+      blushPhoto: P.blush || '#EBC2C0', storyPhoto: P.sea || '#AEB8BC',
+      rs0: s.rs === 0, rs1: s.rs === 1, rs2: s.rs === 2,
+      rsYes: () => this.setState({ rsAuto: false, rs: 1, rsChoice: 'yes' }), rsNo: () => this.setState({ rsAuto: false, rs: 2, rsChoice: 'no' }),
+      rsConfirm: () => this.setState({ rsAuto: false, rs: 2 }), rsReset: () => this.setState({ rsAuto: false, rs: 0 }),
+      rsCounts: [1, 2, 3, 4].map((n) => ({ n, bd: n === s.rsCount ? '#2A1D1A' : 'rgba(42,29,26,.2)', bg: n === s.rsCount ? '#2A1D1A' : 'transparent', fg: n === s.rsCount ? '#F6EEE7' : '#2A1D1A', pick: () => this.setState({ rsAuto: false, rsCount: n }) })),
+      rsThanks: s.rsChoice === 'yes' ? 'Thank you, Sarah. See you on 20 March.' : 'Thank you for letting us know, Sarah.',
+      rsC: 118 + (yes ? s.rsCount : 0), rsP: 41 - (s.rs === 2 ? 1 : 0), rsD: 9 + (no ? 1 : 0), rsRows,
+      flow: ['Invitation', 'Guest', 'Data', 'Host'].map((n, i) => ({ name: n, op: i < flowLit ? 1 : .35, dot: i < flowLit ? '#7E3F3A' : 'rgba(30,20,18,.25)', line: i < 3 ? 1 : 0 })),
+
+      waStatus: s.wa === 0 ? 'typing…' : 'online', waTypingOp: s.wa === 0 ? 1 : 0, waMsgOp: s.wa >= 1 ? 1 : 0, waMsgY: s.wa >= 1 ? '0px' : '16px',
+      waPrevOp: s.wa >= 2 ? 1 : 0, waPrevH: s.wa >= 2 ? '200px' : '0px', waTapOp: s.wa === 3 ? 1 : 0,
+      waClip: s.wa === 4 ? 'circle(150% at 50% 62%)' : 'circle(0% at 50% 62%)', waD: { ...linen, guest: 'Sarah' },
+
+      catPos: s.mobile ? 'relative' : 'sticky', catH: s.mobile ? 'auto' : '100svh', catOverflow: s.mobile ? 'auto' : 'visible', catW: s.mobile ? '80vw' : 'clamp(320px,30vw,440px)',
+      cats: M.categories.map((c, i) => { const t = by[c.slug] || { d: {}, name: '' }; return { ...c, num: String(i + 1).padStart(2, '0'), d: t.d, tpl: t.name, href: `Templates.dc.html?cat=${encodeURIComponent(c.name)}` }; }),
+
+      tips: M.tips.slice(0, 4).map((t, i) => ({ ...t, num: String(i + 1).padStart(2, '0'), href: `Tips.dc.html#${t.slug}`, h: i === s.tipHover ? '120px' : '0px', op: i === s.tipHover ? 1 : 0, arBg: i === s.tipHover ? '#0E0C0B' : 'transparent', arFg: i === s.tipHover ? '#F4EEE4' : '#0E0C0B', enter: () => { if (this.state.tipHover !== i) this.setState({ tipHover: i }); } })),
+      tiers: M.tiers.map((t) => ({ ...t, top: t.items.slice(0, 3), bg: t.featured ? '#0E0C0B' : 'transparent', fg: t.featured ? '#F4EEE4' : '#0E0C0B', bd: t.featured ? '#0E0C0B' : 'rgba(14,12,11,.16)', muted: t.featured ? '#B5AA9E' : '#5E554C', tag: t.featured ? 1 : 0 }))
+    };
+  }
+}
+</script>
+</body>
+</html>

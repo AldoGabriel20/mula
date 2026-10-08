@@ -1,0 +1,1234 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;1,6..72,300;1,6..72,400&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#F5F3EE;--bg2:#ECE8E0;--sf:#FBFAF7;--rs:#FFFFFF;--line:#E3DED4;--line2:#CFC8BB;--ink:#272523;--ink2:#4A4540;--mut:#6F685E;--dot:#A69A89;--dotd:#7A6E5E;--ok:#4C6A4E;--okb:#E3EADF;--wt:#8A5D1E;--wtb:#F2E7D2;--no:#A3462F;--nob:#F3DFD7;--in:#3E5868;--inb:#DEE6EA;--onink:#F5F3EE;--sh:0 1px 2px rgba(39,37,35,.04),0 18px 40px -22px rgba(39,37,35,.25);--sh2:0 40px 80px -34px rgba(39,37,35,.42),0 8px 22px -10px rgba(39,37,35,.14);--glow:rgba(166,154,137,.10);--serif:'Newsreader',Georgia,serif;--sans:'Instrument Sans',system-ui,sans-serif;--eo:cubic-bezier(.16,1,.3,1);--sp:cubic-bezier(.34,1.56,.64,1);color-scheme:light}
+:root[data-theme=dark]{--bg:#12110F;--bg2:#1C1A18;--sf:#191816;--rs:#211F1D;--line:rgba(238,233,223,.09);--line2:rgba(238,233,223,.18);--ink:#EEE9DF;--ink2:#D2CBBF;--mut:#A39B8E;--dot:#B8AB97;--dotd:#CDBFA9;--ok:#A3C29E;--okb:rgba(163,194,158,.13);--wt:#DDB474;--wtb:rgba(221,180,116,.13);--no:#E89580;--nob:rgba(232,149,128,.14);--in:#9DBACB;--inb:rgba(157,186,203,.13);--onink:#12110F;--sh:0 20px 40px -22px rgba(0,0,0,.7);--sh2:0 50px 100px -34px rgba(0,0,0,.85),0 0 0 1px rgba(238,233,223,.06);--glow:rgba(184,171,151,.13);color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:radial-gradient(1100px 640px at 82% -10%,var(--glow),transparent 62%) fixed,var(--bg);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased;transition:background-color .6s var(--eo),color .6s var(--eo)}
+body:after{content:"";position:fixed;inset:0;pointer-events:none;z-index:300;opacity:.045;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+a{color:var(--ink);text-decoration-color:var(--dot);text-underline-offset:3px}a:hover{color:var(--dotd)}
+button{font:inherit;color:inherit;cursor:pointer}
+:focus-visible{outline:2px solid var(--dot);outline-offset:2px}
+.serif{font-family:var(--serif)}.it{font-style:italic}
+.d1{font-family:var(--serif);font-weight:300;font-size:clamp(56px,8.6vw,128px);line-height:.9;letter-spacing:-.03em;margin:0}
+.h1{font-family:var(--serif);font-weight:400;font-size:clamp(34px,4.4vw,58px);line-height:1.02;letter-spacing:-.02em;margin:0;text-wrap:balance}
+.h2{font-family:var(--serif);font-weight:400;font-size:clamp(22px,2.1vw,28px);line-height:1.18;margin:0;letter-spacing:-.01em;text-wrap:balance}
+.num{font-family:var(--serif);font-weight:300;font-variant-numeric:lining-nums tabular-nums;letter-spacing:-.03em;line-height:.95}
+.eb{font-size:11.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--mut);font-weight:500}
+.mut{color:var(--mut)}.sm{font-size:13px}.xs{font-size:12px}
+.lede{font-size:17px;color:var(--mut);max-width:58ch;margin:0;text-wrap:pretty}
+.card{background:var(--sf);border:1px solid var(--line);border-radius:16px;padding:24px}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}.sb{justify-content:space-between}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:0 20px;border-radius:999px;border:1px solid var(--line2);background:transparent;font-weight:500;font-size:14px;text-decoration:none;white-space:nowrap;transition:transform .4s var(--eo),background .25s,border-color .25s,color .25s}
+.btn:hover{border-color:var(--ink)}.btn:active{transform:scale(.97)}
+.btn-p{background:var(--ink);color:var(--onink);border-color:var(--ink)}.btn-p:hover{background:var(--ink2);color:var(--onink)}
+.btn-t{border-color:transparent}.btn-t:hover{border-color:transparent;background:var(--bg2)}
+.btn-s{min-height:36px;padding:0 14px;font-size:13px}.btn-i{width:40px;min-height:40px;padding:0}
+.btn:disabled{opacity:.5;cursor:default}
+.ic{width:18px;height:18px;flex:none;fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
+.bdg{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:500;padding:3px 10px 3px 8px;border-radius:99px;white-space:nowrap}
+.bdg:before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor}
+.b-ok{background:var(--okb);color:var(--ok)}.b-wt{background:var(--wtb);color:var(--wt)}.b-no{background:var(--nob);color:var(--no)}.b-in{background:var(--inb);color:var(--in)}.b-mu{background:var(--bg2);color:var(--mut)}
+.inp{width:100%;min-height:44px;padding:10px 14px;border:1px solid var(--line2);border-radius:12px;background:var(--rs);font:inherit;color:var(--ink);transition:border-color .2s,box-shadow .2s}
+.inp:focus{outline:none;border-color:var(--dot);box-shadow:0 0 0 4px color-mix(in oklab,var(--dot) 24%,transparent)}
+textarea.inp{min-height:100px;resize:vertical}
+label.f{display:grid;gap:7px;font-size:13px;font-weight:500}
+.chip{min-height:36px;padding:0 15px;border-radius:99px;border:1px solid var(--line);background:transparent;font-size:13px;color:var(--ink2);transition:all .3s var(--eo)}
+.chip:hover{border-color:var(--line2)}.chip.on{background:var(--ink);color:var(--onink);border-color:var(--ink)}
+.seg{display:inline-flex;padding:3px;border-radius:99px;background:var(--bg2);gap:2px}
+.seg button{display:inline-flex;align-items:center;gap:6px;border:0;background:transparent;min-height:34px;padding:0 14px;border-radius:99px;font-size:13px;color:var(--mut);transition:all .35s var(--eo)}
+.seg button.on{background:var(--rs);color:var(--ink);box-shadow:var(--sh)}
+.seg.dk{background:rgba(238,233,223,.08)}.seg.dk button{color:#A39B8E}.seg.dk button.on{background:#EEE9DF;color:#12110F}
+.tog{width:44px;height:26px;border-radius:99px;border:0;background:var(--line2);position:relative;flex:none;padding:0;transition:background .3s}
+.tog:after{content:"";position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:var(--rs);transition:left .4s var(--sp)}
+.tog.on{background:var(--ink)}.tog.on:after{left:21px;background:var(--onink)}
+.arch{border-radius:999px 999px 10px 10px}
+.side{position:fixed;inset:0 auto 0 0;width:264px;padding:24px 16px 18px;display:flex;flex-direction:column;overflow:auto;z-index:20;border-right:1px solid var(--line)}
+.logo-l,.logo-d{height:28px;width:auto;display:block}.logo-d{display:none}
+:root[data-theme=dark] .logo-l{display:none}:root[data-theme=dark] .logo-d{display:block}
+.evsw{display:flex;gap:12px;align-items:center;padding:10px 12px 10px 10px;border:1px solid var(--line);border-radius:16px;background:var(--sf);text-align:left;width:100%;margin:22px 0 4px;transition:border-color .3s}
+.evsw:hover{border-color:var(--line2)}
+.nv{position:relative;display:flex;align-items:center;gap:12px;width:100%;min-height:38px;padding:0 12px 0 14px;border:0;background:transparent;border-radius:10px;text-align:left;font-size:14px;color:var(--mut);transition:color .2s,background .2s}
+.nv:hover{color:var(--ink);background:var(--bg2)}
+.nv.on{color:var(--ink);background:var(--sf);box-shadow:inset 0 0 0 1px var(--line)}
+.nv.on:before{content:"";position:absolute;left:-5px;top:50%;width:8px;height:8px;margin-top:-4px;border-radius:50%;background:var(--dot);animation:pop .5s var(--sp)}
+.nb{margin-left:auto;font-size:12px;color:var(--mut)}
+.ngl{margin:22px 14px 6px}
+.main{margin-left:264px;padding:0 clamp(20px,4vw,60px) 90px;min-height:100vh;max-width:1640px}
+.top{position:sticky;top:0;z-index:15;display:flex;align-items:center;gap:10px;padding:14px 0;margin-bottom:clamp(24px,4vw,48px);background:color-mix(in oklab,var(--bg) 84%,transparent);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+.srch{display:flex;align-items:center;gap:10px;min-height:40px;padding:0 10px 0 14px;border:1px solid var(--line);border-radius:99px;background:var(--sf);color:var(--mut);font-size:14px;flex:0 1 280px;min-width:0}
+.srch kbd{margin-left:auto;font:500 11px var(--sans);border:1px solid var(--line);border-radius:6px;padding:2px 6px}
+.av{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;font-size:12px;font-weight:600;color:#fff;border:2px solid var(--bg);flex:none}
+.avs{display:flex}.avs .av+.av{margin-left:-9px}
+.ndot{position:absolute;top:9px;right:10px;width:7px;height:7px;border-radius:50%;background:var(--no);box-shadow:0 0 0 2px var(--bg)}
+.mobrand,.mo{display:none}
+.bnav{display:none;position:fixed;left:12px;right:12px;bottom:calc(10px + env(safe-area-inset-bottom));background:color-mix(in oklab,var(--sf) 90%,transparent);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid var(--line);border-radius:24px;z-index:30;padding:6px;box-shadow:var(--sh2)}
+.bnav button{flex:1;min-height:54px;border:0;background:transparent;border-radius:18px;font-size:11px;color:var(--mut);display:grid;place-items:center;gap:3px;align-content:center;transition:all .3s var(--eo)}
+.bnav button.on{color:var(--ink);background:var(--bg2)}
+.ph{display:flex;justify-content:space-between;align-items:flex-end;gap:20px;flex-wrap:wrap;margin-bottom:clamp(26px,3.6vw,44px)}
+.ph .h1{margin-top:12px}
+.hero{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,.9fr);gap:clamp(24px,4vw,64px);align-items:center;min-height:min(76vh,700px)}
+.stage{position:relative;perspective:1400px}
+.hero-stage{display:grid;place-items:center;min-height:540px;cursor:pointer}
+.halo{position:absolute;width:min(360px,80%);aspect-ratio:3/4.3;border:1px solid var(--line2);border-bottom:0;border-radius:999px 999px 0 0;top:2%;transform:translate(calc(var(--px,0px) * -1 + 34px),calc(var(--py,0px) * -1))}
+.halo-dot{position:absolute;width:26px;height:26px;border-radius:50%;background:var(--dot);left:8%;bottom:16%;animation:floaty 7s ease-in-out infinite;translate:calc(var(--px,0px) * -1.6) calc(var(--py,0px) * -1.6)}
+.tilt{transform:rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg));transform-style:preserve-3d;transition:transform 1s var(--eo)}
+.stage:hover .tilt{transition:transform .2s linear}
+.inv-obj{position:relative;width:min(300px,74%);aspect-ratio:9/15.5;border-radius:30px;padding:22px 20px 28px;display:grid;grid-template-rows:1fr auto;gap:20px;box-shadow:var(--sh2);animation:objin 1.4s var(--eo) both}
+.inv-photo{position:relative;display:grid;place-items:end center;padding-bottom:14px;font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:rgba(255,255,255,.78);transform:translateZ(30px)}
+.lay2{transform:translateZ(60px);text-align:center}
+.sheen{position:absolute;inset:0;border-radius:inherit;pointer-events:none;background:radial-gradient(380px circle at var(--mx,50%) var(--my,25%),rgba(255,255,255,.32),transparent 55%);mix-blend-mode:soft-light}
+.duo{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(24px,3.5vw,56px)}
+.split{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:clamp(18px,2.4vw,32px)}
+.part{display:grid;grid-template-columns:118px minmax(0,1fr) 36px;gap:16px;align-items:center;padding:11px 4px;border:0;border-top:1px solid var(--line);background:none;text-align:left;width:100%;font-size:14px;transition:background .25s,padding .35s var(--eo)}
+.part:hover{background:var(--bg2);padding-left:10px}
+.bar{height:4px;border-radius:9px;background:var(--line);overflow:hidden}.bar i{display:block;height:100%;background:var(--ink);border-radius:9px;transform-origin:left;animation:grow 1.4s var(--eo) both .3s}
+.note{display:grid;gap:10px;padding:22px 0;border-top:1px solid var(--line);animation:rise .8s var(--eo) both}
+.note.lead{padding:26px;border:1px solid var(--line);border-radius:18px;background:var(--sf);box-shadow:var(--sh)}
+.jr{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));margin-top:56px}
+.jn{position:relative;padding:22px 12px 0 0}
+.jn:before{content:"";position:absolute;top:-5px;left:0;width:11px;height:11px;border-radius:50%;background:var(--ink);z-index:1}
+.jn.next:before{background:var(--dot);box-shadow:0 0 0 5px color-mix(in oklab,var(--dot) 25%,transparent)}
+.jn.up:before{background:var(--bg);border:1.5px solid var(--line2)}
+.jarc{position:absolute;left:5px;width:100%;top:-34px;height:34px;border:1.5px solid var(--ink);border-bottom:0;border-radius:999px 999px 0 0;animation:fade 1.2s var(--eo) both}
+.jn.next .jarc,.jn.up .jarc{border-color:var(--line2);border-style:dashed}
+.jn.last .jarc{display:none}
+.tl{position:relative;height:150px;margin-top:18px}
+.tl-line,.tl-fill{position:absolute;left:0;top:64px;height:1px;background:var(--line2);right:0}
+.tl-fill{right:auto;height:2px;top:63.5px;background:var(--ink);transform-origin:left;animation:grow 1.6s var(--eo) both .2s}
+.ms{position:absolute;top:0;transform:translateX(-50%);display:grid;grid-template-rows:52px 24px auto;justify-items:center;text-align:center;width:120px}
+.ms .md{align-self:end;padding-bottom:6px}
+.ms .mk{align-self:center;width:9px;height:9px;border-radius:50%;background:var(--bg);border:1.5px solid var(--line2)}
+.ms.done .mk{background:var(--ink);border-color:var(--ink)}
+.ms.now .mk{width:18px;height:18px;background:var(--dot);border:0;box-shadow:0 0 0 7px color-mix(in oklab,var(--dot) 22%,transparent);animation:pop .7s var(--sp) .5s both}
+.ms.big .mk{width:15px;height:15px;border:2px solid var(--ink)}
+.ms.big .lb{font-family:var(--serif);font-size:21px;line-height:1.1}
+.ms.first{transform:none;justify-items:start;text-align:left}.ms.last{transform:translateX(-100%);justify-items:end;text-align:right}
+.tick{display:inline-flex;align-items:center;gap:7px;font-size:12.5px;padding:5px 12px 5px 9px;border-radius:99px;background:var(--bg2);color:var(--ink2);animation:pop .6s var(--sp) both}
+.tick:before{content:"";width:6px;height:6px;border-radius:50%;background:var(--dot)}
+.lift{transition:transform .6s var(--eo),box-shadow .6s var(--eo),border-color .3s}.lift:hover{transform:translateY(-3px);box-shadow:var(--sh)}
+.tbl{width:100%;border-collapse:collapse;font-size:14px}
+.tbl th{text-align:left;font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--mut);font-weight:500;padding:12px;border-bottom:1px solid var(--line)}
+.tbl td{padding:12px;border-bottom:1px solid var(--line);vertical-align:middle}
+.tbl tr.rw{transition:background .2s}.tbl tr.rw:hover td{background:var(--bg2);cursor:pointer}
+.jd{display:inline-flex;gap:4px}.jd i{width:7px;height:7px;border-radius:50%;background:var(--line2)}.jd i.on{background:var(--ink)}
+.segs{display:flex;gap:10px;overflow-x:auto;padding:4px 4px 10px;margin:0 -4px;scroll-snap-type:x mandatory;scrollbar-width:none}
+.sgc{flex:none;min-width:148px;scroll-snap-align:start;text-align:left;padding:14px 16px;border:1px solid var(--line);border-radius:16px;background:var(--sf);display:grid;gap:2px;transition:all .45s var(--eo)}
+.sgc:hover{border-color:var(--line2);transform:translateY(-2px)}
+.sgc.on{border-color:var(--ink);background:var(--ink);color:var(--onink)}.sgc.on .mut{color:inherit;opacity:.7}
+.ed{display:grid;grid-template-columns:220px minmax(0,1fr) 330px;gap:24px;align-items:start}
+.sx{display:flex;align-items:center;gap:12px;width:100%;min-height:42px;padding:0 12px;border:0;border-radius:10px;background:transparent;text-align:left;font-size:14px;color:var(--mut);transition:all .25s}
+.sx:hover{background:var(--bg2);color:var(--ink)}.sx.on{background:var(--sf);color:var(--ink);box-shadow:inset 0 0 0 1px var(--line)}
+.sd{width:7px;height:7px;border-radius:50%;margin-left:auto;flex:none}
+.phone{border:9px solid #1B1A19;border-radius:40px;aspect-ratio:9/18.5;overflow:hidden;box-shadow:var(--sh2)}
+.studio{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);border-radius:24px;overflow:hidden;background:radial-gradient(700px 500px at 30% 20%,#2A2622,#141312 70%);color:#EEE9DF}
+.dthumb{aspect-ratio:3/4;border-radius:18px;display:grid;place-items:center;padding:26px;position:relative;overflow:hidden;border:1px solid var(--line)}
+.dthumb-in{width:76%;display:grid;gap:14px;justify-items:center;text-align:center;transition:transform .9s var(--eo)}
+.dcard:hover .dthumb-in{transform:translateY(-8px) scale(1.03)}
+.rr{display:grid;grid-template-columns:120px 28px minmax(0,1fr);gap:0 22px}
+.rl{position:relative}.rl:before{content:"";position:absolute;left:50%;top:0;bottom:0;width:1px;background:var(--line2)}
+.rl:after{content:"";position:absolute;left:50%;top:26px;width:11px;height:11px;margin-left:-5.5px;border-radius:50%;background:var(--ink);box-shadow:0 0 0 5px var(--bg)}
+.tk{display:grid;grid-template-columns:auto minmax(0,1fr) auto auto;gap:14px;align-items:center;padding:15px 0;border-top:1px solid var(--line);animation:rise .6s var(--eo) both}
+.ck{width:28px;height:28px;border-radius:50%;border:1.5px solid var(--line2);background:transparent;display:grid;place-items:center;padding:0;transition:all .4s var(--sp)}
+.ck svg{width:14px;height:14px;stroke:var(--onink);fill:none;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:20;stroke-dashoffset:20;transition:stroke-dashoffset .5s var(--eo) .1s}
+.ck:hover{border-color:var(--ink)}.ck.on{background:var(--ink);border-color:var(--ink);transform:scale(1.05)}.ck.on svg{stroke-dashoffset:0}
+.tk.done .tt{text-decoration:line-through;text-decoration-color:var(--dot);color:var(--mut)}
+.ops{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}.ops .w2{grid-column:span 2}
+.bars{display:flex;align-items:flex-end;gap:8px;height:150px}.bars i{flex:1;background:var(--ink);border-radius:6px 6px 2px 2px;transform-origin:bottom;animation:growy 1.1s var(--eo) both;transition:height .6s var(--eo)}
+.bars i:last-child{background:var(--dot)}
+.ldot{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--no);animation:breathe 1.6s ease-in-out infinite;flex:none}
+.sign{background:#FBFAF7;color:#272523;border-radius:200px 200px 24px 24px;padding:70px 34px 34px;display:grid;justify-items:center;gap:14px;box-shadow:var(--sh2);width:min(380px,100%);text-align:center;animation:objin 1.2s var(--eo) both}
+.wall{columns:3 250px;column-gap:18px}
+.wish{break-inside:avoid;margin:0 0 18px;padding:24px;border:1px solid var(--line);border-radius:16px;background:var(--sf);animation:rise .8s var(--eo) both}
+.ao{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:20px;padding:24px 0;border-top:1px solid var(--line);align-items:center}
+.sk{background:linear-gradient(90deg,var(--bg2),var(--sf),var(--bg2));background-size:200% 100%;animation:sk 1.6s infinite;border-radius:10px}
+.scrim{position:fixed;inset:0;background:rgba(12,11,10,.42);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);z-index:70;display:grid;place-items:center;padding:16px;animation:fade .3s}
+.mod{background:var(--sf);border:1px solid var(--line);border-radius:20px;padding:28px;width:min(480px,100%);max-height:90vh;overflow:auto;animation:modal .5s var(--eo);box-shadow:var(--sh2)}
+.drw{position:fixed;top:0;right:0;bottom:0;width:min(460px,100%);background:var(--sf);border-left:1px solid var(--line);z-index:71;padding:28px;overflow:auto;animation:slin .55s var(--eo)}
+.pan{position:fixed;top:66px;right:24px;width:min(390px,calc(100vw - 32px));background:var(--sf);border:1px solid var(--line);border-radius:18px;z-index:50;box-shadow:var(--sh2);max-height:75vh;overflow:auto;animation:modal .4s var(--eo)}
+.pvw{position:fixed;inset:0;z-index:80;background:radial-gradient(1000px 640px at 50% 18%,#2B2723,#0D0C0B 72%);color:#EEE9DF;display:grid;grid-template-rows:auto 1fr;animation:fade .45s}
+.pvst{position:relative;display:grid;place-items:center;padding:20px;overflow:hidden;perspective:1800px}
+.pv-arch{position:absolute;width:min(620px,74vw);aspect-ratio:1/1.12;border:1px solid rgba(238,233,223,.09);border-bottom:0;border-radius:999px 999px 0 0;top:8%;translate:calc(var(--px,0px) * -1.4) calc(var(--py,0px) * -1)}
+.pv-dot{position:absolute;width:30px;height:30px;border-radius:50%;background:#B8AB97;left:calc(50% - min(360px,40vw));bottom:22%;opacity:.85;translate:calc(var(--px,0px) * -2.4) calc(var(--py,0px) * -2)}
+.dev{position:relative;background:#0A0A0A;box-shadow:0 70px 120px -30px rgba(0,0,0,.9),0 0 0 1px rgba(255,255,255,.07);transform:rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg));transition:transform 1s var(--eo),width .8s var(--eo),height .8s var(--eo),border-radius .8s var(--eo),padding .8s var(--eo);animation:devin 1.2s var(--eo) both}
+.pvst:hover .dev{transition:transform .2s linear,width .8s var(--eo),height .8s var(--eo),border-radius .8s var(--eo),padding .8s var(--eo)}
+.dev-m{width:min(384px,92vw);height:min(790px,calc(100vh - 150px));border-radius:50px;padding:11px}
+.dev-t{width:min(700px,92vw);height:min(920px,calc(100vh - 150px));border-radius:34px;padding:16px}
+.dev-d{width:min(1140px,94vw);height:min(720px,calc(100vh - 150px));border-radius:14px;padding:30px 8px 8px}
+.screen{width:100%;height:100%;border-radius:40px;overflow:auto;position:relative;scrollbar-width:none;transition:border-radius .8s var(--eo)}
+.dev-t .screen{border-radius:20px}.dev-d .screen{border-radius:6px}
+.gwrap{max-width:600px;margin:0 auto}
+.ann{display:inline-flex;align-items:center;gap:7px;font:500 11.5px var(--sans);padding:5px 12px 5px 9px;border-radius:99px;background:#272523;color:#F5F3EE;justify-self:center;animation:pop .5s var(--sp) both}
+.ann:before{content:"";width:6px;height:6px;border-radius:50%;background:var(--c,#A3C29E)}
+.ob{position:fixed;inset:0;z-index:85;background:var(--bg);display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);animation:fade .45s}
+.obst{position:relative;display:grid;place-items:center;background:radial-gradient(700px 500px at 50% 30%,#2A2622,#121110 72%);overflow:hidden}
+.obt{flex:1;height:3px;border-radius:9px;background:var(--line);overflow:hidden}.obt i{display:block;height:100%;background:var(--ink);transform-origin:left;transition:transform .7s var(--eo)}
+.cel{position:fixed;inset:0;z-index:95;display:grid;place-items:center;text-align:center;background:color-mix(in oklab,var(--bg) 95%,transparent);animation:fade .4s;padding:24px}
+.cel path{stroke-dasharray:100;animation:drawp 1.6s var(--eo) both}
+.toast{position:fixed;left:50%;bottom:28px;transform:translateX(-50%);display:flex;gap:12px;align-items:center;background:var(--ink);color:var(--onink);padding:13px 22px 13px 18px;border-radius:99px;z-index:120;animation:toast .6s var(--sp);font-size:14px;max-width:calc(100vw - 32px);box-shadow:var(--sh2)}
+.toast i{width:8px;height:8px;border-radius:50%;background:var(--dot);flex:none;animation:pop .6s var(--sp) .15s both}
+.stg>*{animation:rise 1s var(--eo) both}
+.stg>*:nth-child(2){animation-delay:.07s}.stg>*:nth-child(3){animation-delay:.14s}.stg>*:nth-child(4){animation-delay:.21s}.stg>*:nth-child(5){animation-delay:.28s}.stg>*:nth-child(6){animation-delay:.35s}.stg>*:nth-child(7){animation-delay:.42s}.stg>*:nth-child(n+8){animation-delay:.49s}
+@keyframes rise{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}
+@keyframes fade{from{opacity:0}}
+@keyframes draw{from{stroke-dasharray:0 100}}
+@keyframes drawp{from{stroke-dashoffset:100}to{stroke-dashoffset:0}}
+@keyframes pop{0%{transform:scale(.3);opacity:0}60%{transform:scale(1.12);opacity:1}100%{transform:none}}
+@keyframes grow{from{transform:scaleX(0)}}
+@keyframes growy{from{transform:scaleY(0)}}
+@keyframes floaty{50%{transform:translateY(-10px)}}
+@keyframes breathe{50%{opacity:.3}}
+@keyframes sk{to{background-position:-200% 0}}
+@keyframes modal{from{opacity:0;transform:translateY(18px) scale(.98)}}
+@keyframes slin{from{transform:translateX(48px);opacity:0}}
+@keyframes toast{from{opacity:0;transform:translate(-50%,18px) scale(.94)}}
+@keyframes objin{from{opacity:0;transform:translateY(40px) rotateX(14deg) scale(.95)}}
+@keyframes devin{from{opacity:0;transform:translateY(50px) rotateX(14deg) scale(.95)}}
+@keyframes coverup{to{transform:translateY(-104%);opacity:.4}}
+@media(max-width:1200px){.ed{grid-template-columns:200px minmax(0,1fr)}.ed .pvc{display:none}}
+@media(max-width:1100px){.hero{grid-template-columns:1fr;min-height:0}.hero-stage{min-height:480px}.studio{grid-template-columns:1fr}}
+@media(max-width:960px){.side{display:none}.bnav{display:flex}.main{margin-left:0;padding:0 18px 120px}.duo,.ed,.split{grid-template-columns:1fr}.dt{display:none!important}.mo{display:block}.mobrand{display:block}.hidem{display:none!important}.ops{grid-template-columns:1fr}.ops .w2{grid-column:auto}.ob{grid-template-columns:1fr}.obst{display:none}.edn{display:flex!important;overflow-x:auto;gap:6px;padding-bottom:4px}.edn .sx{flex:none;width:auto}.rr{grid-template-columns:58px 18px minmax(0,1fr);gap:0 12px}.top{margin-bottom:22px}.card{padding:20px}.toast{bottom:96px}.pan{right:12px;top:62px}}
+@media(max-width:720px){.jr{grid-template-columns:repeat(3,minmax(0,1fr));row-gap:34px;margin-top:24px}.jarc{display:none}.tl{height:auto;display:grid;margin-top:8px}.tl-line,.tl-fill{display:none}.ms,.ms.first,.ms.last{position:static;transform:none;grid-template-columns:64px 26px 1fr;grid-template-rows:auto;justify-items:start;text-align:left;width:auto;align-items:center;padding:9px 0}.ms .md{padding:0;align-self:center}.part{grid-template-columns:100px minmax(0,1fr) 34px;gap:12px}.tk{grid-template-columns:auto minmax(0,1fr) auto}.tk .hidem2{display:none}.hero-stage{min-height:420px}}
+:root[data-motion=calm] *,:root[data-motion=calm] *:before,:root[data-motion=calm] *:after{animation-duration:.01ms!important;animation-delay:0s!important;transition-duration:.01ms!important}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.01ms!important;animation-delay:0s!important;transition-duration:.01ms!important}.tilt,.dev{transform:none!important}}
+</style>
+</helmet>
+<div>
+<aside class="side" aria-label="Main navigation">
+  <div style="padding:2px 12px"><img class="logo-l" src="assets/mula-lockup-ink.png" alt="mula"><img class="logo-d" src="assets/mula-lockup-light.png" alt="mula"></div>
+  <button class="evsw" onClick="{{ cycleEvt }}" aria-label="Switch celebration">
+    <span class="arch" style="width:34px;height:42px;flex:none;background:{{ pv.photo }}"></span>
+    <span style="min-width:0;flex:1;display:grid"><span style="font-weight:600;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ ev.host }}</span><span class="xs mut">{{ ev.type }} · {{ ev.day }} {{ ev.mon }}</span></span>
+    <svg class="ic" viewBox="0 0 20 20" style="color:var(--mut)"><path d="M7 8l3-3 3 3M7 12l3 3 3-3"></path></svg>
+  </button>
+  <sc-for list="{{ nav }}" as="g" hint-placeholder-count="4">
+    <div>
+      <div class="eb ngl">{{ g.label }}</div>
+      <sc-for list="{{ g.items }}" as="n" hint-placeholder-count="3">
+        <button class="nv {{ n.on }}" data-p="{{ n.id }}" onClick="{{ go }}"><svg class="ic" viewBox="0 0 20 20"><path d="{{ n.ic }}"></path></svg><span>{{ n.label }}</span><span class="nb">{{ n.badge }}</span></button>
+      </sc-for>
+    </div>
+  </sc-for>
+  <div style="margin-top:auto;display:grid;gap:2px;padding-top:22px">
+    <button class="nv {{ guideOn }}" data-p="guide" onClick="{{ go }}"><svg class="ic" viewBox="0 0 20 20"><path d="{{ ic.guide }}"></path></svg><span>Guide</span></button>
+    <button class="nv {{ accountOn }}" data-p="account" onClick="{{ go }}"><svg class="ic" viewBox="0 0 20 20"><path d="{{ ic.user }}"></path></svg><span>Account</span></button>
+    <div class="seg" style="margin:12px 4px 0" role="group" aria-label="Appearance">
+      <button class="{{ thL }}" onClick="{{ setLight }}" style="flex:1;justify-content:center"><svg class="ic" viewBox="0 0 20 20" style="width:15px"><path d="{{ ic.sun }}"></path></svg>Light</button>
+      <button class="{{ thD }}" onClick="{{ setDark }}" style="flex:1;justify-content:center"><svg class="ic" viewBox="0 0 20 20" style="width:15px"><path d="{{ ic.moon }}"></path></svg>Dark</button>
+    </div>
+  </div>
+</aside>
+
+<div class="main">
+  <header class="top">
+    <span class="mobrand"><img class="logo-l" src="assets/mula-symbol-ink.png" alt="mula" style="height:30px"><img class="logo-d" src="assets/mula-symbol-light.png" alt="mula" style="height:30px"></span>
+    <div class="row hidem" style="gap:8px;font-size:14px;flex-wrap:nowrap;min-width:0"><span class="mut" style="white-space:nowrap">{{ ev.host }}</span><span class="mut">/</span><b style="font-weight:500;white-space:nowrap">{{ pageTitle }}</b></div>
+    <div style="flex:1"></div>
+    <button class="srch" onClick="{{ openSearch }}" aria-label="Search"><svg class="ic" viewBox="0 0 20 20" style="width:16px"><path d="{{ ic.search }}"></path></svg><span style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Search guests, tasks…</span><kbd class="hidem">⌘K</kbd></button>
+    <div class="avs hidem" aria-label="Working on this now" style="margin-left:6px"><sc-for list="{{ online }}" as="o" hint-placeholder-count="3"><span class="av" style="background:{{ o.c }}" title="{{ o.n }}">{{ o.i }}</span></sc-for></div>
+    <button class="btn btn-t btn-i" onClick="{{ toggleTheme }}" aria-label="Switch light or dark"><svg class="ic" viewBox="0 0 20 20"><path d="{{ themeIc }}"></path></svg></button>
+    <button class="btn btn-t btn-i" style="position:relative" onClick="{{ toggleNotif }}" aria-label="Updates"><svg class="ic" viewBox="0 0 20 20"><path d="{{ ic.bell }}"></path></svg><sc-if value="{{ hasUnread }}" hint-placeholder-val="{{ true }}"><span class="ndot"></span></sc-if></button>
+    <button class="av" style="background:#A69A89;width:34px;height:34px;border:0;padding:0" data-p="account" onClick="{{ go }}" aria-label="Account">A</button>
+  </header>
+
+  <sc-if value="{{ loading }}" hint-placeholder-val="{{ false }}">
+    <div style="display:grid;gap:22px" aria-busy="true"><div class="sk" style="height:12px;width:120px"></div><div class="sk" style="height:52px;width:min(480px,80%)"></div><div class="row" style="gap:12px"><div class="sk" style="height:86px;flex:1;min-width:140px"></div><div class="sk" style="height:86px;flex:1;min-width:140px"></div><div class="sk" style="height:86px;flex:1;min-width:140px"></div></div><div class="sk" style="height:280px"></div><div class="row sm mut"><span class="ldot" style="background:var(--dot)"></span>{{ loadMsg }}</div></div>
+  </sc-if>
+
+  <!-- OVERVIEW · first open -->
+  <sc-if value="{{ p.home }}" hint-placeholder-val="{{ true }}">
+  <sc-if value="{{ freshHome }}" hint-placeholder-val="{{ false }}">
+  <div class="stg" style="display:grid;gap:56px">
+    <section class="hero">
+      <div style="display:grid;gap:24px;align-content:center">
+        <div class="eb">Welcome to Mula, Aldo</div>
+        <h1 class="d1">Something<br><span class="it" style="color:var(--dot)">meaningful</span><br>begins here.</h1>
+        <p class="lede">Tell us what you’re celebrating. Your invitation takes shape as you answer, and you can refine every detail later.</p>
+        <div class="row"><button class="btn btn-p" onClick="{{ openOb }}">Let’s begin</button><button class="btn" data-p="design" onClick="{{ go }}">Browse designs first</button></div>
+        <ol style="list-style:none;margin:16px 0 0;padding:0;display:grid;gap:0;max-width:520px">
+          <li class="row" style="padding:14px 0;border-top:1px solid var(--line);flex-wrap:nowrap;gap:18px"><span class="num" style="font-size:28px;color:var(--dot)">1</span><span><b style="font-weight:500">Your celebration</b><br><span class="sm mut">What it is, whose it is, when and where</span></span></li>
+          <li class="row" style="padding:14px 0;border-top:1px solid var(--line);flex-wrap:nowrap;gap:18px"><span class="num" style="font-size:28px;color:var(--dot)">2</span><span><b style="font-weight:500">Your invitation</b><br><span class="sm mut">A design and the words guests will read</span></span></li>
+          <li class="row" style="padding:14px 0;border-top:1px solid var(--line);flex-wrap:nowrap;gap:18px"><span class="num" style="font-size:28px;color:var(--dot)">3</span><span><b style="font-weight:500">Your guests</b><br><span class="sm mut">The people you would love to see there</span></span></li>
+        </ol>
+      </div>
+      <div class="stage hero-stage" onMouseMove="{{ tiltMove }}" onMouseLeave="{{ tiltOut }}" onClick="{{ openOb }}">
+        <div class="halo"></div><div class="halo-dot"></div>
+        <div class="tilt inv-obj" style="background:var(--sf);border:1px dashed var(--line2);box-shadow:none">
+          <div class="inv-photo arch" style="border:1px dashed var(--line2);color:var(--mut)">Your photo</div>
+          <div class="lay2"><div class="eb">You are invited</div><div class="serif" style="font-size:34px;line-height:1.05;margin:10px 0;color:var(--mut)">Your names<br>here</div><div class="xs mut" style="letter-spacing:.2em">— · — · ——</div></div>
+        </div>
+      </div>
+    </section>
+  </div>
+  </sc-if>
+
+  <!-- OVERVIEW · planning -->
+  <sc-if value="{{ fullHome }}" hint-placeholder-val="{{ true }}">
+  <div class="stg" style="display:grid;gap:clamp(56px,8vw,104px)">
+    <section class="hero">
+      <div style="display:grid;gap:22px;align-content:center">
+        <div class="eb">{{ greeting }}</div>
+        <h1 class="d1"><span>{{ ev.a }}</span><br><sc-if value="{{ ev.amp }}" hint-placeholder-val="{{ true }}"><span class="it" style="color:var(--dot)">&amp;&#8202;</span></sc-if><span>{{ ev.b }}</span></h1>
+        <p class="serif it" style="font-size:clamp(20px,2vw,27px);margin:0;color:var(--ink2);font-weight:300">{{ ev.tag }}</p>
+        <div class="row sm mut" style="gap:8px 14px"><span>{{ ev.type }}</span><span style="width:4px;height:4px;border-radius:50%;background:var(--dot)"></span><span>{{ ev.date }}</span><span style="width:4px;height:4px;border-radius:50%;background:var(--dot)"></span><span>{{ ev.city }}</span></div>
+        <div class="row" style="gap:28px;margin-top:14px;align-items:flex-end;flex-wrap:nowrap">
+          <div><div class="num" style="font-size:clamp(60px,6.6vw,96px)" data-count="{{ ev.days }}">{{ ev.days }}</div><div class="sm mut" style="margin-top:6px">days to go</div></div>
+          <div style="width:1px;height:84px;background:var(--line2)"></div>
+          <div><div class="num" style="font-size:clamp(60px,6.6vw,96px)"><span data-count="{{ ev.ready }}">{{ ev.ready }}</span><span style="font-size:.42em;color:var(--dot)">%</span></div><div class="sm mut" style="margin-top:6px">ready</div></div>
+        </div>
+        <div class="row" style="margin-top:8px"><button class="btn btn-p" onClick="{{ openPreview }}">Preview invitation</button><button class="btn" data-p="invitation" onClick="{{ go }}">Continue setup</button></div>
+      </div>
+      <div class="stage hero-stage" onMouseMove="{{ tiltMove }}" onMouseLeave="{{ tiltOut }}" onClick="{{ openPreview }}" role="button" aria-label="Open invitation preview">
+        <div class="halo"></div><div class="halo-dot"></div>
+        <div class="tilt inv-obj" style="background:{{ pv.bg }};color:{{ pv.fg }}">
+          <div class="inv-photo arch" style="background:{{ pv.photo }}">Cover photo</div>
+          <div class="lay2"><div class="xs" style="letter-spacing:.16em;text-transform:uppercase;opacity:.7">{{ ev.greet }}</div><div style="font-family:{{ pv.font }};font-size:36px;line-height:1.02;margin:10px 0 12px">{{ ev.a }}<br><sc-if value="{{ ev.amp }}" hint-placeholder-val="{{ true }}"><span class="it" style="color:{{ pv.ac }}">&amp; </span></sc-if>{{ ev.b }}</div><div class="xs" style="letter-spacing:.24em;opacity:.8">{{ ev.dshort }}</div></div>
+          <div class="sheen"></div>
+        </div>
+        <div class="xs mut" style="position:absolute;bottom:0;letter-spacing:.08em">Live preview · tap to open</div>
+      </div>
+    </section>
+
+    <section class="duo">
+      <div>
+        <div class="row sb"><div class="eb">Event readiness</div><span class="xs mut">Updated just now</span></div>
+        <div style="position:relative;max-width:340px;margin:22px 0 10px">
+          <svg viewBox="0 0 240 136" style="width:100%;display:block;overflow:visible" role="img" aria-label="{{ ev.ready }} percent ready">
+            <path d="M16 124 A104 104 0 0 1 224 124" fill="none" stroke="var(--line)" stroke-width="10" stroke-linecap="round"></path>
+            <path d="M16 124 A104 104 0 0 1 224 124" fill="none" stroke="var(--ink)" stroke-width="10" stroke-linecap="round" pathLength="100" stroke-dasharray="{{ arch.dash }}" style="animation:draw 1.8s var(--eo) both .2s"></path>
+            <circle cx="{{ arch.x }}" cy="{{ arch.y }}" r="11" fill="var(--dot)" stroke="var(--bg)" stroke-width="4" style="animation:pop .7s var(--sp) both 1.6s;transform-box:fill-box;transform-origin:center"></circle>
+          </svg>
+          <div style="position:absolute;left:0;right:0;bottom:0;text-align:center"><div class="num" style="font-size:64px"><span data-count="{{ ev.ready }}">{{ ev.ready }}</span><span style="font-size:.4em;color:var(--dot)">%</span></div><div class="sm mut">Your celebration is almost ready</div></div>
+        </div>
+        <div style="margin-top:18px">
+          <sc-for list="{{ parts }}" as="r" hint-placeholder-count="9">
+            <button class="part" data-p="{{ r.go }}" onClick="{{ go }}"><span>{{ r.n }}</span><span style="display:grid;gap:5px"><span class="bar"><i style="width:{{ r.w }}"></i></span><span class="xs mut">{{ r.note }}</span></span><span class="sm" style="text-align:right;font-variant-numeric:tabular-nums">{{ r.v }}</span></button>
+          </sc-for>
+        </div>
+      </div>
+      <div>
+        <div class="row sb" style="margin-bottom:18px"><div class="eb">Mula notes</div><span class="xs mut">What would help most right now</span></div>
+        <sc-for list="{{ notes }}" as="n" hint-placeholder-count="3">
+          <article class="{{ n.cls }}">
+            <div class="eb" style="color:var(--dotd)">{{ n.k }}</div>
+            <h2 class="h2">{{ n.t }}</h2>
+            <p class="sm mut" style="margin:0">{{ n.s }}</p>
+            <div class="row" style="margin-top:6px"><button class="btn btn-p btn-s" data-v="{{ n.id }}" onClick="{{ noteAct }}">{{ n.a }}</button><button class="btn btn-t btn-s" data-v="{{ n.id }}" onClick="{{ noteLater }}">Later</button></div>
+          </article>
+        </sc-for>
+        <sc-if value="{{ noNotes }}" hint-placeholder-val="{{ false }}">
+          <div class="note lead" style="text-align:center;justify-items:center"><div class="h2">You’re all caught up.</div><p class="sm mut" style="margin:0">We’ll leave a note here when something needs you.</p><button class="btn btn-t btn-s" onClick="{{ resetNotes }}">Show earlier notes</button></div>
+        </sc-if>
+      </div>
+    </section>
+
+    <section>
+      <div class="row sb" style="align-items:flex-end;gap:20px">
+        <div><div class="eb">Guest response</div><h2 class="h1" style="margin-top:12px"><span data-count="180">180</span> people are coming.</h2></div>
+        <button class="btn" data-p="guests" onClick="{{ go }}">Open guest list</button>
+      </div>
+      <div style="display:flex;height:10px;border-radius:99px;overflow:hidden;gap:3px;margin-top:26px"><div style="flex:180;background:var(--ink);transform-origin:left;animation:grow 1.4s var(--eo) both"></div><div style="flex:42;background:var(--dot);transform-origin:left;animation:grow 1.4s var(--eo) both .15s"></div><div style="flex:25;background:var(--line2);transform-origin:left;animation:grow 1.4s var(--eo) both .3s"></div></div>
+      <div class="row sm" style="gap:8px 26px;margin-top:12px"><span><b style="font-weight:600">180</b> <span class="mut">confirmed</span></span><span><b style="font-weight:600">42</b> <span class="mut">waiting to reply</span></span><span><b style="font-weight:600">25</b> <span class="mut">can’t make it</span></span><span class="mut">of 247 invited</span></div>
+      <div class="jr" aria-label="Guest journey">
+        <sc-for list="{{ journey }}" as="j" hint-placeholder-count="6">
+          <div class="{{ j.cls }}"><span class="jarc"></span><div class="eb">{{ j.n }}</div><div class="num" style="font-size:clamp(30px,3vw,42px);margin:8px 0 4px">{{ j.v }}</div><div class="xs mut">{{ j.s }}</div></div>
+        </sc-for>
+      </div>
+    </section>
+
+    <section>
+      <div class="row sb"><div class="eb">The road to {{ ev.day }} {{ ev.mon }}</div><button class="btn btn-t btn-s" data-p="todo" onClick="{{ go }}">All tasks</button></div>
+      <div class="tl">
+        <div class="tl-line"></div><div class="tl-fill" style="width:18%"></div>
+        <sc-for list="{{ ms }}" as="m" hint-placeholder-count="7">
+          <div class="{{ m.cls }}" style="left:{{ m.x }}"><span class="md xs mut">{{ m.d }}</span><span class="mk"></span><span class="lb sm">{{ m.l }}</span></div>
+        </sc-for>
+      </div>
+      <div class="row" style="gap:8px;margin-top:22px"><span class="xs mut" style="margin-right:6px">Done lately</span><sc-for list="{{ recent }}" as="r" hint-placeholder-count="3"><span class="tick">{{ r.t }}</span></sc-for></div>
+    </section>
+
+    <section class="duo">
+      <div>
+        <div class="row sb" style="margin-bottom:8px"><div class="eb">On the day</div><button class="btn btn-t btn-s" data-p="events" onClick="{{ go }}">Edit schedule</button></div>
+        <sc-for list="{{ schedule }}" as="s" hint-placeholder-count="3">
+          <div style="display:grid;grid-template-columns:92px minmax(0,1fr);gap:18px;padding:16px 0;border-top:1px solid var(--line)"><div class="num" style="font-size:30px">{{ s.s }}</div><div><div style="font-weight:500">{{ s.name }}</div><div class="sm mut">{{ s.venue }}</div></div></div>
+        </sc-for>
+      </div>
+      <div>
+        <div class="row sb" style="margin-bottom:8px"><div class="eb">Around the workspace</div><button class="btn btn-t btn-s" data-p="team" onClick="{{ go }}">Team</button></div>
+        <sc-for list="{{ activity }}" as="a" hint-placeholder-count="4">
+          <div class="row" style="padding:14px 0;border-top:1px solid var(--line);flex-wrap:nowrap;gap:14px"><span class="av" style="background:{{ a.c }};border:0">{{ a.i }}</span><span style="flex:1;min-width:0" class="sm"><b style="font-weight:600">{{ a.n }}</b> {{ a.w }}</span><span class="xs mut" style="white-space:nowrap">{{ a.t }}</span></div>
+        </sc-for>
+        <div class="row" style="margin-top:18px;gap:8px"><button class="btn btn-s" onClick="{{ openAddGuest }}">Add guest</button><button class="btn btn-s" data-p="checkin" onClick="{{ go }}">QR codes</button><button class="btn btn-s" data-p="eventday" onClick="{{ go }}">Rehearse event day</button></div>
+      </div>
+    </section>
+  </div>
+  </sc-if>
+  </sc-if>
+
+  <!-- GUESTS -->
+  <sc-if value="{{ p.guests }}" hint-placeholder-val="{{ false }}">
+  <div class="stg" style="display:grid;gap:22px">
+    <div class="ph" style="margin-bottom:6px"><div><div class="eb">Guests · 247 invited</div><h1 class="h1">Who’s coming.</h1></div>
+      <div class="row"><button class="btn btn-t" onClick="{{ importG }}">Import</button><button class="btn btn-t" onClick="{{ exportG }}">Export</button><button class="btn btn-p" onClick="{{ openAddGuest }}">Add guest</button></div></div>
+    <div class="segs" role="tablist" aria-label="Guest groups">
+      <sc-for list="{{ segs }}" as="s" hint-placeholder-count="8"><button class="{{ s.on }}" data-v="{{ s.id }}" onClick="{{ setSeg }}" role="tab"><span class="num" style="font-size:32px">{{ s.v }}</span><span class="sm mut">{{ s.l }}</span></button></sc-for>
+    </div>
+    <sc-if value="{{ hasSegAct }}" hint-placeholder-val="{{ false }}">
+      <div class="row sb" style="padding:16px 20px;border-radius:16px;background:var(--bg2);animation:rise .6s var(--eo) both"><span class="row" style="gap:12px;flex-wrap:nowrap"><span style="width:9px;height:9px;border-radius:50%;background:var(--dot);flex:none"></span><span>{{ segMsg }}</span></span><button class="btn btn-p btn-s" onClick="{{ segRun }}">{{ segCta }}</button></div>
+    </sc-if>
+    <div class="row"><input class="inp" style="flex:1;min-width:200px;max-width:380px" placeholder="Search by name or group" value="{{ gq }}" onInput="{{ setGq }}" aria-label="Search guests">
+      <select class="inp" style="width:auto" onChange="{{ setGs }}" aria-label="Sort guests"><option value="name">Sort by name</option><option value="group">Sort by group</option><option value="status">Sort by reply</option></select>
+      <span class="sm mut" style="margin-left:auto">Showing {{ gCount }} sample guests</span></div>
+    <sc-if value="{{ hasSel }}" hint-placeholder-val="{{ false }}"><div class="row" style="padding:10px 12px 10px 20px;border-radius:99px;background:var(--ink);color:var(--onink);animation:rise .5s var(--eo) both;position:sticky;top:76px;z-index:5"><b style="font-weight:500">{{ selCount }} selected</b><div style="flex:1"></div><button class="btn btn-s" style="color:inherit;border-color:rgba(128,128,128,.5)" onClick="{{ bulkResend }}">Resend invitation</button><button class="btn btn-s" style="color:inherit;border-color:rgba(128,128,128,.5)" onClick="{{ bulkDel }}">Remove</button><button class="btn btn-s btn-t" style="color:inherit" onClick="{{ clearSel }}">Clear</button></div></sc-if>
+    <sc-if value="{{ freshGuests }}" hint-placeholder-val="{{ false }}">
+      <div style="display:grid;justify-items:center;text-align:center;gap:14px;padding:72px 20px;border:1px dashed var(--line2);border-radius:24px">
+        <svg viewBox="0 0 60 50" width="64" fill="none"><path d="M10 48V26a20 20 0 0 1 40 0v22" stroke="var(--line2)" stroke-width="2"></path><circle cx="12" cy="44" r="5" fill="var(--dot)"></circle></svg>
+        <h2 class="h1" style="font-size:clamp(28px,3vw,40px)">Your guest list starts here.</h2>
+        <p class="lede" style="max-width:44ch">Your invitation is ready to be shared. Add the people you would love to see, one by one or from a spreadsheet.</p>
+        <div class="row" style="justify-content:center"><button class="btn btn-p" onClick="{{ openAddGuest }}">Add your first guest</button><button class="btn" onClick="{{ importG }}">Import a list</button></div>
+      </div>
+    </sc-if>
+    <sc-if value="{{ noGuests }}" hint-placeholder-val="{{ false }}"><div style="text-align:center;padding:48px 16px"><div class="h2">No one here yet.</div><p class="mut">Try another search or group, or add a guest.</p></div></sc-if>
+    <sc-if value="{{ hasGuests }}" hint-placeholder-val="{{ true }}">
+    <div class="card dt" style="padding:4px 10px;overflow:auto"><table class="tbl"><thead><tr><th style="width:36px"><span style="position:absolute;width:1px;height:1px;overflow:hidden">Select</span></th><th>Guest</th><th>Journey</th><th>Reply</th><th>Group</th><th>Party</th><th>Table</th><th></th></tr></thead><tbody>
+      <sc-for list="{{ guests }}" as="g" hint-placeholder-count="8"><tr class="rw"><td><input type="checkbox" checked="{{ g.chk }}" data-v="{{ g.id }}" onChange="{{ selG }}" aria-label="Select {{ g.name }}" style="width:18px;height:18px;accent-color:var(--ink)"></td>
+        <td data-v="{{ g.id }}" onClick="{{ openG }}"><span class="row" style="flex-wrap:nowrap;gap:12px"><span class="av" style="background:{{ g.c }};border:0">{{ g.i }}</span><span><b style="font-weight:500">{{ g.name }}</b><br><span class="xs mut">{{ g.phone }}</span></span></span></td>
+        <td data-v="{{ g.id }}" onClick="{{ openG }}"><span class="jd" title="Sent · Opened · Replied"><i class="{{ g.j1 }}"></i><i class="{{ g.j2 }}"></i><i class="{{ g.j3 }}"></i></span></td>
+        <td><span class="bdg {{ g.cls }}">{{ g.st }}</span></td><td class="mut">{{ g.group }}</td><td>{{ g.plus }}</td><td>{{ g.table }}</td><td style="text-align:right"><button class="btn btn-t btn-s" data-v="{{ g.id }}" onClick="{{ openG }}">Open</button></td></tr></sc-for></tbody></table></div>
+    <div class="mo">
+      <sc-for list="{{ guests }}" as="g" hint-placeholder-count="6"><div class="row" style="padding:14px 0;border-top:1px solid var(--line);flex-wrap:nowrap;gap:12px"><input type="checkbox" checked="{{ g.chk }}" data-v="{{ g.id }}" onChange="{{ selG }}" aria-label="Select {{ g.name }}" style="width:22px;height:22px;accent-color:var(--ink);flex:none"><button style="all:unset;flex:1;min-width:0;display:flex;gap:12px;align-items:center;cursor:pointer;min-height:44px" data-v="{{ g.id }}" onClick="{{ openG }}"><span class="av" style="background:{{ g.c }};border:0">{{ g.i }}</span><span style="min-width:0"><b style="font-weight:500">{{ g.name }}</b><br><span class="xs mut">{{ g.group }} · {{ g.plus }} · Table {{ g.table }}</span></span></button><span class="bdg {{ g.cls }}">{{ g.st }}</span></div></sc-for>
+    </div>
+    </sc-if>
+  </div>
+  </sc-if>
+
+  <!-- SCHEDULE -->
+  <sc-if value="{{ p.events }}" hint-placeholder-val="{{ false }}">
+  <div class="stg" style="display:grid;gap:10px;max-width:1080px">
+    <div class="ph"><div><div class="eb">Schedule · {{ ev.date }}</div><h1 class="h1">The moments your guests will remember.</h1></div><button class="btn btn-p" onClick="{{ addEvent }}">Add a moment</button></div>
+    <sc-if value="{{ noEvents }}" hint-placeholder-val="{{ false }}">
+      <div style="display:grid;justify-items:center;text-align:center;gap:14px;padding:72px 20px;border:1px dashed var(--line2);border-radius:24px"><h2 class="h1" style="font-size:clamp(28px,3vw,40px)">Nothing scheduled yet.</h2><p class="lede" style="max-width:46ch">Add the moments that will shape your celebration: a ceremony, a dinner, a party. Each one gets its own time, place and dress code.</p><button class="btn btn-p" onClick="{{ addEvent }}">Add your first moment</button></div>
+    </sc-if>
+    <sc-for list="{{ events }}" as="e" hint-placeholder-count="3">
+      <div class="rr">
+        <div style="text-align:right;padding-top:14px"><div class="num" style="font-size:36px">{{ e.s }}</div><div class="xs mut" style="margin-top:4px">until {{ e.en }}</div></div>
+        <div class="rl"></div>
+        <div class="card lift" style="margin:0 0 18px;display:grid;gap:12px">
+          <div class="row sb" style="align-items:flex-start"><div style="min-width:0;flex:1"><div class="row" style="gap:10px"><span class="xs mut">{{ e.no }}</span><h2 class="h2">{{ e.name }}</h2><span class="bdg {{ e.vc }}">{{ e.vis }}</span></div><div class="mut" style="margin-top:6px">{{ e.venue }}</div><div class="sm mut">{{ e.addr }} · Dress code: {{ e.dress }}</div></div>
+            <div class="row" style="gap:4px"><button class="btn btn-t btn-i" data-v="{{ e.id }}" onClick="{{ evUp }}" aria-label="Move earlier">↑</button><button class="btn btn-t btn-i" data-v="{{ e.id }}" onClick="{{ evDown }}" aria-label="Move later">↓</button><button class="btn btn-s" data-v="{{ e.id }}" onClick="{{ evEdit }}">Edit</button><button class="btn btn-t btn-s" data-v="{{ e.id }}" onClick="{{ evDup }}">Duplicate</button><button class="btn btn-t btn-s" style="color:var(--no)" data-v="{{ e.id }}" onClick="{{ evDel }}">Delete</button></div></div>
+          <sc-if value="{{ e.open }}" hint-placeholder-val="{{ false }}">
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr));gap:14px;border-top:1px solid var(--line);padding-top:18px;animation:rise .6s var(--eo) both">
+              <label class="f">Name of this moment<input class="inp" defaultValue="{{ e.name }}"></label><label class="f">Date<input class="inp" type="date" defaultValue="2026-12-12"></label>
+              <label class="f">Starts<input class="inp" type="time" defaultValue="{{ e.s }}"></label><label class="f">Ends<input class="inp" type="time" defaultValue="{{ e.en }}"></label>
+              <label class="f">Venue<input class="inp" defaultValue="{{ e.venue }}"></label><label class="f">Address<input class="inp" defaultValue="{{ e.addr }}"></label>
+              <label class="f">Map link<input class="inp" placeholder="Paste a Google Maps link"></label><label class="f">Dress code<input class="inp" defaultValue="{{ e.dress }}"></label>
+              <label class="f">Who can see it<select class="inp"><option>Everyone</option><option>Invite only</option><option>Family only</option></select></label>
+              <label class="f" style="grid-column:1/-1">Description<textarea class="inp">{{ e.desc }}</textarea></label>
+            </div>
+            <div class="row sb"><label class="row sm" style="gap:10px"><button class="tog on" role="switch" aria-checked="true" onClick="{{ tg }}" aria-label="Show add to calendar"></button> Show “Add to calendar” to guests</label><button class="btn btn-p btn-s" data-v="{{ e.id }}" onClick="{{ evSave }}">Save moment</button></div>
+          </sc-if>
+        </div>
+      </div>
+    </sc-for>
+  </div>
+  </sc-if>
+
+  <!-- TASKS -->
+  <sc-if value="{{ p.todo }}" hint-placeholder-val="{{ false }}">
+  <div class="split stg" style="grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);align-items:start;gap:clamp(24px,5vw,72px)">
+    <div style="position:sticky;top:96px;display:grid;gap:18px">
+      <div class="eb">Tasks</div>
+      <div style="position:relative;max-width:280px">
+        <svg viewBox="0 0 240 136" style="width:100%;display:block;overflow:visible" role="img" aria-label="{{ todoDone }} of {{ todoTotal }} done"><path d="M16 124 A104 104 0 0 1 224 124" fill="none" stroke="var(--line)" stroke-width="8" stroke-linecap="round"></path><path d="M16 124 A104 104 0 0 1 224 124" fill="none" stroke="var(--ink)" stroke-width="8" stroke-linecap="round" pathLength="100" stroke-dasharray="{{ tArch.dash }}" style="transition:stroke-dasharray 1s var(--eo);animation:draw 1.6s var(--eo) both"></path><circle cx="{{ tArch.x }}" cy="{{ tArch.y }}" r="9" fill="var(--dot)" stroke="var(--bg)" stroke-width="3" style="transition:cx 1s var(--eo),cy 1s var(--eo)"></circle></svg>
+        <div class="num" style="position:absolute;left:0;right:0;bottom:0;text-align:center;font-size:52px">{{ todoDone }}<span style="font-size:.45em;color:var(--mut)">/{{ todoTotal }}</span></div>
+      </div>
+      <h1 class="h1" style="font-size:clamp(30px,3.4vw,44px)">{{ todoDone }} of {{ todoTotal }} done.<br><span class="mut it" style="font-weight:300">Calm and on track.</span></h1>
+      <p class="sm mut" style="margin:0">Next: <b style="color:var(--ink);font-weight:500">{{ nextTask }}</b></p>
+      <div style="display:grid;gap:8px;margin-top:6px"><div class="row" style="flex-wrap:nowrap"><input class="inp" placeholder="Add something to remember" value="{{ nt }}" onInput="{{ setNt }}" onKeyDown="{{ ntKey }}" aria-label="New task"><button class="btn btn-p" onClick="{{ addTask }}">Add</button></div>
+        <select class="inp" style="width:auto;justify-self:start" onChange="{{ setNp }}" aria-label="Priority"><option>Normal</option><option>High</option><option>Low</option></select></div>
+    </div>
+    <div style="display:grid;gap:28px">
+      <div class="row" style="gap:6px"><sc-for list="{{ tcats }}" as="c" hint-placeholder-count="7"><button class="{{ c.on }}" data-v="{{ c.n }}" onClick="{{ setTc }}">{{ c.n }}</button></sc-for></div>
+      <section><div class="eb" style="margin-bottom:6px">Coming up</div>
+        <sc-for list="{{ tSoon }}" as="t" hint-placeholder-count="2"><div class="{{ t.cls }}"><button class="{{ t.ckc }}" data-v="{{ t.id }}" onClick="{{ togTask }}" aria-label="Mark {{ t.title }} done"><svg viewBox="0 0 16 16"><path d="M3.5 8.5l3 3 6-7"></path></svg></button><div><div class="tt">{{ t.title }}</div><div class="xs mut">{{ t.cat }} · Due {{ t.due }}</div></div><span class="bdg {{ t.pc }} hidem2">{{ t.pri }}</span><button class="btn btn-t btn-s" data-v="{{ t.id }}" onClick="{{ delTask }}" aria-label="Remove task">Remove</button></div></sc-for></section>
+      <section><div class="eb" style="margin-bottom:6px">Later</div>
+        <sc-for list="{{ tLater }}" as="t" hint-placeholder-count="3"><div class="{{ t.cls }}"><button class="{{ t.ckc }}" data-v="{{ t.id }}" onClick="{{ togTask }}" aria-label="Mark {{ t.title }} done"><svg viewBox="0 0 16 16"><path d="M3.5 8.5l3 3 6-7"></path></svg></button><div><div class="tt">{{ t.title }}</div><div class="xs mut">{{ t.cat }} · Due {{ t.due }}</div></div><span class="bdg {{ t.pc }} hidem2">{{ t.pri }}</span><button class="btn btn-t btn-s" data-v="{{ t.id }}" onClick="{{ delTask }}" aria-label="Remove task">Remove</button></div></sc-for></section>
+      <section><div class="eb" style="margin-bottom:6px">Done</div>
+        <sc-for list="{{ tDone }}" as="t" hint-placeholder-count="4"><div class="{{ t.cls }}"><button class="{{ t.ckc }}" data-v="{{ t.id }}" onClick="{{ togTask }}" aria-label="Mark {{ t.title }} not done"><svg viewBox="0 0 16 16"><path d="M3.5 8.5l3 3 6-7"></path></svg></button><div><div class="tt">{{ t.title }}</div><div class="xs mut">{{ t.cat }} · {{ t.due }}</div></div><span></span><span></span></div></sc-for></section>
+    </div>
+  </div>
+  </sc-if>
+
+  <!-- INVITATION -->
+  <sc-if value="{{ p.invitation }}" hint-placeholder-val="{{ false }}">
+  <div class="stg" style="display:grid;gap:8px">
+    <div class="ph"><div><div class="eb">Invitation · 9 of 11 sections complete</div><h1 class="h1">What your guests will see.</h1></div>
+      <div class="row"><button class="btn" onClick="{{ openPreview }}">Preview invitation</button><button class="btn btn-p" onClick="{{ publish }}">Publish changes</button></div></div>
+    <div class="ed">
+      <nav class="edn" aria-label="Invitation sections" style="display:grid;gap:2px;position:sticky;top:90px">
+        <sc-for list="{{ secs }}" as="s" hint-placeholder-count="11"><button class="{{ s.on }}" data-v="{{ s.id }}" onClick="{{ setSec }}"><span class="xs mut" style="font-variant-numeric:tabular-nums">{{ s.no }}</span><span>{{ s.n }}</span><span class="sd" style="background:{{ s.c }}"></span></button></sc-for>
+      </nav>
+      <div class="card" style="display:grid;gap:18px;align-content:start;padding:clamp(20px,3vw,34px)">
+        <div class="row sb"><div><div class="eb">Editing</div><h2 class="h1" style="font-size:clamp(28px,3vw,38px);margin-top:6px">{{ secName }}</h2></div><span class="xs mut">Changes appear in the preview as you type</span></div>
+        <sc-if value="{{ sec.cover }}" hint-placeholder-val="{{ true }}">
+          <label class="f">Greeting line<input class="inp" value="{{ ev.greet }}" onInput="{{ setGreet }}"></label>
+          <label class="f">Names<input class="inp" defaultValue="{{ ev.host }}"></label>
+          <label class="f">Tagline<input class="inp" value="{{ ev.line }}" onInput="{{ setLine }}"></label>
+          <div class="arch" style="height:200px;max-width:220px;background:{{ pv.photo }};display:grid;place-items:end center;padding:16px;color:#fff;font-size:12px;letter-spacing:.1em;text-transform:uppercase">Replace cover photo</div>
+        </sc-if>
+        <sc-if value="{{ sec.main }}" hint-placeholder-val="{{ false }}">
+          <label class="f">Kind of celebration<select class="inp"><option>Wedding</option><option>Birthday</option><option>17th Birthday</option><option>Anniversary</option><option>Engagement</option><option>Product launch</option></select></label>
+          <label class="f">Host names<input class="inp" defaultValue="Raden Aditya &amp; Cilla Maharani"></label>
+          <label class="f">Opening message<textarea class="inp">With gratitude, we invite you to share the beginning of our forever.</textarea></label>
+        </sc-if>
+        <sc-if value="{{ sec.gallery }}" hint-placeholder-val="{{ false }}">
+          <div style="display:grid;justify-items:center;text-align:center;gap:12px;padding:44px 16px;border:1px dashed var(--line2);border-radius:18px"><div class="h2">Bring your story to life.</div><p class="sm mut" style="margin:0;max-width:40ch">Guests won’t see this section until it has photos. Add up to 12, and they’ll appear in a gentle carousel.</p><button class="btn btn-p" onClick="{{ toastGallery }}">Upload photos</button></div>
+        </sc-if>
+        <sc-if value="{{ sec.rsvp }}" hint-placeholder-val="{{ false }}">
+          <div class="row sb"><span>Ask guests to reply</span><button class="tog on" role="switch" aria-checked="true" onClick="{{ tg }}" aria-label="Ask guests to reply"></button></div>
+          <label class="f">Replies close on<input class="inp" type="date" defaultValue="2026-11-25"></label>
+          <label class="f">Most people per invitation<input class="inp" type="number" defaultValue="2"></label>
+          <div class="row sb"><span>Send an automatic reminder 10 days before</span><button class="tog on" role="switch" aria-checked="true" onClick="{{ tg }}" aria-label="Automatic reminder"></button></div>
+        </sc-if>
+        <sc-if value="{{ sec.other }}" hint-placeholder-val="{{ false }}">
+          <div class="row sb"><span>Show this section</span><button class="tog on" role="switch" aria-checked="true" onClick="{{ tg }}" aria-label="Show this section"></button></div>
+          <label class="f">Heading<input class="inp" defaultValue="{{ secName }}"></label>
+          <label class="f">What guests will read<textarea class="inp">Write a few lines for your guests here.</textarea></label>
+        </sc-if>
+        <div class="row" style="justify-content:flex-end;border-top:1px solid var(--line);padding-top:18px"><button class="btn btn-t" onClick="{{ failSave }}">Discard</button><button class="btn btn-p" onClick="{{ save }}">Save changes</button></div>
+      </div>
+      <div class="pvc" style="position:sticky;top:90px;display:grid;gap:10px">
+        <div class="row sb"><span class="eb">Guest view</span><button class="btn btn-t btn-s" onClick="{{ openPreview }}">Full screen</button></div>
+        <div class="phone" style="background:{{ pv.bg }};color:{{ pv.fg }}"><div style="height:100%;display:grid;align-content:center;justify-items:center;text-align:center;padding:26px 22px;gap:16px"><div class="arch" style="width:70%;aspect-ratio:3/3.6;background:{{ pv.photo }}"></div><div class="xs" style="letter-spacing:.16em;text-transform:uppercase;opacity:.7">{{ ev.greet }}</div><div style="font-family:{{ pv.font }};font-size:32px;line-height:1.02">{{ ev.a }}<br><sc-if value="{{ ev.amp }}" hint-placeholder-val="{{ true }}"><span class="it" style="color:{{ pv.ac }}">&amp; </span></sc-if>{{ ev.b }}</div><div class="it serif sm" style="opacity:.8">{{ ev.line }}</div><div class="xs" style="letter-spacing:.24em;opacity:.8">{{ ev.dshort }}</div></div></div>
+      </div>
+    </div>
+  </div>
+  </sc-if>
+
+  <!-- DESIGN -->
+  <sc-if value="{{ p.design }}" hint-placeholder-val="{{ false }}">
+  <div class="stg" style="display:grid;gap:28px">
+    <div class="ph" style="margin-bottom:0"><div><div class="eb">Design</div><h1 class="h1">Choose how your story looks.</h1></div><p class="sm mut" style="max-width:36ch;margin:0">Change it whenever you like. Your words, photos and guests stay exactly as they are.</p></div>
+    <section class="studio">
+      <div class="stage" style="display:grid;place-items:center;min-height:520px;padding:30px" onMouseMove="{{ tiltMove }}" onMouseLeave="{{ tiltOut }}">
+        <div class="halo" style="border-color:rgba(238,233,223,.12)"></div><div class="halo-dot" style="background:#B8AB97"></div>
+        <div class="tilt inv-obj" style="background:{{ pv.bg }};color:{{ pv.fg }};width:min(290px,70%);box-shadow:0 60px 100px -30px rgba(0,0,0,.85)">
+          <div class="inv-photo arch" style="background:{{ pv.photo }}">Cover photo</div>
+          <div class="lay2"><div class="xs" style="letter-spacing:.16em;text-transform:uppercase;opacity:.7">{{ ev.greet }}</div><div style="font-family:{{ pv.font }};font-size:34px;line-height:1.02;margin:10px 0 12px">{{ ev.a }}<br><sc-if value="{{ ev.amp }}" hint-placeholder-val="{{ true }}"><span class="it" style="color:{{ pv.ac }}">&amp; </span></sc-if>{{ ev.b }}</div><div class="xs" style="letter-spacing:.24em;opacity:.8">{{ ev.dshort }}</div></div>
+          <div class="sheen"></div>
+        </div>
+      </div>
+      <div style="padding:clamp(24px,4vw,48px);display:grid;gap:26px;align-content:center">
+        <div><div class="eb" style="color:#A39B8E">In use</div><div class="h1" style="margin-top:8px;font-size:clamp(34px,3.6vw,48px)">{{ designName }}</div></div>
+        <div><div class="xs" style="color:#A39B8E;margin-bottom:10px">Palette</div><div class="row" style="gap:12px"><sc-for list="{{ palOpts }}" as="o" hint-placeholder-count="4"><button data-v="{{ o.i }}" onClick="{{ setPal }}" aria-label="{{ o.n }} palette" style="width:52px;height:52px;border-radius:50%;border:0;padding:0;background:linear-gradient(135deg,{{ o.bg }} 50%,{{ o.ac }} 50%);{{ o.on }};transition:outline-offset .3s"></button></sc-for></div></div>
+        <div><div class="xs" style="color:#A39B8E;margin-bottom:10px">Type</div><div class="seg dk"><sc-for list="{{ fonts }}" as="f" hint-placeholder-count="3"><button class="{{ f.on }}" data-v="{{ f.n }}" onClick="{{ setFont }}">{{ f.n }}</button></sc-for></div></div>
+        <div class="row"><button class="btn" style="background:#EEE9DF;color:#12110F;border-color:#EEE9DF" onClick="{{ save }}">Save design</button><button class="btn" style="color:#EEE9DF;border-color:rgba(238,233,223,.25)" onClick="{{ openPreview }}">Preview on a phone</button></div>
+      </div>
+    </section>
+    <div class="row sb" style="margin-top:24px;align-items:flex-end"><h2 class="h2">More designs</h2><input class="inp" placeholder="Search designs" value="{{ dq }}" onInput="{{ setDq }}" aria-label="Search designs" style="max-width:300px"></div>
+    <div class="row" style="gap:6px"><sc-for list="{{ dcats }}" as="c" hint-placeholder-count="11"><button class="{{ c.on }}" data-v="{{ c.n }}" onClick="{{ setDcat }}">{{ c.n }}</button></sc-for></div>
+    <sc-if value="{{ noDesigns }}" hint-placeholder-val="{{ false }}"><p class="mut">No designs match yet. Try another category.</p></sc-if>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,250px),1fr));gap:clamp(18px,2vw,28px)">
+      <sc-for list="{{ designs }}" as="d" hint-placeholder-count="8">
+        <article class="dcard">
+          <div class="dthumb" style="background:{{ d.bg }};color:{{ d.fg }}">
+            <sc-if value="{{ d.cur }}" hint-placeholder-val="{{ false }}"><span class="bdg" style="position:absolute;top:14px;left:14px;background:{{ d.fg }};color:{{ d.bg }}">In use</span></sc-if>
+            <div class="dthumb-in"><div class="arch" style="width:78%;aspect-ratio:3/3.4;background:{{ d.photo }}"></div><div class="xs" style="letter-spacing:.16em;text-transform:uppercase;opacity:.7">{{ d.cat }}</div><div class="serif" style="font-size:28px;line-height:1.02">{{ d.mock }}</div></div>
+          </div>
+          <div style="padding:14px 2px 0;display:grid;gap:10px"><div class="row sb"><b style="font-weight:500">{{ d.name }}</b><span class="xs mut">{{ d.tags }}</span></div>
+            <div class="row" style="gap:6px"><button class="btn btn-s" onClick="{{ openPreview }}">Preview</button><button class="btn btn-p btn-s" data-v="{{ d.name }}" data-pal="{{ d.pal }}" onClick="{{ useDesign }}">Use this design</button></div></div>
+        </article>
+      </sc-for>
+    </div>
+  </div>
+  </sc-if>
+
+  <!-- GIFT -->
+  <sc-if value="{{ p.gift }}" hint-placeholder-val="{{ false }}">
+  <div class="stg" style="display:grid;gap:8px">
+    <div class="ph"><div><div class="eb">Gift</div><h1 class="h1">Choose how guests can celebrate with you.</h1></div><button class="btn btn-p" onClick="{{ addGift }}">Add gift method</button></div>
+    <div class="split" style="align-items:start">
+      <div style="display:grid;gap:12px">
+        <sc-if value="{{ noGifts }}" hint-placeholder-val="{{ false }}"><div style="display:grid;justify-items:center;text-align:center;gap:12px;padding:56px 20px;border:1px dashed var(--line2);border-radius:24px"><div class="h2">No gift methods yet.</div><p class="sm mut" style="margin:0;max-width:42ch">This is optional. If you’d like, add a bank account, a wallet or an address, and guests can copy it in one tap.</p><button class="btn btn-p" onClick="{{ addGift }}">Add a gift method</button></div></sc-if>
+        <sc-for list="{{ gifts }}" as="g" hint-placeholder-count="3"><div class="card lift" style="padding:20px 22px"><div class="row sb" style="align-items:flex-start"><div><span class="eb">{{ g.type }}</span><h2 class="h2" style="margin-top:6px">{{ g.title }}</h2><div class="sm mut">{{ g.detail }}</div></div>
+          <div class="row" style="gap:4px"><button class="btn btn-t btn-i" data-v="{{ g.id }}" onClick="{{ gUp }}" aria-label="Move up">↑</button><button class="btn btn-t btn-i" data-v="{{ g.id }}" onClick="{{ gDown }}" aria-label="Move down">↓</button><button class="btn btn-s" onClick="{{ save }}">Edit</button><button class="btn btn-t btn-s" style="color:var(--no)" data-v="{{ g.id }}" onClick="{{ gDel }}">Delete</button></div></div></div></sc-for>
+        <label class="f" style="margin-top:12px">A note for guests<textarea class="inp">Your presence is the greatest gift. Should you wish to give something, here are a few ways.</textarea></label>
+        <div style="margin-top:28px"><div class="eb">Received</div><div style="padding:26px 0;border-top:1px solid var(--line);margin-top:10px"><div class="h2" style="font-size:22px">Nothing received yet.</div><p class="sm mut" style="margin:6px 0 0;max-width:48ch">When guests confirm a gift on the invitation, it appears here with their name, so thank-you notes are easy later.</p></div></div>
+      </div>
+      <div style="position:sticky;top:90px"><div class="eb" style="margin-bottom:10px">How guests will see it</div>
+        <div style="background:{{ pv.bg }};color:{{ pv.fg }};border-radius:24px;padding:30px 22px;display:grid;gap:14px;text-align:center;box-shadow:var(--sh)"><div style="font-family:{{ pv.font }};font-size:30px">Wedding gift</div><div class="sm" style="opacity:.75">Your presence is the greatest gift.</div>
+          <sc-for list="{{ gifts }}" as="g" hint-placeholder-count="3"><div style="background:rgba(255,255,255,.55);border-radius:14px;padding:16px;text-align:left;display:grid;gap:2px"><div class="xs" style="opacity:.7">{{ g.title }}</div><div class="row sb"><b style="font-weight:600;font-variant-numeric:tabular-nums">{{ g.copy }}</b><button class="btn btn-s" style="border-color:currentColor;color:inherit" data-v="{{ g.copy }}" onClick="{{ copy }}">Copy</button></div></div></sc-for></div></div>
+    </div>
+  </div>
+  </sc-if>
+
+  <!-- EVENT DAY -->
+  <sc-if value="{{ p.eventday }}" hint-placeholder-val="{{ false }}">
+  <div class="stg" style="display:grid;gap:18px">
+    <div class="row sb" style="padding:14px 14px 14px 22px;border-radius:99px;border:1px solid var(--line);background:var(--sf)"><span class="row" style="gap:12px;flex-wrap:nowrap"><sc-if value="{{ sim }}" hint-placeholder-val="{{ false }}"><span class="ldot"></span></sc-if><span class="sm"><b style="font-weight:600">Rehearsal.</b> <span class="mut">Event day opens on {{ ev.day }} {{ ev.mon }}. Try it now so you know how it works.</span></span></span><button class="btn btn-p btn-s" onClick="{{ toggleSim }}">{{ simLabel }}</button></div>
+    <div class="ph" style="margin:16px 0 8px;align-items:flex-end"><div><div class="eb">Event day · Reception · 18:00</div><div class="row" style="align-items:flex-end;gap:18px;margin-top:12px"><span class="num" style="font-size:clamp(84px,11vw,150px)">{{ checked }}</span><span style="padding-bottom:18px"><span class="h2">have arrived</span><br><span class="sm mut">of {{ expected }} expected · {{ notYet }} still on their way</span></span></div></div>
+      <div class="row"><button class="btn" data-p="checkin" onClick="{{ go }}">Open scanner</button><button class="btn" data-p="live" onClick="{{ go }}">Stream</button></div></div>
+    <div style="height:6px;border-radius:9px;background:var(--line);overflow:hidden"><div style="height:100%;background:var(--ink);width:{{ arrPct }};transition:width .8s var(--eo)"></div></div>
+    <div class="ops" style="margin-top:14px">
+      <div class="card w2"><div class="row sb"><span class="eb">Arrivals every 15 minutes</span><span class="xs mut">Peak at 18:15</span></div><div class="bars" style="margin-top:22px"><sc-for list="{{ bars }}" as="b" hint-placeholder-count="6"><i style="height:{{ b.h }}" title="{{ b.l }}"></i></sc-for></div><div class="row xs mut" style="justify-content:space-between;margin-top:8px;flex-wrap:nowrap"><sc-for list="{{ bars }}" as="b" hint-placeholder-count="6"><span>{{ b.l }}</span></sc-for></div></div>
+      <div class="card"><div class="eb">Just arrived</div><div style="margin-top:10px"><sc-for list="{{ feed }}" as="f" hint-placeholder-count="5"><div class="row" style="padding:10px 0;border-top:1px solid var(--line);flex-wrap:nowrap;gap:12px"><span class="av" style="background:{{ f.c }};border:0">{{ f.i }}</span><span style="flex:1;min-width:0" class="sm"><b style="font-weight:500">{{ f.n }}</b><br><span class="mut xs">{{ f.t }}</span></span><span class="xs mut" style="font-variant-numeric:tabular-nums">{{ f.w }}</span></div></sc-for></div></div>
+      <div class="card"><div class="eb">Needs attention</div><div style="display:grid;gap:12px;margin-top:14px"><div class="row" style="flex-wrap:nowrap;gap:12px;align-items:flex-start"><span class="bdg b-wt">VIP</span><span class="sm">Kevin Halim has arrived. Table V1 is ready.</span></div><div class="row" style="flex-wrap:nowrap;gap:12px;align-items:flex-start"><span class="bdg b-in">Ushers</span><span class="sm">Putri is scanning offline. Check-ins will sync when she reconnects.</span></div></div></div>
+      <div class="card"><div class="eb">Ushers on duty</div><div style="margin-top:10px"><sc-for list="{{ ushers }}" as="u" hint-placeholder-count="3"><div class="row" style="padding:10px 0;border-top:1px solid var(--line);flex-wrap:nowrap;gap:12px"><span class="av" style="background:{{ u.c }};border:0">{{ u.i }}</span><span style="flex:1" class="sm">{{ u.n }}<br><span class="xs mut">{{ u.r }}</span></span><span class="bdg b-ok">On</span></div></sc-for></div></div>
+      <div class="card"><div class="eb">Live stream</div><div class="row" style="margin-top:14px;gap:10px"><span class="bdg {{ liveCls }}">{{ live }}</span></div><div class="h2" style="margin-top:12px;font-size:22px">{{ liveTitle }}</div><p class="sm mut" style="margin:4px 0 0">{{ liveSub }}</p></div>
+    </div>
+  </div>
+  </sc-if>
+
+  <!-- CHECK-IN -->
+  <sc-if value="{{ p.checkin }}" hint-placeholder-val="{{ false }}">
+  <div class="stg" style="display:grid;gap:24px">
+    <div class="ph" style="margin-bottom:0"><div><div class="eb">Check-in</div><h1 class="h1">Welcome everyone smoothly at the door.</h1></div><div class="seg" role="tablist"><sc-for list="{{ ckTabs }}" as="t" hint-placeholder-count="2"><button class="{{ t.on }}" data-v="{{ t.id }}" onClick="{{ setCk }}" role="tab">{{ t.n }}</button></sc-for></div></div>
+    <sc-if value="{{ ckQr }}" hint-placeholder-val="{{ true }}">
+      <div class="row" style="gap:6px"><sc-for list="{{ qrTabs }}" as="q" hint-placeholder-count="3"><button class="{{ q.on }}" data-v="{{ q.id }}" onClick="{{ setQr }}">{{ q.n }}</button></sc-for></div>
+      <div class="split" style="align-items:center;grid-template-columns:minmax(0,1fr) minmax(0,1fr)">
+        <div style="display:grid;place-items:center;padding:clamp(20px,4vw,48px);border-radius:28px;background:var(--bg2)">
+          <div class="sign">
+            <img src="assets/mula-symbol-ink.png" alt="" style="height:26px;opacity:.85">
+            <div style="font:500 11px var(--sans);letter-spacing:.16em;text-transform:uppercase;color:#6F685E">{{ qrTitle }}</div>
+            <svg viewBox="0 0 29 29" width="210" height="210" shape-rendering="crispEdges" role="img" aria-label="QR code"><rect width="29" height="29" fill="#FBFAF7"></rect><path d="{{ qrPath }}" fill="#272523"></path></svg>
+            <div class="serif" style="font-size:28px;line-height:1.05">{{ ev.host }}</div><div style="font-size:12px;letter-spacing:.22em;color:#6F685E">{{ ev.dshort }}</div>
+          </div>
+        </div>
+        <div style="display:grid;gap:22px">
+          <p class="lede">{{ qrHint }}</p>
+          <div class="row"><button class="btn btn-p" onClick="{{ qrDl }}">Download</button><button class="btn" onClick="{{ qrPrint }}">Print</button><button class="btn btn-t" onClick="{{ qrRegen }}">Regenerate</button></div>
+          <ol style="list-style:none;padding:0;margin:8px 0 0;display:grid">
+            <li class="row" style="padding:16px 0;border-top:1px solid var(--line);flex-wrap:nowrap;gap:18px;align-items:flex-start"><span class="num" style="font-size:30px;color:var(--dot)">1</span><span>Guests open their phone camera and point it at the code. No app needed.</span></li>
+            <li class="row" style="padding:16px 0;border-top:1px solid var(--line);flex-wrap:nowrap;gap:18px;align-items:flex-start"><span class="num" style="font-size:30px;color:var(--dot)">2</span><span>The invitation opens, or for check-in codes, their personal pass appears.</span></li>
+            <li class="row" style="padding:16px 0;border-top:1px solid var(--line);flex-wrap:nowrap;gap:18px;align-items:flex-start"><span class="num" style="font-size:30px;color:var(--dot)">3</span><span>At the entrance, an usher scans the pass and sees their table.</span></li>
+          </ol>
+          <p class="xs mut" style="margin:0">Works on printed cards, entrance signage and table cards. Regenerating makes earlier codes stop working.</p>
+        </div>
+      </div>
+    </sc-if>
+    <sc-if value="{{ ckUsh }}" hint-placeholder-val="{{ false }}">
+      <div class="split" style="align-items:start">
+        <div style="display:grid;gap:28px">
+          <section><div class="row sb" style="margin-bottom:6px"><h2 class="h2">Ushers</h2><button class="btn btn-s" onClick="{{ toastUsher }}">Add usher</button></div>
+            <sc-for list="{{ ushers }}" as="u" hint-placeholder-count="3"><div class="row" style="padding:14px 0;border-top:1px solid var(--line);flex-wrap:nowrap;gap:14px"><span class="av" style="background:{{ u.c }};border:0">{{ u.i }}</span><div style="flex:1;min-width:0"><b style="font-weight:500">{{ u.n }}</b><div class="xs mut">{{ u.ev }}</div></div><span class="bdg b-mu">{{ u.r }}</span></div></sc-for></section>
+          <section style="display:grid;gap:16px"><h2 class="h2">What ushers can do</h2>
+            <sc-for list="{{ perms }}" as="x" hint-placeholder-count="4"><div class="row sb" style="gap:16px;flex-wrap:nowrap"><div><div style="font-weight:500;font-size:14px">{{ x.n }}</div><div class="sm mut">{{ x.d }}</div></div><button class="{{ x.on }}" role="switch" aria-checked="{{ x.ar }}" aria-label="{{ x.n }}" data-v="{{ x.k }}" onClick="{{ togPerm }}"></button></div></sc-for></section>
+        </div>
+        <div style="display:grid;justify-items:center;gap:10px"><span class="eb">The usher’s phone</span>
+          <div style="border:9px solid #1B1A19;border-radius:40px;background:#12110F;color:#EEE9DF;padding:22px 18px;display:grid;gap:14px;width:min(340px,100%);box-shadow:var(--sh2)">
+            <div class="row sb"><b style="font-weight:500">Reception</b><span class="bdg" style="background:rgba(163,194,158,.15);color:#A3C29E">{{ checked }} / 180 in</span></div>
+            <div style="aspect-ratio:1;border-radius:20px;background:radial-gradient(circle at 50% 40%,#2A2622,#0D0C0B);display:grid;place-items:center;position:relative;overflow:hidden"><div style="width:62%;aspect-ratio:1;border:2px solid #B8AB97;border-radius:18px;display:grid;place-items:center;font-size:12px;color:#A39B8E">Point at the guest’s code</div><div style="position:absolute;left:19%;right:19%;height:2px;background:#B8AB97;top:30%;animation:floaty 2.4s ease-in-out infinite;box-shadow:0 0 18px #B8AB97"></div></div>
+            <input class="inp" style="background:#211F1D;border-color:rgba(238,233,223,.15);color:#EEE9DF" placeholder="Or search by name" value="{{ uq }}" onInput="{{ setUq }}" aria-label="Find a guest">
+            <sc-for list="{{ uguests }}" as="g" hint-placeholder-count="3"><div class="row sb" style="border-top:1px solid rgba(238,233,223,.1);padding-top:12px;flex-wrap:nowrap"><div><b style="font-weight:500">{{ g.name }}</b><div class="xs" style="color:#A39B8E">Table {{ g.table }} · {{ g.party }} people</div></div><button class="btn btn-s" style="background:#EEE9DF;color:#12110F;border:0;min-height:44px" data-v="{{ g.id }}" onClick="{{ checkIn }}">Check in</button></div></sc-for>
+          </div></div>
+      </div>
+    </sc-if>
+  </div>
+  </sc-if>
+
+  <!-- LIVE -->
+  <sc-if value="{{ p.live }}" hint-placeholder-val="{{ false }}">
+  <div class="stg" style="display:grid;gap:24px">
+    <div class="ph" style="margin-bottom:0"><div><div class="eb">Live stream</div><h1 class="h1">Let loved ones join from anywhere.</h1></div><div class="row" style="gap:8px"><span class="xs mut">Preview state</span><div class="seg"><sc-for list="{{ liveStates }}" as="s" hint-placeholder-count="4"><button class="{{ s.on }}" data-v="{{ s.n }}" onClick="{{ setLive }}">{{ s.n }}</button></sc-for></div></div></div>
+    <div class="split" style="align-items:start">
+      <div style="aspect-ratio:16/9;border-radius:24px;background:radial-gradient(800px 400px at 50% 0%,#2D2925,#0E0D0C 75%);color:#EEE9DF;display:grid;place-items:center;text-align:center;padding:24px;position:relative;overflow:hidden">
+        <div style="position:absolute;width:56%;aspect-ratio:1;border:1px solid rgba(238,233,223,.1);border-bottom:0;border-radius:999px 999px 0 0;bottom:-30%"></div>
+        <div style="position:relative;display:grid;gap:12px;justify-items:center"><span class="row" style="gap:8px;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:#A39B8E"><sc-if value="{{ isLive }}" hint-placeholder-val="{{ false }}"><span class="ldot" style="background:#E89580"></span></sc-if>{{ live }}</span><div class="serif" style="font-size:clamp(28px,3.4vw,46px);font-weight:300;line-height:1.05">{{ liveTitle }}</div><div class="sm" style="color:#A39B8E">{{ liveSub }}</div></div>
+      </div>
+      <div class="card" style="display:grid;gap:16px">
+        <div class="row sb"><b style="font-weight:500">Show on invitation</b><button class="tog on" role="switch" aria-checked="true" aria-label="Show on invitation" onClick="{{ tg }}"></button></div>
+        <label class="f">Platform<select class="inp"><option>YouTube Live</option><option>Zoom</option><option>Instagram Live</option></select></label>
+        <label class="f">Stream link<input class="inp" placeholder="https://youtube.com/live/…"></label>
+        <label class="f">Starts<input class="inp" type="datetime-local" defaultValue="2026-12-12T10:00"></label>
+        <button class="btn btn-p" onClick="{{ save }}">Save stream</button></div>
+    </div>
+  </div>
+  </sc-if>
+
+  <!-- MEMORIES -->
+  <sc-if value="{{ p.memories }}" hint-placeholder-val="{{ false }}">
+  <div class="stg" style="display:grid;gap:28px">
+    <div class="ph" style="margin-bottom:0"><div><div class="eb">Memories</div><h1 class="h1">What your guests are saying.</h1></div><p class="sm mut" style="max-width:42ch;margin:0">Wishes arrive with replies. After {{ ev.day }} {{ ev.mon }}, photos and attendance join them here, and your invitation becomes a keepsake.</p></div>
+    <sc-if value="{{ hasWishes }}" hint-placeholder-val="{{ true }}">
+      <div class="row" style="gap:clamp(28px,5vw,64px)"><div><div class="num" style="font-size:64px" data-count="96">96</div><div class="sm mut">wishes so far</div></div><div><div class="num" style="font-size:64px" data-count="14">14</div><div class="sm mut">this week</div></div><div><div class="num" style="font-size:64px">—</div><div class="sm mut">photos, after the day</div></div></div>
+      <div class="wall"><sc-for list="{{ wishes }}" as="w" hint-placeholder-count="6"><figure class="wish"><blockquote class="serif" style="margin:0;font-size:21px;line-height:1.35;font-weight:300">“{{ w.t }}”</blockquote><figcaption class="row" style="margin-top:16px;gap:10px"><span class="av" style="background:{{ w.c }};border:0;width:26px;height:26px;font-size:11px">{{ w.i }}</span><span class="sm">{{ w.n }}</span><span class="xs mut">{{ w.g }}</span></figcaption></figure></sc-for></div>
+    </sc-if>
+    <sc-if value="{{ noWishes }}" hint-placeholder-val="{{ false }}"><div style="display:grid;justify-items:center;text-align:center;gap:12px;padding:72px 20px;border:1px dashed var(--line2);border-radius:24px"><h2 class="h1" style="font-size:clamp(28px,3vw,40px)">The first wish is still on its way.</h2><p class="lede" style="max-width:46ch">Once your invitation is shared, guests can leave a few words with their reply. They’ll gather here.</p></div></sc-if>
+    <div class="card" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr));gap:22px;background:var(--bg2);border:0"><div><div class="eb">After the day</div><div class="h2" style="margin-top:8px">Your keepsake</div></div><div class="sm"><b style="font-weight:500">Photos</b><br><span class="mut">Guests can add their own from the invitation link.</span></div><div class="sm"><b style="font-weight:500">Attendance</b><br><span class="mut">Who came, from check-in.</span></div><div class="sm"><b style="font-weight:500">Thank-you notes</b><br><span class="mut">One message to everyone who came, or a personal one each.</span></div></div>
+  </div>
+  </sc-if>
+
+  <!-- TEAM -->
+  <sc-if value="{{ p.team }}" hint-placeholder-val="{{ false }}">
+  <div class="stg" style="display:grid;gap:10px;max-width:1080px">
+    <div class="ph"><div><div class="eb">Team</div><h1 class="h1">Prepare it together.</h1></div><p class="sm mut" style="max-width:40ch;margin:0">Invite a co-host, a planner or family. Each role only sees what it needs.</p></div>
+    <div class="row" style="flex-wrap:nowrap"><input class="inp" type="email" placeholder="Email or phone number" value="{{ invite }}" onInput="{{ setInvite }}" aria-label="Invite someone" style="max-width:420px"><select class="inp" style="width:auto" aria-label="Role"><option>Co-host</option><option>Planner</option><option>Family</option><option>Usher</option></select><button class="btn btn-p" onClick="{{ sendInvite }}">Invite</button></div>
+    <div style="margin-top:24px"><sc-for list="{{ team }}" as="m" hint-placeholder-count="5"><div class="row" style="padding:16px 0;border-top:1px solid var(--line);gap:16px;flex-wrap:nowrap"><span class="av" style="background:{{ m.c }};border:0;width:40px;height:40px;font-size:14px">{{ m.i }}</span><div style="flex:1;min-width:0"><b style="font-weight:500">{{ m.n }}</b><div class="xs mut" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ m.e }} · {{ m.st }}</div></div><span class="bdg b-mu">{{ m.r }}</span></div></sc-for></div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr));gap:16px;margin-top:28px">
+      <div class="card"><div class="h2" style="font-size:20px">Co-host</div><p class="sm mut" style="margin:6px 0 0">Everything, except billing.</p></div>
+      <div class="card"><div class="h2" style="font-size:20px">Planner</div><p class="sm mut" style="margin:6px 0 0">Schedule, guests, tasks and event day.</p></div>
+      <div class="card"><div class="h2" style="font-size:20px">Family</div><p class="sm mut" style="margin:6px 0 0">Add guests and leave notes.</p></div>
+      <div class="card"><div class="h2" style="font-size:20px">Usher</div><p class="sm mut" style="margin:6px 0 0">Only the check-in view, on the day.</p></div>
+    </div>
+  </div>
+  </sc-if>
+
+  <!-- ADD-ONS -->
+  <sc-if value="{{ p.addons }}" hint-placeholder-val="{{ false }}">
+  <div class="stg" style="display:grid;gap:10px;max-width:1080px">
+    <div class="ph"><div><div class="eb">Add-ons</div><h1 class="h1">Only as much as your celebration needs.</h1></div><button class="btn" data-p="cart" onClick="{{ go }}">Cart · {{ cartCount }}</button></div>
+    <div class="eb">Available</div>
+    <div><sc-for list="{{ aoAvail }}" as="a" hint-placeholder-count="5"><div class="ao"><div style="display:grid;grid-template-columns:minmax(0,220px) minmax(0,1fr);gap:8px 28px;align-items:baseline"><div class="h2">{{ a.name }}</div><div class="mut">{{ a.desc }}<div class="xs" style="margin-top:4px">{{ a.cat }}</div></div></div><div class="row" style="gap:16px;flex-wrap:nowrap"><span style="font-variant-numeric:tabular-nums;white-space:nowrap">{{ a.price }}</span><button class="btn btn-s" disabled="{{ a.dis }}" data-v="{{ a.id }}" onClick="{{ addCart }}">{{ a.cta }}</button></div></div></sc-for></div>
+    <div class="eb" style="margin-top:36px">Already yours</div>
+    <div><sc-for list="{{ aoOwned }}" as="a" hint-placeholder-count="3"><div class="ao"><div style="display:grid;grid-template-columns:minmax(0,220px) minmax(0,1fr);gap:8px 28px;align-items:baseline"><div class="h2">{{ a.name }}</div><div class="mut">{{ a.desc }}</div></div><span class="bdg {{ a.c }}">{{ a.st }}</span></div></sc-for></div>
+  </div>
+  </sc-if>
+
+  <!-- CART -->
+  <sc-if value="{{ p.cart }}" hint-placeholder-val="{{ false }}">
+  <div class="stg" style="display:grid;gap:10px">
+    <div class="ph"><div><div class="eb">Cart</div><h1 class="h1">Review and pay.</h1></div><button class="btn btn-t" data-p="addons" onClick="{{ go }}">Back to add-ons</button></div>
+    <sc-if value="{{ cartEmpty }}" hint-placeholder-val="{{ false }}"><div style="display:grid;justify-items:center;text-align:center;gap:12px;padding:64px 20px;border:1px dashed var(--line2);border-radius:24px"><div class="h2">Your cart is empty.</div><p class="sm mut" style="margin:0">Browse add-ons whenever you need something extra.</p><button class="btn btn-p" data-p="addons" onClick="{{ go }}">Browse add-ons</button></div></sc-if>
+    <sc-if value="{{ cartFull }}" hint-placeholder-val="{{ false }}">
+    <div class="split" style="align-items:start">
+      <div><sc-for list="{{ cart }}" as="c" hint-placeholder-count="2"><div class="row" style="padding:20px 0;border-top:1px solid var(--line);gap:16px"><div style="flex:1;min-width:180px"><div class="h2" style="font-size:22px">{{ c.name }}</div><div class="sm mut">{{ c.desc }}</div></div><div class="row" style="gap:4px"><button class="btn btn-i" data-v="{{ c.id }}" onClick="{{ qMinus }}" aria-label="One less">−</button><span style="min-width:28px;text-align:center">{{ c.q }}</span><button class="btn btn-i" data-v="{{ c.id }}" onClick="{{ qPlus }}" aria-label="One more">+</button></div><b style="min-width:110px;text-align:right;font-weight:500;font-variant-numeric:tabular-nums">{{ c.line }}</b></div></sc-for></div>
+      <div class="card" style="display:grid;gap:14px;position:sticky;top:90px"><h2 class="h2">Summary</h2>
+        <div class="row" style="flex-wrap:nowrap"><input class="inp" placeholder="Promo code" value="{{ promo }}" onInput="{{ setPromo }}" aria-label="Promo code"><button class="btn" onClick="{{ applyPromo }}">Apply</button></div>
+        <div class="row sb"><span class="mut">Subtotal</span><span>{{ subtotal }}</span></div>
+        <div class="row sb"><span class="mut">Discount</span><span>{{ discount }}</span></div>
+        <div class="row sb" style="border-top:1px solid var(--line);padding-top:14px"><b style="font-weight:500">Total</b><span class="num" style="font-size:34px">{{ total }}</span></div>
+        <label class="f">Pay with<select class="inp"><option>QRIS</option><option>Bank transfer (BCA)</option><option>Credit card</option><option>GoPay</option></select></label>
+        <button class="btn btn-p" onClick="{{ pay }}">Pay {{ total }}</button><div class="xs mut" style="text-align:center">Secure payment. Your receipt goes to your email and to Billing.</div></div>
+    </div></sc-if>
+  </div>
+  </sc-if>
+
+  <!-- BILLING -->
+  <sc-if value="{{ p.billing }}" hint-placeholder-val="{{ false }}">
+  <div class="stg" style="display:grid;gap:18px">
+    <div class="ph" style="margin-bottom:8px"><div><div class="eb">Billing</div><h1 class="h1">Your payments.</h1></div><button class="btn" data-p="addons" onClick="{{ go }}">Add-ons</button></div>
+    <div class="row"><input class="inp" style="flex:1;min-width:200px;max-width:340px" placeholder="Search by ID or item" value="{{ tq }}" onInput="{{ setTq }}" aria-label="Search payments"><sc-for list="{{ tfs }}" as="f" hint-placeholder-count="5"><button class="{{ f.on }}" data-v="{{ f.n }}" onClick="{{ setTf }}">{{ f.n }}</button></sc-for></div>
+    <sc-if value="{{ noTx }}" hint-placeholder-val="{{ false }}"><p class="mut" style="padding:24px 0">No payments match this filter.</p></sc-if>
+    <div class="card dt" style="padding:4px 10px"><table class="tbl"><thead><tr><th>ID</th><th>Date</th><th>Item</th><th>Method</th><th style="text-align:right">Amount</th><th>Status</th><th></th></tr></thead><tbody>
+      <sc-for list="{{ txs }}" as="t" hint-placeholder-count="5"><tr class="rw" data-v="{{ t.id }}" onClick="{{ openTx }}"><td class="mut" style="font-variant-numeric:tabular-nums">{{ t.id }}</td><td>{{ t.date }}</td><td>{{ t.desc }}</td><td class="mut">{{ t.method }}</td><td style="text-align:right;font-variant-numeric:tabular-nums">{{ t.amt }}</td><td><span class="bdg {{ t.cls }}">{{ t.st }}</span></td><td style="text-align:right"><button class="btn btn-t btn-s" data-v="{{ t.id }}" onClick="{{ openTx }}">Receipt</button></td></tr></sc-for></tbody></table></div>
+    <div class="mo"><sc-for list="{{ txs }}" as="t" hint-placeholder-count="4"><button style="all:unset;display:block;width:100%;padding:16px 0;border-top:1px solid var(--line);cursor:pointer" data-v="{{ t.id }}" onClick="{{ openTx }}"><span class="row sb"><b style="font-weight:500">{{ t.desc }}</b><span style="font-variant-numeric:tabular-nums">{{ t.amt }}</span></span><span class="row sb xs mut" style="margin-top:6px"><span>{{ t.date }} · {{ t.id }}</span><span class="bdg {{ t.cls }}">{{ t.st }}</span></span></button></sc-for></div>
+  </div>
+  </sc-if>
+
+  <!-- GUIDE -->
+  <sc-if value="{{ p.guide }}" hint-placeholder-val="{{ false }}">
+  <div class="stg" style="display:grid;gap:22px">
+    <div style="display:grid;gap:18px;justify-items:start;padding:clamp(28px,5vw,64px) 0 10px"><div class="eb">Guide</div><h1 class="h1">How can we help you begin?</h1>
+      <input class="inp" style="max-width:560px;min-height:54px;font-size:16px;border-radius:99px;padding:0 22px" placeholder="Search for an answer" value="{{ hq }}" onInput="{{ setHq }}" aria-label="Search the guide"></div>
+    <div class="row" style="gap:6px"><sc-for list="{{ hcats }}" as="c" hint-placeholder-count="6"><button class="{{ c.on }}" data-v="{{ c.n }}" onClick="{{ setHc }}">{{ c.n }}</button></sc-for></div>
+    <div class="split" style="align-items:start">
+      <div style="display:grid;gap:10px">
+        <sc-if value="{{ noGuides }}" hint-placeholder-val="{{ false }}"><p class="mut">Nothing matches yet. Try fewer words, or ask us directly from Account.</p></sc-if>
+        <sc-for list="{{ guides }}" as="g" hint-placeholder-count="6"><button class="{{ g.sel }}" style="text-align:left;padding:18px 22px;display:grid;gap:4px" data-v="{{ g.id }}" onClick="{{ setHa }}"><span class="eb">{{ g.cat }}</span><span class="h2" style="font-size:21px">{{ g.t }}</span><span class="sm mut">{{ g.s }}</span></button></sc-for>
+      </div>
+      <article class="card" style="position:sticky;top:90px;padding:clamp(22px,3vw,36px)"><div class="eb">{{ ga.cat }}</div><h2 class="h1" style="font-size:clamp(28px,3vw,38px);margin:10px 0 22px">{{ ga.t }}</h2>
+        <ol style="list-style:none;margin:0;padding:0;display:grid"><sc-for list="{{ ga.steps }}" as="s" hint-placeholder-count="3"><li style="padding:14px 0;border-top:1px solid var(--line)">{{ s }}</li></sc-for></ol>
+        <div class="row" style="margin-top:22px"><button class="btn btn-p btn-s" data-p="{{ ga.go }}" onClick="{{ go }}">Take me there</button><span class="xs mut">Was this helpful?</span><button class="btn btn-t btn-s" onClick="{{ save }}">Yes</button><button class="btn btn-t btn-s" onClick="{{ save }}">Not quite</button></div></article>
+    </div>
+  </div>
+  </sc-if>
+
+  <!-- ACCOUNT -->
+  <sc-if value="{{ p.account }}" hint-placeholder-val="{{ false }}">
+  <div class="stg" style="display:grid;gap:36px;max-width:820px">
+    <div><div class="eb">Account</div><h1 class="h1" style="margin-top:12px">Your profile.</h1></div>
+    <section style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:16px"><label class="f">Name<input class="inp" defaultValue="Aldo Prasetyo" autocomplete="name"></label><label class="f">Email<input class="inp" type="email" defaultValue="aldo@example.com" autocomplete="email"></label><label class="f">Phone<input class="inp" type="tel" defaultValue="+62 812 3456 7890" autocomplete="tel"></label><label class="f">Password<input class="inp" type="password" defaultValue="password123" autocomplete="current-password"></label></section>
+    <section style="display:grid;gap:14px"><h2 class="h2">Appearance</h2><div class="row sb"><span class="mut sm">Dark mode is made for evenings and photo-heavy work.</span><div class="seg"><button class="{{ thL }}" onClick="{{ setLight }}">Light</button><button class="{{ thD }}" onClick="{{ setDark }}">Dark</button></div></div></section>
+    <section style="display:grid;gap:14px"><h2 class="h2">Notifications</h2><sc-for list="{{ notifPrefs }}" as="n" hint-placeholder-count="4"><div class="row sb" style="padding-top:12px;border-top:1px solid var(--line)"><span>{{ n.n }}</span><button class="{{ n.on }}" role="switch" aria-checked="true" aria-label="{{ n.n }}" onClick="{{ tg }}"></button></div></sc-for></section>
+    <div class="row"><button class="btn btn-p" onClick="{{ save }}">Save changes</button><button class="btn btn-t" style="color:var(--no)">Sign out</button><div style="flex:1"></div><button class="btn btn-t btn-s" data-p="terms" onClick="{{ go }}">Terms &amp; Conditions</button><button class="btn btn-t btn-s" data-p="system" onClick="{{ go }}">Design language</button><button class="btn btn-t btn-s" onClick="{{ openOb }}">Replay onboarding</button></div>
+  </div>
+  </sc-if>
+
+  <!-- TERMS -->
+  <sc-if value="{{ p.terms }}" hint-placeholder-val="{{ false }}">
+  <div class="stg" style="display:grid;grid-template-columns:minmax(0,220px) minmax(0,680px);gap:clamp(24px,5vw,80px);align-items:start">
+    <nav class="hidem" style="position:sticky;top:96px;display:grid;gap:8px"><div class="eb" style="margin-bottom:6px">Contents</div><sc-for list="{{ terms }}" as="t" hint-placeholder-count="6"><span class="sm mut">{{ t.no }} {{ t.h }}</span></sc-for></nav>
+    <article style="display:grid;gap:30px"><div><div class="eb">Terms &amp; Conditions</div><h1 class="h1" style="margin-top:12px">The agreement between us.</h1><p class="sm mut" style="margin-top:12px">Last updated 1 September 2026 · About 3 minutes to read</p></div>
+      <sc-for list="{{ terms }}" as="t" hint-placeholder-count="6"><section style="border-top:1px solid var(--line);padding-top:22px"><div class="xs mut">{{ t.no }}</div><h2 class="h2" style="margin:6px 0 10px">{{ t.h }}</h2><p style="margin:0;font-size:17px;line-height:1.65;color:var(--ink2);text-wrap:pretty">{{ t.b }}</p></section></sc-for></article>
+  </div>
+  </sc-if>
+
+  <!-- DESIGN LANGUAGE -->
+  <sc-if value="{{ p.system }}" hint-placeholder-val="{{ false }}">
+  <div class="stg" style="display:grid;gap:40px">
+    <div><div class="eb">Design language</div><h1 class="h1" style="margin-top:12px">Built from the arch and the dot.</h1><p class="lede" style="margin-top:14px">The arch marks a threshold, the beginning of something. The dot is you, here, now. Both appear across Mula as progress, frames, markers and selected states.</p></div>
+    <section class="duo"><div><div class="eb" style="margin-bottom:14px">Light</div><div class="row" style="gap:12px;align-items:flex-start"><sc-for list="{{ swL }}" as="s" hint-placeholder-count="6"><div style="width:92px"><div style="height:64px;border-radius:12px;border:1px solid var(--line);background:{{ s.c }}"></div><div class="xs" style="margin-top:6px">{{ s.n }}</div><div class="xs mut">{{ s.c }}</div></div></sc-for></div></div>
+      <div><div class="eb" style="margin-bottom:14px">Dark</div><div class="row" style="gap:12px;align-items:flex-start"><sc-for list="{{ swD }}" as="s" hint-placeholder-count="6"><div style="width:92px"><div style="height:64px;border-radius:12px;border:1px solid var(--line);background:{{ s.c }}"></div><div class="xs" style="margin-top:6px">{{ s.n }}</div><div class="xs mut">{{ s.c }}</div></div></sc-for></div></div></section>
+    <section style="display:grid;gap:10px;border-top:1px solid var(--line);padding-top:28px"><div class="eb">Type</div><div class="d1" style="font-size:clamp(48px,6vw,88px)">Newsreader Light</div><div class="h1">For the moment, the names, the numbers.</div><div style="font-size:17px">Instrument Sans for everything you operate: navigation, forms, tables and labels.</div><div class="eb">Eyebrow · 11.5 / tracked</div></section>
+    <section style="display:grid;gap:16px;border-top:1px solid var(--line);padding-top:28px"><div class="eb">Components</div><div class="row"><button class="btn btn-p">Primary</button><button class="btn">Secondary</button><button class="btn btn-t">Quiet</button><span class="bdg b-ok">Attending</span><span class="bdg b-wt">Pending</span><span class="bdg b-no">Not attending</span><span class="bdg b-in">Invited</span><span class="bdg b-mu">Draft</span><button class="tog on" role="switch" aria-checked="true" aria-label="Example switch" onClick="{{ tg }}"></button><div class="seg"><button class="on">Selected</button><button>Option</button></div></div></section>
+    <section style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,230px),1fr));gap:16px">
+      <div class="card" style="display:grid;gap:10px"><div class="eb">Loading</div><div class="sk" style="height:18px;width:70%"></div><div class="sk" style="height:12px"></div><div class="sk" style="height:12px;width:85%"></div><div class="row xs mut"><span class="ldot" style="background:var(--dot)"></span>Gathering your guests…</div></div>
+      <div class="card" style="display:grid;gap:8px;align-content:start"><div class="eb">Empty</div><div class="h2">Your guest list starts here.</div><p class="sm mut" style="margin:0">Say what’s missing, why it matters, and what to do.</p><button class="btn btn-p btn-s" style="justify-self:start" onClick="{{ openAddGuest }}">Add your first guest</button></div>
+      <div class="card" style="display:grid;gap:8px;align-content:start"><div class="eb">Error</div><div class="h2">We couldn’t save your changes.</div><p class="sm mut" style="margin:0">Your connection dropped for a moment. Nothing was lost.</p><div class="row"><button class="btn btn-p btn-s" onClick="{{ save }}">Try again</button><button class="btn btn-t btn-s">Go back</button></div></div>
+      <div class="card" style="display:grid;gap:10px;align-content:start;justify-items:start"><div class="eb">Success</div><svg width="64" height="40" viewBox="0 0 64 40" fill="none"><path d="M8 38V24a24 24 0 0 1 48 0v14" stroke="var(--ink)" stroke-width="3" stroke-linecap="round" pathLength="100" style="stroke-dasharray:100;animation:drawp 1.4s var(--eo) both"></path><circle cx="8" cy="34" r="5" fill="var(--dot)" style="animation:pop .6s var(--sp) both 1s;transform-box:fill-box;transform-origin:center"></circle></svg><div class="h2">Your invitation is live.</div><button class="btn btn-s" onClick="{{ showToast }}">Show a toast</button></div>
+    </section>
+  </div>
+  </sc-if>
+</div>
+<nav class="bnav" aria-label="Primary">
+  <sc-for list="{{ bnav }}" as="b" hint-placeholder-count="5"><button class="{{ b.on }}" data-p="{{ b.id }}" onClick="{{ b.fn }}"><svg class="ic" viewBox="0 0 20 20" style="width:20px;height:20px"><path d="{{ b.ic }}"></path></svg>{{ b.n }}</button></sc-for>
+</nav>
+
+<sc-if value="{{ moreOpen }}" hint-placeholder-val="{{ false }}"><div class="scrim" style="place-items:end center;padding:0" onClick="{{ closeAll }}"><div class="mod" style="border-radius:26px 26px 0 0;width:100%;max-width:640px;padding:22px 20px calc(24px + env(safe-area-inset-bottom))" onClick="{{ stop }}"><div style="width:40px;height:4px;border-radius:9px;background:var(--line2);margin:0 auto 18px"></div><div class="row sb" style="margin-bottom:14px"><span class="h2">All of Mula</span><button class="btn btn-t btn-i" onClick="{{ toggleTheme }}" aria-label="Switch light or dark"><svg class="ic" viewBox="0 0 20 20"><path d="{{ themeIc }}"></path></svg></button></div><div style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px"><sc-for list="{{ allNav }}" as="n" hint-placeholder-count="18"><button class="btn" style="justify-content:flex-start;border-radius:14px" data-p="{{ n.id }}" onClick="{{ go }}">{{ n.label }}</button></sc-for></div></div></div></sc-if>
+
+<sc-if value="{{ notifOpen }}" hint-placeholder-val="{{ false }}"><div style="position:fixed;inset:0;z-index:49" onClick="{{ toggleNotif }}"></div><div class="pan" role="dialog" aria-label="Updates"><div class="row sb" style="padding:16px 20px;border-bottom:1px solid var(--line)"><b style="font-weight:500">Updates</b><button class="btn btn-t btn-s" onClick="{{ readAll }}">Mark all as read</button></div>
+  <sc-for list="{{ notifs }}" as="n" hint-placeholder-count="5"><div style="padding:14px 20px;border-bottom:1px solid var(--line);display:flex;gap:12px;{{ n.bg }}"><span style="width:8px;height:8px;border-radius:50%;margin-top:7px;flex:none;background:{{ n.dot }}"></span><div><div class="sm">{{ n.t }}</div><div class="xs mut">{{ n.w }}</div></div></div></sc-for></div></sc-if>
+
+<sc-if value="{{ searchOpen }}" hint-placeholder-val="{{ false }}"><div class="scrim" style="align-items:start;padding-top:12vh" onClick="{{ closeAll }}"><div class="mod" style="padding:10px;width:min(600px,100%)" onClick="{{ stop }}" role="dialog" aria-label="Search"><div class="row" style="flex-wrap:nowrap;padding:0 8px"><svg class="ic" viewBox="0 0 20 20" style="color:var(--mut)"><path d="{{ ic.search }}"></path></svg><input class="inp" style="border:0;box-shadow:none;background:transparent;font-size:17px;min-height:52px" autofocus placeholder="Guests, moments, tasks, payments, guides…" value="{{ sq }}" onInput="{{ setSq }}" aria-label="Search everything"><kbd class="xs mut" style="border:1px solid var(--line);border-radius:6px;padding:2px 6px">esc</kbd></div>
+  <div style="border-top:1px solid var(--line);padding-top:6px"><sc-for list="{{ sres }}" as="r" hint-placeholder-count="4"><button class="nv" style="min-height:48px" data-p="{{ r.go }}" onClick="{{ go }}"><span>{{ r.t }}</span><span class="nb">{{ r.k }}</span></button></sc-for></div></div></div></sc-if>
+
+<sc-if value="{{ modalGuest }}" hint-placeholder-val="{{ false }}"><div class="scrim" onClick="{{ closeAll }}"><form class="mod" onClick="{{ stop }}" onSubmit="{{ addGuest }}" style="display:grid;gap:16px" aria-label="Add guest"><div><div class="eb">Guest list</div><h2 class="h1" style="font-size:34px;margin-top:8px">Who would you love to see?</h2></div>
+  <label class="f">Name<input class="inp" required autofocus data-k="name" value="{{ ng.name }}" onInput="{{ setNg }}" autocomplete="off"></label><label class="f">Phone or WhatsApp<input class="inp" type="tel" placeholder="+62" data-k="phone" value="{{ ng.phone }}" onInput="{{ setNg }}"></label>
+  <label class="f">Group<select class="inp" data-k="group" onChange="{{ setNg }}"><option>Friends</option><option>Family</option><option>Colleagues</option><option>VIP</option></select></label>
+  <div class="row" style="justify-content:flex-end"><button type="button" class="btn btn-t" onClick="{{ closeAll }}">Cancel</button><button type="submit" class="btn btn-p">Add guest</button></div></form></div></sc-if>
+
+<sc-if value="{{ guestOpen }}" hint-placeholder-val="{{ false }}"><div class="scrim" style="padding:0;background:rgba(12,11,10,.3)" onClick="{{ closeAll }}"></div><aside class="drw" role="dialog" aria-label="Guest details" style="display:grid;gap:22px;align-content:start">
+  <div class="row sb"><span class="eb">Guest</span><button class="btn btn-t btn-s" onClick="{{ closeAll }}">Close</button></div>
+  <div class="row" style="gap:16px;flex-wrap:nowrap"><span class="av" style="background:{{ gd.c }};border:0;width:56px;height:56px;font-size:18px">{{ gd.i }}</span><div><h2 class="h1" style="font-size:34px">{{ gd.name }}</h2><div class="row" style="margin-top:8px;gap:6px"><span class="bdg {{ gd.cls }}">{{ gd.st }}</span><span class="bdg b-mu">{{ gd.group }}</span></div></div></div>
+  <div style="display:grid;padding-left:6px"><sc-for list="{{ gd.jr }}" as="j" hint-placeholder-count="4"><div class="{{ j.on }}" style="padding:0 0 18px 24px;border-left:1.5px solid var(--line2);margin-left:5px"><div style="font-weight:500;font-size:14px;margin-top:-4px">{{ j.n }}</div><div class="xs mut">{{ j.w }}</div></div></sc-for></div>
+  <dl style="display:grid;grid-template-columns:auto 1fr;gap:10px 20px;margin:0;font-size:14px"><dt class="mut">Contact</dt><dd style="margin:0">{{ gd.phone }}</dd><dt class="mut">Coming as</dt><dd style="margin:0">{{ gd.plus }}</dd><dt class="mut">Table</dt><dd style="margin:0">{{ gd.table }}</dd><dt class="mut">Delivery</dt><dd style="margin:0">WhatsApp · delivered</dd></dl>
+  <label class="f">Notes<textarea class="inp" placeholder="Dietary needs, seating, anything to remember">{{ gd.note }}</textarea></label>
+  <div><div class="xs mut" style="margin-bottom:8px">Change reply</div><div class="row" style="gap:6px"><sc-for list="{{ stOpts }}" as="s" hint-placeholder-count="4"><button class="{{ s.on }}" data-v="{{ s.s }}" onClick="{{ setGSt }}">{{ s.s }}</button></sc-for></div></div>
+  <div class="row"><button class="btn btn-p" onClick="{{ resend }}">Resend invitation</button><button class="btn" onClick="{{ save }}">Save</button></div></aside></sc-if>
+
+<sc-if value="{{ txOpen }}" hint-placeholder-val="{{ false }}"><div class="scrim" onClick="{{ closeAll }}"><div class="mod" onClick="{{ stop }}" style="display:grid;gap:14px" role="dialog" aria-label="Receipt"><img class="logo-l" src="assets/mula-lockup-ink.png" alt="mula" style="height:22px"><img class="logo-d" src="assets/mula-lockup-light.png" alt="mula" style="height:22px"><div class="eb" style="margin-top:8px">Receipt · {{ tx.id }}</div><h2 class="h1" style="font-size:32px">{{ tx.desc }}</h2>
+  <dl style="display:grid;grid-template-columns:auto 1fr;gap:10px 20px;margin:0;font-size:14px;border-top:1px solid var(--line);padding-top:14px"><dt class="mut">Date</dt><dd style="margin:0">{{ tx.date }}</dd><dt class="mut">Paid with</dt><dd style="margin:0">{{ tx.method }}</dd><dt class="mut">Status</dt><dd style="margin:0"><span class="bdg {{ tx.cls }}">{{ tx.st }}</span></dd></dl>
+  <div class="row sb" style="border-top:1px solid var(--line);padding-top:14px"><span class="mut">Total</span><span class="num" style="font-size:36px">{{ tx.amt }}</span></div>
+  <div class="row"><button class="btn btn-p" onClick="{{ dlInv }}">Download invoice</button><button class="btn btn-t" onClick="{{ closeAll }}">Close</button></div></div></div></sc-if>
+
+<sc-if value="{{ previewOpen }}" hint-placeholder-val="{{ false }}"><div class="pvw" role="dialog" aria-label="Invitation preview">
+  <div class="row" style="padding:14px 20px;gap:12px;justify-content:space-between;border-bottom:1px solid rgba(238,233,223,.08)">
+    <div class="row" style="gap:12px"><img src="assets/mula-symbol-light.png" alt="mula" style="height:24px"><div class="seg dk"><sc-for list="{{ persps }}" as="d" hint-placeholder-count="2"><button class="{{ d.on }}" data-v="{{ d.n }}" onClick="{{ setPersp }}">{{ d.n }} view</button></sc-for></div></div>
+    <div class="row" style="gap:10px"><div class="seg dk"><sc-for list="{{ devs }}" as="d" hint-placeholder-count="3"><button class="{{ d.on }}" data-v="{{ d.n }}" onClick="{{ setDev }}">{{ d.n }}</button></sc-for></div>
+      <select class="inp hidem" style="width:auto;min-height:38px;background:rgba(238,233,223,.06);border-color:rgba(238,233,223,.14);color:#EEE9DF;border-radius:99px" onChange="{{ setPvg }}" aria-label="Preview as guest"><sc-for list="{{ pvGuests }}" as="g" hint-placeholder-count="3"><option value="{{ g.i }}">As {{ g.n }}</option></sc-for></select></div>
+    <div class="row" style="gap:8px"><button class="btn btn-s hidem" style="color:#EEE9DF;border-color:rgba(238,233,223,.2)" onClick="{{ reopen }}">Replay opening</button><button class="btn btn-s" style="color:#EEE9DF;border-color:rgba(238,233,223,.2)" onClick="{{ shareP }}">Share preview</button><button class="btn btn-s" style="background:#EEE9DF;color:#12110F;border:0" onClick="{{ closeAll }}">Close</button></div>
+  </div>
+  <div class="pvst" onMouseMove="{{ tiltMove }}" onMouseLeave="{{ tiltOut }}">
+    <div class="pv-arch"></div><div class="pv-dot"></div>
+    <div class="{{ devCls }}">
+      <div class="screen" style="background:{{ pv.bg }};color:{{ pv.fg }}">
+        <sc-if value="{{ closed }}" hint-placeholder-val="{{ true }}">
+          <div style="min-height:100%;display:grid;align-content:center;justify-items:center;text-align:center;padding:40px 28px;gap:18px;animation:fade .8s var(--eo)">
+            <div class="sm" style="opacity:.75">{{ pvDear }}</div>
+            <div class="arch" style="width:min(240px,62%);aspect-ratio:3/3.7;background:{{ pv.photo }};animation:objin 1.4s var(--eo) both .1s"></div>
+            <div class="xs" style="letter-spacing:.18em;text-transform:uppercase;opacity:.7">{{ ev.greet }}</div>
+            <div style="font-family:{{ pv.font }};font-size:clamp(40px,6vw,56px);line-height:1;font-weight:300">{{ ev.a }}<br><sc-if value="{{ ev.amp }}" hint-placeholder-val="{{ true }}"><span class="it" style="color:{{ pv.ac }}">&amp; </span></sc-if>{{ ev.b }}</div>
+            <div class="xs" style="letter-spacing:.26em;opacity:.8">{{ ev.dshort }}</div>
+            <button class="btn" style="margin-top:12px;background:{{ pv.fg }};color:{{ pv.bg }};border:0" onClick="{{ openInv }}">Open invitation</button>
+            <sc-if value="{{ host }}" hint-placeholder-val="{{ false }}"><span class="ann">Cover · complete · personalised per guest</span></sc-if>
+          </div>
+        </sc-if>
+        <sc-if value="{{ opened }}" hint-placeholder-val="{{ false }}">
+          <div class="gwrap stg" style="padding:44px 26px 60px;display:grid;gap:44px;text-align:center">
+            <div style="display:grid;gap:16px;justify-items:center"><div class="arch" style="width:min(260px,70%);aspect-ratio:3/3.8;background:{{ pv.photo }}"></div><div style="font-family:{{ pv.font }};font-size:30px;line-height:1.15;font-style:italic;font-weight:300">{{ ev.line }}</div><p style="margin:0;opacity:.75;max-width:34ch">With gratitude, we invite you to share the beginning of something we have waited a long time for.</p></div>
+            <sc-if value="{{ host }}" hint-placeholder-val="{{ false }}"><span class="ann" style="--c:#DDB474">Gallery · empty · hidden from guests until you add photos</span></sc-if>
+            <div style="display:grid;gap:6px"><div class="xs" style="letter-spacing:.18em;text-transform:uppercase;opacity:.7">Save the date</div><div style="font-family:{{ pv.font }};font-size:44px;line-height:1;font-weight:300">{{ ev.date }}</div><div class="sm" style="opacity:.7">{{ ev.days }} days from today</div></div>
+            <div style="display:grid;gap:12px"><sc-for list="{{ pvEvents }}" as="e" hint-placeholder-count="3"><div style="border:1px solid color-mix(in oklab,currentColor 18%,transparent);border-radius:20px;padding:22px;display:grid;gap:6px"><div class="xs" style="letter-spacing:.16em;text-transform:uppercase;opacity:.7">{{ e.name }}</div><div style="font-family:{{ pv.font }};font-size:30px;line-height:1">{{ e.s }}</div><div class="sm">{{ e.venue }}</div><div class="xs" style="opacity:.7">{{ e.addr }} · {{ e.dress }}</div><div class="row" style="justify-content:center;margin-top:8px;gap:6px"><button class="btn btn-s" style="border-color:currentColor;color:inherit" onClick="{{ shareP }}">Add to calendar</button><button class="btn btn-s" style="border-color:currentColor;color:inherit" onClick="{{ shareP }}">Open map</button></div></div></sc-for></div>
+            <sc-if value="{{ host }}" hint-placeholder-val="{{ false }}"><span class="ann">RSVP · closes 25 Nov · 205 replies so far</span></sc-if>
+            <div style="display:grid;gap:14px;justify-items:center"><div style="font-family:{{ pv.font }};font-size:32px">Will you join us?</div>
+              <sc-if value="{{ rsvpOpen }}" hint-placeholder-val="{{ true }}"><div class="row" style="justify-content:center"><button class="btn" style="background:{{ pv.fg }};color:{{ pv.bg }};border:0" onClick="{{ rsvpYes }}">I’ll be there</button><button class="btn" style="border-color:currentColor;color:inherit" onClick="{{ rsvpNo }}">I can’t make it</button></div></sc-if>
+              <sc-if value="{{ rsvpYesDone }}" hint-placeholder-val="{{ false }}"><div style="display:grid;gap:6px;justify-items:center;animation:rise .7s var(--eo) both"><svg width="56" height="36" viewBox="0 0 64 40" fill="none"><path d="M8 38V24a24 24 0 0 1 48 0v14" stroke="currentColor" stroke-width="3" stroke-linecap="round" pathLength="100" style="stroke-dasharray:100;animation:drawp 1.2s var(--eo) both"></path><circle cx="8" cy="34" r="5" fill="{{ pv.ac }}"></circle></svg><div style="font-family:{{ pv.font }};font-size:24px">See you there.</div><div class="xs" style="opacity:.7">This is a preview. No reply was recorded.</div></div></sc-if>
+              <sc-if value="{{ rsvpNoDone }}" hint-placeholder-val="{{ false }}"><div style="display:grid;gap:6px;animation:rise .7s var(--eo) both"><div style="font-family:{{ pv.font }};font-size:24px">You’ll be missed.</div><div class="xs" style="opacity:.7">You can still watch the live stream. Preview only.</div></div></sc-if>
+            </div>
+            <div style="display:grid;gap:12px"><div style="font-family:{{ pv.font }};font-size:28px">A gift, if you wish</div><sc-for list="{{ pvGifts }}" as="g" hint-placeholder-count="2"><div class="row sb" style="border:1px solid color-mix(in oklab,currentColor 18%,transparent);border-radius:16px;padding:14px 18px;text-align:left"><span><span class="xs" style="opacity:.7">{{ g.title }}</span><br><b style="font-weight:600">{{ g.copy }}</b></span><button class="btn btn-s" style="border-color:currentColor;color:inherit" data-v="{{ g.copy }}" onClick="{{ copy }}">Copy</button></div></sc-for></div>
+            <div style="display:grid;gap:12px"><div style="font-family:{{ pv.font }};font-size:28px">Wishes</div><sc-for list="{{ pvWishes }}" as="w" hint-placeholder-count="2"><div style="text-align:left;padding:16px 0;border-top:1px solid color-mix(in oklab,currentColor 15%,transparent)"><div style="font-family:{{ pv.font }};font-style:italic;font-size:18px">“{{ w.t }}”</div><div class="xs" style="opacity:.7;margin-top:6px">{{ w.n }}</div></div></sc-for></div>
+            <div style="display:grid;gap:14px;justify-items:center;padding-top:20px"><div style="font-family:{{ pv.font }};font-size:24px;font-style:italic;font-weight:300">{{ ev.close }}</div><div class="xs" style="opacity:.55;letter-spacing:.1em">Made with mula</div></div>
+          </div>
+        </sc-if>
+      </div>
+    </div>
+  </div>
+</div></sc-if>
+
+<sc-if value="{{ obOpen }}" hint-placeholder-val="{{ false }}"><div class="ob" role="dialog" aria-label="Create your celebration">
+  <div style="display:grid;grid-template-rows:auto auto 1fr auto;gap:26px;padding:clamp(20px,4vw,48px);overflow:auto;min-height:0">
+    <div class="row sb"><img class="logo-l" src="assets/mula-lockup-ink.png" alt="mula" style="height:26px"><img class="logo-d" src="assets/mula-lockup-light.png" alt="mula" style="height:26px"><button class="btn btn-t btn-s" onClick="{{ closeAll }}">Save and exit</button></div>
+    <div style="display:grid;gap:10px"><div class="row" style="gap:6px;flex-wrap:nowrap"><sc-for list="{{ obTicks }}" as="t" hint-placeholder-count="8"><span class="obt"><i style="{{ t.s }}"></i></span></sc-for></div><div class="xs mut">Step {{ ob.n }} of 8</div></div>
+    <div style="align-self:center;display:grid;gap:20px;max-width:540px;width:100%">
+      <div class="mo" style="margin-bottom:6px"><div class="row" style="gap:14px;flex-wrap:nowrap;padding:12px;border-radius:16px;background:{{ pv.bg }};color:{{ pv.fg }}"><span class="arch" style="width:40px;height:50px;flex:none;background:{{ pv.photo }}"></span><span style="min-width:0"><span class="xs" style="opacity:.7">{{ obObj.greet }}</span><br><span class="serif" style="font-size:20px">{{ obObj.names }}</span><br><span class="xs" style="opacity:.7">{{ obObj.date }}</span></span></div></div>
+      <div class="eb" style="color:var(--dotd)">{{ ob.kick }}</div>
+      <h1 class="h1">{{ ob.h }}</h1>
+      <p class="lede" style="margin:0">{{ ob.p }}</p>
+      <sc-if value="{{ ob.choice }}" hint-placeholder-val="{{ true }}"><div class="row" style="gap:8px"><sc-for list="{{ obTypes }}" as="t" hint-placeholder-count="8"><button class="{{ t.on }}" style="min-height:46px;padding:0 18px;font-size:14px" data-v="{{ t.n }}" onClick="{{ setObType }}">{{ t.n }}</button></sc-for></div></sc-if>
+      <sc-if value="{{ ob.names }}" hint-placeholder-val="{{ false }}"><input class="inp" style="min-height:58px;font-size:20px;font-family:var(--serif)" placeholder="e.g. Raden &amp; Cilla" value="{{ obNames }}" onInput="{{ setObNames }}" aria-label="Names" autofocus></sc-if>
+      <sc-if value="{{ ob.date }}" hint-placeholder-val="{{ false }}"><input class="inp" style="min-height:58px;font-size:18px" type="date" value="{{ obDate }}" onInput="{{ setObDate }}" aria-label="Date"></sc-if>
+      <sc-if value="{{ ob.venue }}" hint-placeholder-val="{{ false }}"><input class="inp" style="min-height:58px;font-size:18px" placeholder="Venue name" value="{{ obVenue }}" onInput="{{ setObVenue }}" aria-label="Venue"></sc-if>
+      <sc-if value="{{ ob.pal }}" hint-placeholder-val="{{ false }}"><div class="row" style="gap:16px"><sc-for list="{{ obPalOpts }}" as="o" hint-placeholder-count="4"><button data-v="{{ o.i }}" onClick="{{ setPal }}" style="display:grid;gap:8px;justify-items:center;border:0;background:none;padding:0" aria-label="{{ o.n }} palette"><span style="width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg,{{ o.bg }} 50%,{{ o.ac }} 50%);border:1px solid var(--line);{{ o.on }}"></span><span class="xs">{{ o.n }}</span></button></sc-for></div></sc-if>
+      <sc-if value="{{ ob.guests }}" hint-placeholder-val="{{ false }}"><form class="row" style="flex-wrap:nowrap" onSubmit="{{ addObG }}"><input class="inp" style="min-height:52px" placeholder="Guest name" value="{{ obG }}" onInput="{{ setObG }}" aria-label="Guest name"><button class="btn" type="submit">Add</button></form><div class="row" style="gap:6px"><sc-for list="{{ obGuests }}" as="g" hint-placeholder-count="0"><span class="tick">{{ g.n }}</span></sc-for></div></sc-if>
+      <sc-if value="{{ ob.review }}" hint-placeholder-val="{{ false }}"><dl style="display:grid;grid-template-columns:auto 1fr;gap:12px 24px;margin:0;font-size:15px;border-top:1px solid var(--line);padding-top:16px"><dt class="mut">Celebration</dt><dd style="margin:0">{{ obObj.type }}</dd><dt class="mut">Names</dt><dd style="margin:0">{{ obObj.names }}</dd><dt class="mut">Date</dt><dd style="margin:0">{{ obObj.date }}</dd><dt class="mut">Place</dt><dd style="margin:0">{{ obObj.venue }}</dd><dt class="mut">Design</dt><dd style="margin:0">{{ obObj.design }}</dd><dt class="mut">Guests</dt><dd style="margin:0">{{ obObj.guests }}</dd></dl></sc-if>
+      <sc-if value="{{ ob.done }}" hint-placeholder-val="{{ false }}"><p class="serif it" style="font-size:22px;margin:0;color:var(--ink2);font-weight:300">From here, a new story unfolds.</p></sc-if>
+    </div>
+    <div class="row sb" style="position:sticky;bottom:0;background:var(--bg);padding:12px 0"><button class="btn btn-t" onClick="{{ obBack }}">Back</button><button class="btn btn-p" onClick="{{ obNext }}">{{ ob.cta }}</button></div>
+  </div>
+  <div class="obst stage" onMouseMove="{{ tiltMove }}" onMouseLeave="{{ tiltOut }}">
+    <div class="halo" style="border-color:rgba(238,233,223,.12)"></div><div class="halo-dot" style="background:#B8AB97"></div>
+    <div class="tilt inv-obj" style="background:{{ pv.bg }};color:{{ pv.fg }};box-shadow:0 60px 100px -30px rgba(0,0,0,.85)">
+      <div class="inv-photo arch" style="background:{{ pv.photo }}">Your photo</div>
+      <div class="lay2"><div class="xs" style="letter-spacing:.16em;text-transform:uppercase;opacity:.7">{{ obObj.greet }}</div><div style="font-family:{{ pv.font }};font-size:32px;line-height:1.05;margin:10px 0 12px">{{ obObj.names }}</div><div class="xs" style="letter-spacing:.12em;opacity:.8">{{ obObj.date }}</div><div class="xs" style="opacity:.6;margin-top:4px">{{ obObj.venue }}</div></div>
+      <div class="sheen"></div>
+    </div>
+    <div class="xs" style="position:absolute;bottom:28px;color:#A39B8E;letter-spacing:.08em">Your invitation, taking shape</div>
+  </div>
+</div></sc-if>
+
+<sc-if value="{{ celebrate }}" hint-placeholder-val="{{ false }}"><div class="cel" onClick="{{ closeAll }}" role="status"><div style="display:grid;gap:20px;justify-items:center"><svg width="150" height="96" viewBox="0 0 64 40" fill="none"><path d="M8 38V24a24 24 0 0 1 48 0v14" stroke="var(--ink)" stroke-width="2.4" stroke-linecap="round" pathLength="100"></path><circle cx="8" cy="34" r="4.5" fill="var(--dot)" style="animation:pop .7s var(--sp) both 1.2s;transform-box:fill-box;transform-origin:center"></circle></svg><h2 class="h1" style="animation:rise .9s var(--eo) both .5s">Your invitation is live.</h2><p class="serif it" style="margin:0;font-size:20px;color:var(--mut);animation:rise .9s var(--eo) both .7s">From here, a new story unfolds.</p><button class="btn btn-p" style="animation:rise .9s var(--eo) both .9s" onClick="{{ shareP }}">Copy invitation link</button></div></div></sc-if>
+
+<sc-if value="{{ toast }}" hint-placeholder-val="{{ false }}"><div class="toast" role="status" aria-live="polite"><i></i>{{ toast }}</div></sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;dataState&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Planning&quot;,&quot;Brand new&quot;],&quot;default&quot;:&quot;Planning&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Prototype&quot;},&quot;eventType&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Wedding&quot;,&quot;17th Birthday&quot;,&quot;Product launch&quot;],&quot;default&quot;:&quot;Wedding&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Prototype&quot;},&quot;motion&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Full&quot;,&quot;Calm&quot;],&quot;default&quot;:&quot;Full&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Prototype&quot;}}">
+class Component extends DCLogic {
+  P = {
+    wedding: { type: 'Wedding', host: 'Raden & Cilla', a: 'Raden', amp: '&', b: 'Cilla', greet: 'The wedding of', line: 'Dari mula, menuju selamanya.', tag: 'Your celebration is taking shape.', close: 'Sebab setiap selamanya, pernah bermula.', date: 'Saturday, 12 December 2026', dshort: '12 · 12 · 2026', day: '12', mon: 'Dec', city: 'Jakarta', days: 42, ready: 82, msd: ['20 Oct', '31 Oct', '14 Nov', '25 Nov', '5 Dec', '12 Dec', 'After'],
+      events: [['Holy Matrimony', '10:00', '11:30', 'Gereja Santa Maria', 'Jl. Merdeka 21, Jakarta Pusat', 'Formal, soft tones', 'Everyone', 'An intimate ceremony with family and close friends.'], ['Reception', '18:00', '22:00', 'The Ballroom, Hotel Aurora', 'Jl. Jend. Sudirman 5, Jakarta', 'Black tie optional', 'Everyone', 'Dinner, toasts and the first dance.'], ['After Party', '22:30', '01:00', 'Rooftop Lounge, Level 30', 'Hotel Aurora, Jakarta', 'Cocktail', 'Invite only', 'For those who want the night to continue.']] },
+    birthday: { type: '17th Birthday', host: 'Nadia turns 17', a: 'Nadia', amp: '', b: 'turns seventeen', greet: 'Celebrating', line: 'A new age. A new chapter.', tag: 'Seventeen is almost here.', close: 'Dari sini, cerita baru bermula.', date: 'Saturday, 21 November 2026', dshort: '21 · 11 · 2026', day: '21', mon: 'Nov', city: 'Bandung', days: 21, ready: 68, msd: ['15 Oct', '31 Oct', '7 Nov', '12 Nov', '17 Nov', '21 Nov', 'After'],
+      events: [['Family Dinner', '17:00', '19:00', 'Rumah Makan Sunda Asri', 'Jl. Dago 120, Bandung', 'Smart casual', 'Family only', 'Dinner with the people who watched her grow.'], ['Sweet Seventeen', '19:30', '23:00', 'The Glasshouse', 'Jl. Riau 8, Bandung', 'Midnight blue', 'Everyone', 'Music, cake and the candle moment.']] },
+    launch: { type: 'Product launch', host: 'Aurora Series One', a: 'Aurora', amp: '', b: 'Series One', greet: 'You are invited to the launch of', line: 'From here, a new story unfolds.', tag: 'Launch night is coming together.', close: 'Sebuah mula untuk cerita berikutnya.', date: 'Thursday, 3 December 2026', dshort: '03 · 12 · 2026', day: '03', mon: 'Dec', city: 'Jakarta', days: 33, ready: 74, msd: ['18 Oct', '31 Oct', '16 Nov', '24 Nov', '30 Nov', '3 Dec', 'After'],
+      events: [['Press Preview', '15:00', '17:00', 'Aurora Flagship, Senopati', 'Jl. Senopati 44, Jakarta', 'Business', 'Invite only', 'Hands-on time for press and partners.'], ['Launch Night', '19:00', '22:00', 'Gudang Sarinah', 'Jl. Pancoran Timur 2, Jakarta', 'All black', 'Everyone', 'The reveal, live music and first orders.']] }
+  };
+  I = {
+    arch: 'M4 17V10a6 6 0 0 1 12 0v7', guests: 'M7.5 9a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM2 17c.5-3 2.6-5 5.5-5s5 2 5.5 5M13 3.3a3 3 0 0 1 0 5.4M15 12c1.6.6 2.6 2.4 3 5', cal: 'M3.5 5.5h13v11h-13zM3.5 9h13M7 3v4M13 3v4', check: 'M4 10.5l3.5 3.5L16 6',
+    inv: 'M3 5.5h14v10H3zM3 6l7 5 7-5', design: 'M10 3a7 7 0 1 0 0 14c1 0 1.5-.7 1.5-1.5 0-1.2-1-1.3-1-2.5 0-.8.7-1.5 1.5-1.5H14a3 3 0 0 0 3-3C17 5.6 13.9 3 10 3ZM6.5 10.5h.01M8 6.8h.01M12 6.8h.01', gift: 'M3.5 8h13v3h-13zM4.5 11h11v6h-11zM10 8v9M10 8C8 4 5 5 6.5 7.5M10 8c2-4 5-3 3.5-.5',
+    spark: 'M10 2.5v3M10 14.5v3M2.5 10h3M14.5 10h3M5 5l2 2M13 13l2 2M15 5l-2 2M7 13l-2 2', qr: 'M3.5 3.5h5v5h-5zM11.5 3.5h5v5h-5zM3.5 11.5h5v5h-5zM12 12h1.5v1.5H12zM15 15h1.5v1.5H15zM15 12h1.5M12 15.5v1', live: 'M3 6h10v8H3zM13 9l4-2.5v7L13 11', heart: 'M10 16.5S3 12.5 3 7.8A3.3 3.3 0 0 1 10 6a3.3 3.3 0 0 1 7 1.8c0 4.7-7 8.7-7 8.7Z',
+    team: 'M6.5 8.5a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5ZM13.5 8.5a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5ZM2 16c.4-2.6 2.1-4.5 4.5-4.5S10.6 13.4 11 16M9.5 12.4c.9-.6 2.2-.9 4-.9 2.4 0 4.1 1.9 4.5 4.5', plus: 'M10 4v12M4 10h12', card: 'M2.5 5.5h15v9h-15zM2.5 8.5h15M5.5 12h3',
+    guide: 'M4 4.5c2.5-1 4.5-.5 6 1 1.5-1.5 3.5-2 6-1v11c-2.5-1-4.5-.5-6 1-1.5-1.5-3.5-2-6-1zM10 5.5v11', user: 'M10 9.5a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM4 17c.6-3 3-4.5 6-4.5s5.4 1.5 6 4.5', sun: 'M10 13a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM10 2v2M10 16v2M2 10h2M16 10h2M4.3 4.3l1.4 1.4M14.3 14.3l1.4 1.4M4.3 15.7l1.4-1.4M14.3 5.7l1.4-1.4',
+    moon: 'M16 12.5A6.5 6.5 0 0 1 7.5 4 6.5 6.5 0 1 0 16 12.5Z', search: 'M9 15a6 6 0 1 0 0-12 6 6 0 0 0 0 12ZM17 17l-3.5-3.5', bell: 'M5 13.5V9a5 5 0 0 1 10 0v4.5l1.5 1.5h-13ZM8.5 17.5h3', more: 'M4 6h12M4 10h12M4 14h12'
+  };
+  pals = [{ n: 'Linen', bg: '#EFE8DC', fg: '#2A2724', ac: '#A69A89' }, { n: 'Nightfall', bg: '#1D1B19', fg: '#EDE6D8', ac: '#B8AB97' }, { n: 'Sage', bg: '#E2E5D9', fg: '#2F3A2E', ac: '#7D8C72' }, { n: 'Clay', bg: '#ECDDD1', fg: '#3B2A22', ac: '#A56C50' }, { n: 'Mist', bg: '#DFE2E5', fg: '#23282D', ac: '#7F8C98' }, { n: 'Ink', bg: '#232528', fg: '#F2F0EA', ac: '#C9C2B4' }];
+  groups = [
+    ['Prepare', [['home', 'Overview', 'arch'], ['guests', 'Guests', 'guests'], ['events', 'Schedule', 'cal'], ['todo', 'Tasks', 'check']]],
+    ['Invitation', [['invitation', 'Invitation', 'inv'], ['design', 'Design', 'design'], ['gift', 'Gift', 'gift']]],
+    ['Event day', [['eventday', 'Event day', 'spark'], ['checkin', 'Check-in', 'qr'], ['live', 'Live stream', 'live'], ['memories', 'Memories', 'heart']]],
+    ['Workspace', [['team', 'Team', 'team'], ['addons', 'Add-ons', 'plus'], ['billing', 'Billing', 'card']]]];
+  titles = { home: 'Overview', guests: 'Guests', events: 'Schedule', todo: 'Tasks', invitation: 'Invitation', design: 'Design', gift: 'Gift', eventday: 'Event day', checkin: 'Check-in', live: 'Live stream', memories: 'Memories', team: 'Team', addons: 'Add-ons', cart: 'Cart', billing: 'Billing', guide: 'Guide', account: 'Account', terms: 'Terms & Conditions', system: 'Design language' };
+  pool = ['Andi Saputra', 'Citra Dewi', 'Bayu Nugroho', 'Intan Permata', 'Galih Pratama', 'Wulan Sari', 'Yoga Aditya', 'Nina Rahma', 'Arief Hidayat', 'Sinta Maharani', 'Dodi Kurnia', 'Mega Lestari'];
+  state = {
+    page: 'home', theme: 'light', evt: 'wedding', events: null, seen: { home: 1 }, loading: false,
+    sec: 'cover', invGreet: null, invLine: null, dq: '', dcat: 'All', design: 'Linen Vow', pal: 0, font: 'Editorial',
+    gq: '', seg: 'all', gs: 'name', sel: {}, guestId: 1, guestOpen: false,
+    gl: [['Sarah Wijaya', 'Friends', 'Attending', 3, 2, 'A1', '+62 811 2233 445'], ['Budi Santoso', 'Family', 'Attending', 3, 4, 'F1', '+62 812 8891 002'], ['Maya Anindita', 'Colleagues', 'Pending', 2, 1, '—', '+62 813 4400 128'], ['Reza Pratama', 'Friends', 'Not attending', 3, 1, '—', '+62 857 1200 933'], ['Dewi Lestari', 'Family', 'Attending', 3, 3, 'F2', '+62 815 6677 210'], ['Kevin Halim', 'VIP', 'Invited', 1, 2, 'V1', '+62 819 5501 774'], ['Ayu Puspita', 'Colleagues', 'Invited', 1, 2, '—', '—'], ['Hendra Gunawan', 'Family', 'Attending', 3, 2, 'F1', '+62 878 4410 065'], ['Lina Marlina', 'Friends', 'Pending', 2, 1, '—', '+62 852 9018 342'], ['Tommy Wijaya', 'VIP', 'Attending', 3, 2, 'V1', '+62 811 9087 611'], ['Rina Kusuma', 'Family', 'Attending', 3, 2, 'F2', '+62 813 7781 220'], ['Fikri Ramadhan', 'Colleagues', 'Pending', 2, 2, '—', '+62 821 4410 993']].map((r, i) => ({ id: i + 1, name: r[0], group: r[1], st: r[2], j: r[3], party: r[4], table: r[5], phone: r[6] })),
+    gifts: [{ id: 1, type: 'Bank account', title: 'BCA · Raden Aditya', detail: 'Account number with copy button', copy: '8830 1122 45' }, { id: 2, type: 'Digital wallet', title: 'GoPay · Cilla Maharani', detail: 'Phone-linked wallet', copy: '0812 3456 7890' }, { id: 3, type: 'Physical gift', title: 'Send a gift to our home', detail: 'Address shown on the invitation', copy: 'Jl. Melati 8, Jakarta Selatan' }],
+    addonsL: [{ id: 1, cat: 'Design', name: 'Premium themes', desc: 'Ten more editorial designs, for every kind of celebration.', p: 149000, st: 'Available' }, { id: 2, cat: 'Gallery', name: 'Gallery +24', desc: 'Room for more photos and one short film.', p: 79000, st: 'Available' }, { id: 3, cat: 'Web', name: 'Custom domain', desc: 'radencilla.com instead of a mula link.', p: 199000, st: 'Available' }, { id: 4, cat: 'Experience', name: 'Live streaming', desc: 'Let far-away family join the ceremony as it happens.', p: 129000, st: 'Purchased' }, { id: 5, cat: 'Guests', name: 'RSVP essentials', desc: 'Replies, plus-ones, reminders and a deadline.', p: 0, st: 'Included' }, { id: 6, cat: 'Event day', name: 'QR check-in', desc: 'Personal codes and usher scanning at the entrance.', p: 99000, st: 'Available' }, { id: 7, cat: 'Support', name: 'Personal concierge', desc: 'A real person helps you prepare, up to the day itself.', p: 249000, st: 'Available' }, { id: 8, cat: 'Sections', name: 'More moments', desc: 'Add extra days, dinners and gatherings to one invitation.', p: 59000, st: 'Available' }, { id: 9, cat: 'Guests', name: 'Guest list', desc: 'Up to 300 guests with groups, tables and notes.', p: 0, st: 'Included' }],
+    cartL: [{ id: 3, q: 1 }], promo: '', disc: 0,
+    txL: [{ id: 'TX-1042', date: '28 Sep 2026', desc: 'Live streaming', method: 'QRIS', amt: 129000, st: 'Paid' }, { id: 'TX-1038', date: '21 Sep 2026', desc: 'Wedding plan', method: 'BCA transfer', amt: 990000, st: 'Paid' }, { id: 'TX-1031', date: '19 Sep 2026', desc: 'Gallery +24', method: 'Credit card', amt: 79000, st: 'Failed' }, { id: 'TX-1027', date: '12 Sep 2026', desc: 'Premium themes', method: 'GoPay', amt: 149000, st: 'Pending' }, { id: 'TX-1019', date: '02 Sep 2026', desc: 'Custom domain', method: 'QRIS', amt: 199000, st: 'Refunded' }],
+    tq: '', tf: 'All', tx: null, txOpen: false,
+    todosL: [['Choose design', 'Design', '1 Oct', 'Normal', 1], ['Complete invitation details', 'Invitation', '5 Oct', 'High', 1], ['Add event information', 'Schedule', '8 Oct', 'Normal', 1], ['Add guest list', 'Guests', '12 Oct', 'High', 1], ['Configure RSVP', 'Guests', '15 Oct', 'Normal', 1], ['Send invitations', 'Guests', '20 Oct', 'High', 1], ['Set up live stream', 'Event day', '25 Oct', 'Normal', 1], ['Upload gallery', 'Invitation', '3 Nov', 'High', 0, 'Soon'], ['Add gift information', 'Gift', '6 Nov', 'Normal', 0, 'Soon'], ['Assign tables', 'Guests', '20 Nov', 'Normal', 0, 'Later'], ['Brief your ushers', 'Event day', '5 Dec', 'Normal', 0, 'Later'], ['Print entrance QR', 'Event day', '8 Dec', 'Low', 0, 'Later']].map((t, i) => ({ id: i + 1, title: t[0], cat: t[1], due: t[2], pri: t[3], done: !!t[4], ph: t[5] || 'Soon' })),
+    nt: '', np: 'Normal', tc: 'All', recent: ['Set up live stream', 'Send invitations', 'Configure RSVP'],
+    ck: 'qr', qr: 'invite', qrSeed: 3, live: 'Scheduled', hq: '', hc: 'All', ha: 1,
+    perms: { scan: true, lookup: true, seat: true, offline: false }, checked: 112, uq: '', sim: false, bars: [6, 14, 27, 33, 22, 10],
+    feed: [{ n: 'Tommy Wijaya', t: 'Table V1', w: '18:42' }, { n: 'Dewi Lestari', t: 'Table F2', w: '18:40' }, { n: 'Hendra Gunawan', t: 'Table F1', w: '18:39' }, { n: 'Sarah Wijaya', t: 'Table A1', w: '18:37' }],
+    notifL: [{ t: 'Sarah Wijaya confirmed attendance', w: '2 min ago', u: true }, { t: 'Cilla approved the invitation design', w: '2 hours ago', u: true }, { t: 'Your invitation was opened 14 times today', w: '5 hours ago', u: true }, { t: 'Payment completed for Live streaming', w: '28 Sep', u: false }, { t: 'Invitation published', w: '20 Oct', u: false }],
+    notifOpen: false, searchOpen: false, sq: '', modalGuest: false, ng: { name: '', phone: '', group: 'Friends' }, moreOpen: false,
+    previewOpen: false, dev: 'Mobile', persp: 'Guest', pvg: 0, opened: false, rsvp: '',
+    obOpen: false, ob: 0, obType: 'Wedding', obNames: '', obDate: '', obVenue: '', obG: '', obGuests: [],
+    toast: '', celebrate: false, dismissed: {},
+    team: [['Aldo Prasetyo', 'Owner', 'aldo@example.com', 1], ['Cilla Maharani', 'Co-host', 'cilla@example.com', 1], ['Sarah Lim', 'Planner', 'sarah@studiolim.id', 1], ['Rina Kusuma', 'Family', 'rina.k@example.com', 0], ['Dimas Arya', 'Usher', '+62 812 7700 341', 0]].map((m, i) => ({ id: i + 1, n: m[0], r: m[1], e: m[2], on: !!m[3] })), invite: ''
+  };
+  componentDidMount() {
+    let th, pg; try { th = localStorage.getItem('mula-theme'); pg = localStorage.getItem('mula2-page'); } catch (e) {}
+    if (!th) th = window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    this.setState({ theme: th, page: pg && this.titles[pg] ? pg : 'home', evt: this.evtKey() });
+    this.applyRoot(th);
+    this._key = e => { if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') { e.preventDefault(); this.setState({ searchOpen: true }); } if (e.key === 'Escape') this.closeAll(); };
+    window.addEventListener('keydown', this._key);
+    setTimeout(() => this.countUp(), 60);
+  }
+  componentWillUnmount() { window.removeEventListener('keydown', this._key); clearInterval(this._sim); clearTimeout(this._t); }
+  applyRoot(th) { const r = document.documentElement; r.dataset.theme = th; r.dataset.motion = this.props.motion === 'Calm' ? 'calm' : 'full'; }
+  evtKey() { return { '17th Birthday': 'birthday', 'Product launch': 'launch' }[this.props.eventType] || 'wedding'; }
+  fresh() { return this.props.dataState === 'Brand new'; }
+  countUp() {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches || document.documentElement.dataset.motion === 'calm') return;
+    document.querySelectorAll('[data-count]').forEach(el => {
+      const tn = el.firstChild; if (!tn || tn.nodeType !== 3 || el.dataset.run === tn.nodeValue) return;
+      const end = parseFloat(el.dataset.count); if (isNaN(end) || end <= 0) return;
+      const fin = tn.nodeValue; el.dataset.run = fin; const t0 = performance.now();
+      const step = t => { const k = Math.min(1, (t - t0) / 1400), e = 1 - Math.pow(1 - k, 4); tn.nodeValue = k < 1 ? String(Math.round(end * e)) : fin; if (k < 1) requestAnimationFrame(step); };
+      requestAnimationFrame(step);
+    });
+  }
+  say = m => { this.setState({ toast: m }); clearTimeout(this._t); this._t = setTimeout(() => this.setState({ toast: '' }), 2800); };
+  idr = n => 'Rp ' + n.toLocaleString('id-ID');
+  d = e => e.currentTarget.dataset;
+  cls = s => ({ Attending: 'b-ok', Pending: 'b-wt', 'Not attending': 'b-no', Invited: 'b-in', Paid: 'b-ok', Failed: 'b-no', Refunded: 'b-mu' }[s] || 'b-mu');
+  avc = n => ['#A69A89', '#8C9886', '#A38C84', '#8A96A0', '#A8936F'][[...n].reduce((a, c) => a + c.charCodeAt(0), 0) % 5];
+  ini = n => n.split(' ').map(w => w[0]).slice(0, 2).join('');
+  evs() { return this.state.events || this.P[this.state.evt].events.map((e, i) => ({ id: i + 1, name: e[0], s: e[1], en: e[2], venue: e[3], addr: e[4], dress: e[5], vis: e[6], desc: e[7], open: false })); }
+  setEvs(a) { this.setState({ events: a }); }
+  nav(pg) {
+    try { localStorage.setItem('mula2-page', pg); } catch (x) {}
+    const first = !this.state.seen[pg] && ['guests', 'design', 'billing', 'memories', 'eventday'].includes(pg);
+    this.setState({ page: pg, moreOpen: false, searchOpen: false, notifOpen: false, guestOpen: false, loading: first, seen: { ...this.state.seen, [pg]: 1 } });
+    if (first) { clearTimeout(this._l); this._l = setTimeout(() => { this.setState({ loading: false }); setTimeout(() => this.countUp(), 80); }, 560); } else setTimeout(() => this.countUp(), 80);
+    window.scrollTo({ top: 0 });
+  }
+  go = e => this.nav(e.currentTarget.dataset.p);
+  closeAll = () => this.setState({ moreOpen: false, notifOpen: false, searchOpen: false, modalGuest: false, guestOpen: false, txOpen: false, previewOpen: false, obOpen: false, celebrate: false });
+  tiltMove = e => { const el = e.currentTarget, r = el.getBoundingClientRect(), x = (e.clientX - r.left) / r.width, y = (e.clientY - r.top) / r.height, s = el.style; s.setProperty('--ry', ((x - .5) * 16).toFixed(2) + 'deg'); s.setProperty('--rx', ((.5 - y) * 11).toFixed(2) + 'deg'); s.setProperty('--mx', (x * 100).toFixed(1) + '%'); s.setProperty('--my', (y * 100).toFixed(1) + '%'); s.setProperty('--px', ((x - .5) * 24).toFixed(1) + 'px'); s.setProperty('--py', ((y - .5) * 18).toFixed(1) + 'px'); };
+  tiltOut = e => { const s = e.currentTarget.style; ['--rx', '--ry', '--px', '--py'].forEach(k => s.setProperty(k, '0')); };
+  publish = () => { this.setState({ celebrate: true, obOpen: false }); clearTimeout(this._c); this._c = setTimeout(() => this.setState({ celebrate: false }), 3400); };
+  toggleSim = () => {
+    if (this.state.sim) { clearInterval(this._sim); this.setState({ sim: false }); return; }
+    this.setState({ sim: true });
+    this._sim = setInterval(() => {
+      const S = this.state; if (S.checked >= 180) { clearInterval(this._sim); this.setState({ sim: false }); this.say('Everyone expected has arrived.'); return; }
+      const n = this.pool[Math.floor(Math.random() * this.pool.length)], c = S.checked + 1, m = 43 + Math.floor((c - 112) / 2);
+      this.setState({ checked: Math.min(180, c), feed: [{ n, t: 'Table ' + ['A', 'B', 'F', 'V'][c % 4] + (1 + c % 6), w: (18 + Math.floor(m / 60)) + ':' + String(m % 60).padStart(2, '0') }, ...S.feed].slice(0, 6), bars: S.bars.map((b, i) => i === S.bars.length - 1 ? b + 1 : b) });
+    }, 1200);
+  };
+  qrPath(seed) {
+    let s = seed * 9301 + 49297, out = '';
+    for (let y = 0; y < 29; y++) for (let x = 0; x < 29; x++) {
+      s = (s * 9301 + 49297) % 233280; let on = s / 233280 > .52;
+      const fx = x < 8 ? x : x > 20 ? x - 21 : -1, fy = y < 8 ? y : y > 20 ? y - 21 : -1;
+      if (fx >= 0 && fy >= 0 && !(x > 20 && y > 20)) { on = (fx <= 6 && fy <= 6) && (fx === 0 || fx === 6 || fy === 0 || fy === 6 || (fx >= 2 && fx <= 4 && fy >= 2 && fy <= 4)); }
+      if (on) out += 'M' + x + ' ' + y + 'h1v1h-1z';
+    }
+    return out;
+  }
+  addTask() { const S = this.state; if (!S.nt.trim()) return; this.setState({ todosL: [...S.todosL, { id: Date.now(), title: S.nt, cat: S.tc === 'All' ? 'Invitation' : S.tc, due: 'Soon', pri: S.np, done: false, ph: 'Soon' }], nt: '' }); this.say('Task added.'); }
+  mv(arr, id, dir, set) { const a = arr.slice(), i = a.findIndex(x => x.id == id), j = i + dir; if (j < 0 || j >= a.length) return; [a[i], a[j]] = [a[j], a[i]]; set(a); }
+  search(q) {
+    const S = this.state; q = q.toLowerCase().trim();
+    if (!q) return [{ t: 'Upload gallery', k: 'Task', go: 'todo' }, { t: 'Sarah Wijaya', k: 'Guest', go: 'guests' }, { t: 'Reception', k: 'Schedule', go: 'events' }, { t: 'Event day rehearsal', k: 'Page', go: 'eventday' }];
+    const r = [];
+    S.gl.forEach(g => g.name.toLowerCase().includes(q) && r.push({ t: g.name, k: 'Guest', go: 'guests' }));
+    this.evs().forEach(e => e.name.toLowerCase().includes(q) && r.push({ t: e.name, k: 'Schedule', go: 'events' }));
+    S.todosL.forEach(t => t.title.toLowerCase().includes(q) && r.push({ t: t.title, k: 'Task', go: 'todo' }));
+    S.txL.forEach(t => (t.desc + t.id).toLowerCase().includes(q) && r.push({ t: t.desc + ' · ' + t.id, k: 'Payment', go: 'billing' }));
+    Object.entries(this.titles).forEach(([k, v]) => v.toLowerCase().includes(q) && r.push({ t: v, k: 'Page', go: k }));
+    ['Publish your first invitation', 'Import guests from a spreadsheet', 'Schedule a live stream', 'Check guests in with QR'].forEach(t => t.toLowerCase().includes(q) && r.push({ t, k: 'Guide', go: 'guide' }));
+    return r.slice(0, 8);
+  }
+  obStep() {
+    const i = this.state.ob;
+    const st = [['Let’s begin', 'First, tell us what you’re celebrating.', 'Every milestone marks the start of something. Choose the one closest to yours.', 'choice'], ['Hosts', 'Whose celebration is this?', 'These names appear on the cover. You can change them anytime.', 'names'], ['Date', 'When does it begin?', 'Pick the main day. You can add more moments later.', 'date'], ['Place', 'Where will everyone gather?', 'A venue name is enough for now.', 'venue'], ['Design', 'Choose a look you love.', 'Your palette carries through every page of the invitation.', 'pal'], ['Guests', 'Who would you love to see there?', 'Add a few names now. Import the rest whenever you like.', 'guests'], ['Review', 'Here is your invitation so far.', 'Everything stays editable after you publish.', 'review'], ['Publish', 'Ready when you are.', 'Publishing creates your link. Guests only see it once you share it.', 'done']][i];
+    const o = { n: i + 1, kick: st[0], h: st[1], p: st[2], cta: i === 7 ? 'Publish invitation' : i === 6 ? 'Looks right' : 'Continue' };
+    ['choice', 'names', 'date', 'venue', 'pal', 'guests', 'review', 'done'].forEach(k => o[k] = st[3] === k);
+    return o;
+  }
+  renderVals() {
+    if (this._lastEvtProp !== this.props.eventType) { const first = this._lastEvtProp === undefined; this._lastEvtProp = this.props.eventType; if (!first) setTimeout(() => this.setState({ evt: this.evtKey(), events: null }), 0); }
+    if (this._lastMotion !== this.props.motion) { this._lastMotion = this.props.motion; if (typeof document !== 'undefined') document.documentElement.dataset.motion = this.props.motion === 'Calm' ? 'calm' : 'full'; }
+    const S = this.state, fresh = this.fresh(), e0 = this.P[S.evt] || this.P.wedding;
+    const ev = { ...e0, greet: S.invGreet ?? e0.greet, line: S.invLine ?? e0.line, ready: fresh ? 12 : e0.ready, amp: !!e0.amp };
+    const pal = this.pals[S.pal], fontF = { Editorial: "'Newsreader',Georgia,serif", Modern: "'Instrument Sans',system-ui,sans-serif", Classic: "Georgia,'Times New Roman',serif" }[S.font];
+    const pv = { bg: pal.bg, fg: pal.fg, ac: pal.ac, font: fontF, photo: `linear-gradient(165deg,color-mix(in oklab,${pal.ac} 45%,${pal.bg}),${pal.ac} 70%,color-mix(in oklab,${pal.ac} 70%,${pal.fg}))` };
+    const p = {}; Object.keys(this.titles).forEach(k => p[k] = S.page === k && !S.loading);
+    const go = this.go, I = this.I;
+    const todoLeft = S.todosL.filter(t => !t.done).length;
+    const nav = this.groups.map(g => ({ label: g[0], items: g[1].map(n => ({ id: n[0], label: n[1], ic: I[n[2]], on: (S.page === n[0] || (n[0] === 'addons' && S.page === 'cart')) ? 'on' : '', badge: n[0] === 'todo' && todoLeft ? todoLeft : '' })) }));
+    const allNav = this.groups.flatMap(g => g[1]).concat([['guide', 'Guide'], ['account', 'Account'], ['terms', 'Terms'], ['system', 'Design language']]).map(n => ({ id: n[0], label: n[1] }));
+    const bnav = [['home', 'Overview', 'arch'], ['guests', 'Guests', 'guests'], ['invitation', 'Invitation', 'inv'], ['todo', 'Tasks', 'check']].map(b => ({ id: b[0], n: b[1], ic: I[b[2]], on: S.page === b[0] ? 'on' : '', fn: go }));
+    bnav.push({ id: 'more', n: 'More', ic: I.more, on: S.moreOpen ? 'on' : '', fn: () => this.setState({ moreOpen: true }) });
+    const hr = new Date().getHours(), greeting = 'Saturday, 31 October · Good ' + (hr < 12 ? 'morning' : hr < 18 ? 'afternoon' : 'evening') + ', Aldo';
+    // readiness
+    const partsRaw = fresh ? [['Invitation', 20, 'Choose a design to begin', 'invitation'], ['Guests', 0, 'No guests yet', 'guests'], ['Schedule', 0, 'Add your first moment', 'events'], ['Gift', 0, 'Optional', 'gift'], ['Check-in', 0, 'Later', 'checkin']]
+      : [['Invitation', 90, 'Gallery is still empty', 'invitation'], ['Guests', 100, 'All 247 invited', 'guests'], ['RSVP', 83, '42 still to reply', 'guests'], ['Schedule', 100, '3 moments set', 'events'], ['Gift', 75, 'Add one more method', 'gift'], ['Seating', 70, '62 seats unassigned', 'guests'], ['Check-in', 60, 'Print entrance QR', 'checkin'], ['Live stream', 100, 'Scheduled for 10:00', 'live'], ['Final checks', 60, 'Opens 7 days before', 'todo']];
+    const parts = partsRaw.map(x => ({ n: x[0], v: x[1], w: x[1] + '%', note: x[2], go: x[3] }));
+    const t = ev.ready / 100, ang = Math.PI * t, arch = { dash: ev.ready + ' 100', x: (120 - 104 * Math.cos(ang)).toFixed(1), y: (124 - 104 * Math.sin(ang)).toFixed(1) };
+    const notesAll = [{ id: 'remind', k: 'Next up', t: '18 guests opened your invitation but haven’t replied yet.', s: 'A gentle reminder on WhatsApp, with their personal link, usually does it.', a: 'Send reminder', cls: 'note lead' }, { id: 'unopened', k: 'Worth a look', t: '24 guests haven’t opened their invitation.', s: 'Most of them are colleagues. Check their numbers, or resend.', a: 'Review these guests', cls: 'note' }, { id: 'attention', k: ev.days + ' days to go', t: 'Three things still need your attention.', s: 'Upload your gallery · Add gift details · Assign 62 seats', a: 'Open tasks', cls: 'note' }];
+    const notes = notesAll.filter(n => !S.dismissed[n.id]);
+    const journey = [['Sent', 247, '20 Oct', 'done'], ['Opened', 223, '90% of guests', 'done'], ['Replied', 205, '83% of guests', 'done'], ['Reminder', 18, 'Scheduled 14 Nov', 'next'], ['Event day', 180, 'Expected', 'up'], ['Thank you', 180, 'After the event', 'up last']].map(j => ({ n: j[0], v: j[1], s: j[2], cls: 'jn ' + j[3] }));
+    const pos = ['0%', '18%', '42%', '60%', '77%', '88%', '100%'], mlab = ['Invitations sent', 'Today', 'Reminder', 'RSVP closes', 'Final details', 'Event day', 'Memories'], mcls = ['done first', 'now', '', '', '', 'big', 'last'];
+    const ms = mlab.map((l, i) => ({ l, d: ev.msd[i], x: pos[i], cls: 'ms ' + mcls[i] }));
+    const recent = S.recent.slice(0, 4).map(r => ({ t: r }));
+    const evList = this.evs();
+    const schedule = evList.map(e => ({ ...e, time: e.s + ' – ' + e.en }));
+    const activity = [['Cilla Maharani', 'approved the invitation design', '2 h ago'], ['Sarah Wijaya', 'confirmed attendance for 2', '2 min ago'], ['Rina Kusuma', 'added 12 guests to Family', 'Yesterday'], ['Sarah Lim', 'updated the reception run-of-show', 'Yesterday']].map(a => ({ n: a[0], i: this.ini(a[0]), c: this.avc(a[0]), w: a[1], t: a[2] }));
+    const online = S.team.filter(m => m.on).map(m => ({ n: m.n, i: this.ini(m.n), c: this.avc(m.n) }));
+    // guests
+    const segDef = [['all', 'Everyone', 247], ['notopened', 'Haven’t opened', 24], ['noreply', 'Opened, no reply', 18], ['attending', 'Confirmed', 180], ['declined', 'Can’t make it', 25], ['vip', 'VIP', 14], ['plus', 'Bringing someone', 38], ['follow', 'Needs follow-up', 6]];
+    const segs = segDef.map(s => ({ id: s[0], l: s[1], v: fresh ? 0 : s[2], on: S.seg === s[0] ? 'sgc on' : 'sgc' }));
+    const segActs = { notopened: ['24 guests haven’t opened their invitation.', 'Resend to 24'], noreply: ['18 guests opened it but haven’t replied.', 'Remind 18 guests'], follow: ['6 guests are missing a phone number or need a decision.', 'Review together'], declined: ['25 guests can’t make it. They can still watch the live stream.', 'Send stream link'] };
+    const sa = segActs[S.seg];
+    const fseg = g => ({ all: 1, notopened: g.st === 'Invited', noreply: g.st === 'Pending', attending: g.st === 'Attending', declined: g.st === 'Not attending', vip: g.group === 'VIP', plus: g.party > 1, follow: g.phone === '—' || g.st === 'Pending' && g.group === 'Colleagues' }[S.seg]);
+    const ord = { Attending: 0, Pending: 1, Invited: 2, 'Not attending': 3 };
+    let gl = fresh ? [] : S.gl.filter(g => fseg(g) && (g.name + g.group).toLowerCase().includes(S.gq.toLowerCase()));
+    gl = gl.slice().sort((a, b) => S.gs === 'status' ? ord[a.st] - ord[b.st] : String(a[S.gs]).localeCompare(String(b[S.gs])));
+    const guests = gl.map(g => ({ ...g, cls: this.cls(g.st), chk: !!S.sel[g.id], i: this.ini(g.name), c: this.avc(g.name), j1: g.j >= 1 ? 'on' : '', j2: g.j >= 2 ? 'on' : '', j3: g.j >= 3 ? 'on' : '', plus: g.party > 1 ? '+' + (g.party - 1) : '—' }));
+    const selCount = Object.values(S.sel).filter(Boolean).length;
+    const gg = S.gl.find(g => g.id === S.guestId) || S.gl[0];
+    const gd = { ...gg, cls: this.cls(gg.st), i: this.ini(gg.name), c: this.avc(gg.name), plus: gg.party > 1 ? 'Party of ' + gg.party + ' (with plus-one)' : 'Just themselves', note: gg.group === 'VIP' ? 'Seat near the front. Vegetarian meal.' : '',
+      jr: [['Invitation sent', 'WhatsApp · 20 Oct, 09:12', 1], ['Opened', '21 Oct, 19:40', gg.j >= 2], ['Replied', gg.st === 'Not attending' ? 'Can’t make it · 23 Oct' : 'Attending · 23 Oct', gg.j >= 3], ['Event day', ev.day + ' ' + ev.mon, 0]].map(x => ({ n: x[0], w: x[1], on: x[2] ? 'jn done' : 'jn up' })) };
+    // invitation
+    const secL = [['cover', 'Cover', 1], ['main', 'Main information', 1], ['story', 'Story', 1], ['events', 'Moments', 1], ['gallery', 'Gallery', 0], ['rsvp', 'RSVP', 1], ['wishes', 'Wishes', 1], ['gift', 'Gift', 0], ['live', 'Live stream', 1], ['music', 'Music', 1], ['closing', 'Closing', 1]];
+    const secs = secL.map((s, i) => ({ id: s[0], n: s[1], no: String(i + 1).padStart(2, '0'), on: S.sec === s[0] ? 'sx on' : 'sx', c: s[2] ? 'var(--ok)' : 'var(--wt)' }));
+    const sec = { cover: S.sec === 'cover', main: S.sec === 'main', gallery: S.sec === 'gallery', rsvp: S.sec === 'rsvp' }; sec.other = !(sec.cover || sec.main || sec.gallery || sec.rsvp);
+    // design
+    const dl = [['Linen Vow', 'Wedding', 'Minimal · Warm', 0, 'Ana & Ken'], ['Golden Hour', 'Anniversary', 'Elegant · Dark', 1, '50 Years'], ['Seventeen', '17th Birthday', 'Modern · Bold', 4, 'Nadia, 17'], ['Paper Margin', 'Editorial', 'Editorial · Serif', 0, 'A New Chapter'], ['First Light', 'Birthday', 'Warm · Playful', 3, 'Happy 30'], ['Signal', 'Product Launch', 'Modern · Mono', 5, 'Launch 26'], ['Quiet Ring', 'Wedding', 'Elegant · Botanical', 2, 'Raden & Cilla'], ['Studio Night', 'Brand', 'Brand · Dark', 1, 'Opening Night']];
+    const designs = dl.filter(x => (S.dcat === 'All' || x[1] === S.dcat || x[2].includes(S.dcat)) && x[0].toLowerCase().includes(S.dq.toLowerCase())).map(x => { const pp = this.pals[x[3]]; return { name: x[0], cat: x[1], tags: x[2], mock: x[4], bg: pp.bg, fg: pp.fg, photo: `linear-gradient(165deg,color-mix(in oklab,${pp.ac} 45%,${pp.bg}),${pp.ac})`, cur: x[0] === S.design, pal: x[3] }; });
+    // gifts / addons / cart
+    const gifts = fresh ? [] : S.gifts;
+    const inCart = id => S.cartL.some(c => c.id === id);
+    const amap = a => { const avail = a.st === 'Available', inc = inCart(a.id); return { ...a, price: a.p ? this.idr(a.p) : 'Included', c: a.st === 'Purchased' ? 'b-ok' : a.st === 'Included' ? 'b-mu' : 'b-in', cta: inc ? 'In your cart' : 'Add', dis: inc, avail }; };
+    const cart = S.cartL.map(c => { const a = S.addonsL.find(x => x.id === c.id); return { id: c.id, q: c.q, name: a.name, desc: a.desc, unit: this.idr(a.p), line: this.idr(a.p * c.q) }; });
+    const sub = S.cartL.reduce((tt, c) => tt + S.addonsL.find(x => x.id === c.id).p * c.q, 0), dsc = Math.round(sub * S.disc);
+    // tx
+    const txs = S.txL.filter(x => (S.tf === 'All' || x.st === S.tf) && (x.id + x.desc).toLowerCase().includes(S.tq.toLowerCase())).map(x => ({ ...x, amt: this.idr(x.amt), cls: this.cls(x.st) }));
+    const txSel = S.txL.find(x => x.id === S.tx) || S.txL[0];
+    // todo
+    const done = S.todosL.filter(x => x.done).length, total = S.todosL.length;
+    const tmap = x => ({ ...x, cls: x.done ? 'tk done' : 'tk', ckc: x.done ? 'ck on' : 'ck', pc: x.pri === 'High' ? 'b-no' : x.pri === 'Low' ? 'b-mu' : 'b-in' });
+    const tf = S.todosL.filter(x => S.tc === 'All' || x.cat === S.tc);
+    const tPct = done / total, tAng = Math.PI * tPct;
+    const nextTask = S.todosL.find(x => !x.done);
+    // qr / live
+    const qrT = { invite: ['Scan to open the invitation', 'Opens the invitation on any phone. For printed cards and sharing.'], event: ['Scan for directions', 'Opens one moment with its map. For signage at the venue.'], checkin: ['Show this at the entrance', 'Personal to each guest. Ushers scan it to check them in.'] };
+    const L = { 'Not configured': ['Nothing to show yet', 'Add a platform and a link to begin.', 'b-mu'], Scheduled: ['Starts ' + ev.day + ' ' + ev.mon + ', 10:00', 'Guests see a countdown on the invitation.', 'b-in'], Live: ['You are live', '214 people are watching right now.', 'b-no'], Ended: ['Thank you for joining', 'The recording stays on the invitation.', 'b-mu'] }[S.live];
+    // guide
+    const gl2 = [{ id: 1, cat: 'Getting started', t: 'Publish your first invitation', s: 'From a blank page to a shareable link.', steps: ['Open Invitation and check each section.', 'Preview it on a phone.', 'Select Publish.', 'Copy the link or download a QR code.'], go: 'invitation' }, { id: 2, cat: 'Guests', t: 'Import guests from a spreadsheet', s: 'Bring an existing list in one go.', steps: ['Open Guests and select Import.', 'Upload a CSV with name and phone.', 'Check the preview, then confirm.'], go: 'guests' }, { id: 3, cat: 'RSVP', t: 'Set an RSVP deadline', s: 'Decide when replies close.', steps: ['Open Invitation, then RSVP.', 'Pick a deadline.', 'Save your changes.'], go: 'invitation' }, { id: 4, cat: 'Event day', t: 'Check guests in with QR', s: 'Prepare your ushers for the day.', steps: ['Generate check-in codes in Check-in.', 'Add ushers and choose what they can see.', 'Test one scan before guests arrive.'], go: 'checkin' }, { id: 5, cat: 'Gift', t: 'Share gift details safely', s: 'Let guests copy in one tap.', steps: ['Open Gift.', 'Add a gift method.', 'Check how guests will see it.'], go: 'gift' }, { id: 6, cat: 'Event day', t: 'Schedule a live stream', s: 'Connect YouTube or Zoom.', steps: ['Open Live stream.', 'Paste your link.', 'Set a start time.'], go: 'live' }];
+    const guides = gl2.filter(g => (S.hc === 'All' || g.cat === S.hc) && (g.t + g.s).toLowerCase().includes(S.hq.toLowerCase())).map(g => ({ ...g, sel: S.ha === g.id ? 'card lift on' : 'card lift' }));
+    // usher
+    const uq = S.uq.toLowerCase();
+    const uguests = S.gl.filter(g => g.st === 'Attending' && (!uq || g.name.toLowerCase().includes(uq))).slice(0, 3);
+    // preview
+    const pvGuests = ['Sarah Wijaya', 'Budi Santoso & family', 'A guest without a name'];
+    const host = S.persp === 'Host';
+    // onboarding
+    const obGreet = { Wedding: 'The wedding of', Birthday: 'Celebrating', '17th Birthday': 'Sweet seventeen', Anniversary: 'Celebrating the anniversary of', Engagement: 'The engagement of', 'Product launch': 'You are invited to the launch of', 'Private celebration': 'You are invited', Other: 'You are invited' }[S.obType];
+    let obDateF = 'Choose a date'; if (S.obDate) { try { obDateF = new Date(S.obDate + 'T00:00').toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }); } catch (x) {} }
+    const wishes = [['Budi Santoso', 'Family', 'We watched you both grow up. Seeing you begin this together is the best news of the year.'], ['Sarah Wijaya', 'Friends', 'From the first coffee to forever. Counting down to the twelfth with you.'], ['Dewi Lestari', 'Family', 'Semoga menjadi keluarga yang penuh kasih dan saling menguatkan.'], ['Tommy Wijaya', 'VIP', 'Wishing you a lifetime of the kind of happiness you have brought everyone around you.'], ['Rina Kusuma', 'Family', 'Can’t wait to dance at the reception. Love you both.'], ['Hendra Gunawan', 'Family', 'Selamat menempuh hidup baru. Doa terbaik untuk kalian berdua.']].map(w => ({ n: w[0], g: w[1], t: w[2], i: this.ini(w[0]), c: this.avc(w[0]) }));
+    const unread = S.notifL.filter(n => n.u).length;
+    return {
+      ev, pv, p, go, ic: I, nav, allNav, bnav, greeting, pageTitle: this.titles[S.page] || '', loading: S.loading,
+      loadMsg: { guests: 'Gathering your guests…', design: 'Laying out designs…', billing: 'Fetching your payments…', memories: 'Collecting wishes…', eventday: 'Preparing event day…' }[S.page] || 'Preparing your workspace…',
+      guideOn: S.page === 'guide' ? 'on' : '', accountOn: S.page === 'account' ? 'on' : '', thL: S.theme === 'light' ? 'on' : '', thD: S.theme === 'dark' ? 'on' : '',
+      setLight: () => { this.setState({ theme: 'light' }); this.applyRoot('light'); try { localStorage.setItem('mula-theme', 'light'); } catch (x) {} },
+      setDark: () => { this.setState({ theme: 'dark' }); this.applyRoot('dark'); try { localStorage.setItem('mula-theme', 'dark'); } catch (x) {} },
+      toggleTheme: () => { const th = S.theme === 'dark' ? 'light' : 'dark'; this.setState({ theme: th }); this.applyRoot(th); try { localStorage.setItem('mula-theme', th); } catch (x) {} },
+      themeIc: S.theme === 'dark' ? I.sun : I.moon,
+      cycleEvt: () => { const k = ['wedding', 'birthday', 'launch'], n = k[(k.indexOf(S.evt) + 1) % 3]; this.setState({ evt: n, events: null, invGreet: null, invLine: null }); setTimeout(() => this.countUp(), 80); this.say('Switched to ' + this.P[n].host + '.'); },
+      online, hasUnread: unread > 0, openSearch: () => this.setState({ searchOpen: true, sq: '' }), toggleNotif: () => this.setState({ notifOpen: !S.notifOpen }),
+      freshHome: fresh, fullHome: !fresh, openOb: () => this.setState({ obOpen: true, ob: 0 }),
+      openPreview: () => this.setState({ previewOpen: true, opened: false, rsvp: '' }), tiltMove: this.tiltMove, tiltOut: this.tiltOut,
+      parts, arch, notes, noNotes: !notes.length,
+      noteAct: e => { const id = this.d(e).v; if (id === 'remind') { this.setState({ dismissed: { ...S.dismissed, remind: 1 } }); this.say('Reminder sent to 18 guests.'); } else if (id === 'unopened') { this.setState({ seg: 'notopened' }); this.nav('guests'); } else this.nav('todo'); },
+      noteLater: e => this.setState({ dismissed: { ...S.dismissed, [this.d(e).v]: 1 } }), resetNotes: () => this.setState({ dismissed: {} }),
+      journey, ms, recent, schedule, activity,
+      // guests
+      segs, setSeg: e => this.setState({ seg: this.d(e).v }), hasSegAct: !!sa && !fresh, segMsg: sa ? sa[0] : '', segCta: sa ? sa[1] : '', segRun: () => this.say(S.seg === 'follow' ? 'Showing guests who need a follow-up.' : 'Sent. We’ll let you know as replies come in.'),
+      gq: S.gq, setGq: e => this.setState({ gq: e.target.value }), setGs: e => this.setState({ gs: e.target.value }),
+      guests, noGuests: !guests.length && !fresh, freshGuests: fresh, hasGuests: guests.length > 0, gCount: guests.length, hasSel: selCount > 0, selCount,
+      selG: e => this.setState({ sel: { ...S.sel, [this.d(e).v]: e.target.checked } }), clearSel: () => this.setState({ sel: {} }),
+      openG: e => this.setState({ guestId: +this.d(e).v, guestOpen: true }), gd, guestOpen: S.guestOpen, stOpts: ['Attending', 'Pending', 'Invited', 'Not attending'].map(s => ({ s, on: gg.st === s ? 'chip on' : 'chip' })),
+      setGSt: e => { this.setState({ gl: S.gl.map(g => g.id === S.guestId ? { ...g, st: this.d(e).v, j: this.d(e).v === 'Attending' || this.d(e).v === 'Not attending' ? 3 : g.j } : g) }); this.say('RSVP updated for ' + gg.name.split(' ')[0] + '.'); },
+      resend: () => this.say('Invitation sent again to ' + gg.name.split(' ')[0] + '.'), bulkResend: () => { this.setState({ sel: {} }); this.say('Invitations sent again.'); },
+      bulkDel: () => { this.setState({ gl: S.gl.filter(g => !S.sel[g.id]), sel: {} }); this.say('Guests removed.'); },
+      importG: () => this.say('Choose a CSV or Excel file to import.'), exportG: () => this.say('Your guest list is downloading.'),
+      openAddGuest: () => this.setState({ modalGuest: true }), modalGuest: S.modalGuest, ng: S.ng,
+      setNg: e => this.setState({ ng: { ...S.ng, [e.target.dataset.k]: e.target.value } }),
+      addGuest: e => { e.preventDefault(); if (!S.ng.name.trim()) return; this.setState({ gl: [{ id: Date.now(), name: S.ng.name, group: S.ng.group, st: 'Invited', j: 1, party: 1, table: '—', phone: S.ng.phone || '—' }, ...S.gl], modalGuest: false, ng: { name: '', phone: '', group: 'Friends' } }); this.say(S.ng.name.split(' ')[0] + ' has been added to your guest list.'); },
+      // invitation
+      secs, sec, secName: (secL.find(s => s[0] === S.sec) || secL[0])[1], setSec: e => this.setState({ sec: this.d(e).v }),
+      setGreet: e => this.setState({ invGreet: e.target.value }), setLine: e => this.setState({ invLine: e.target.value }),
+      tg: e => { const b = e.currentTarget, on = b.classList.toggle('on'); b.setAttribute('aria-checked', on); },
+      save: () => this.say('Your changes have been saved.'), failSave: () => this.say('We couldn’t save your changes. Check your connection and try again.'),
+      toastGallery: () => this.say('Choose photos from your device.'), publish: this.publish,
+      // design
+      dq: S.dq, setDq: e => this.setState({ dq: e.target.value }), dcats: ['All', 'Wedding', 'Birthday', 'Anniversary', '17th Birthday', 'Brand', 'Product Launch', 'Minimal', 'Elegant', 'Editorial', 'Modern'].map(n => ({ n, on: S.dcat === n ? 'chip on' : 'chip' })),
+      setDcat: e => this.setState({ dcat: this.d(e).v }), designs, noDesigns: !designs.length, designName: S.design,
+      useDesign: e => { this.setState({ design: this.d(e).v, pal: +this.d(e).pal }); this.say('Your design has been updated.'); },
+      palOpts: this.pals.slice(0, 4).map((x, i) => ({ i, n: x.n, bg: x.bg, ac: x.ac, on: S.pal === i ? 'outline:2px solid #EEE9DF;outline-offset:3px' : '' })), setPal: e => this.setState({ pal: +this.d(e).v }),
+      obPalOpts: this.pals.slice(0, 4).map((x, i) => ({ i, n: x.n, bg: x.bg, ac: x.ac, on: S.pal === i ? 'outline:2px solid var(--ink);outline-offset:3px' : '' })),
+      fonts: ['Editorial', 'Modern', 'Classic'].map(n => ({ n, on: S.font === n ? 'on' : '' })), setFont: e => this.setState({ font: this.d(e).v }),
+      // events
+      events: fresh ? [] : evList.map((x, i) => ({ ...x, time: x.s + ' – ' + x.en, vc: x.vis === 'Everyone' ? 'b-ok' : 'b-mu', no: String(i + 1).padStart(2, '0') })), noEvents: fresh || !evList.length,
+      addEvent: () => { this.setEvs([...evList, { id: Date.now(), name: 'New moment', s: '19:00', en: '21:00', venue: 'Add a venue', addr: '', dress: 'Open', vis: 'Everyone', desc: '', open: true }]); this.say('A new moment was added. Fill in the details.'); },
+      evEdit: e => this.setEvs(evList.map(x => x.id == this.d(e).v ? { ...x, open: !x.open } : x)),
+      evDup: e => { const i = evList.findIndex(x => x.id == this.d(e).v), a = evList.slice(); a.splice(i + 1, 0, { ...evList[i], id: Date.now(), name: evList[i].name + ' (copy)', open: false }); this.setEvs(a); this.say('Moment duplicated.'); },
+      evDel: e => { this.setEvs(evList.filter(x => x.id != this.d(e).v)); this.say('Moment removed.'); },
+      evUp: e => this.mv(evList, this.d(e).v, -1, a => this.setEvs(a)), evDown: e => this.mv(evList, this.d(e).v, 1, a => this.setEvs(a)),
+      evSave: e => { this.setEvs(evList.map(x => x.id == this.d(e).v ? { ...x, open: false } : x)); this.say('Moment saved.'); },
+      // gift
+      gifts, noGifts: !gifts.length, hasGifts: gifts.length > 0,
+      addGift: () => { this.setState({ gifts: [...S.gifts, { id: Date.now(), type: 'Bank account', title: 'New gift method', detail: 'Add the details', copy: '0000 0000' }] }); this.say('Gift method added.'); },
+      gDel: e => this.setState({ gifts: S.gifts.filter(x => x.id != this.d(e).v) }), gUp: e => this.mv(S.gifts, this.d(e).v, -1, a => this.setState({ gifts: a })), gDown: e => this.mv(S.gifts, this.d(e).v, 1, a => this.setState({ gifts: a })),
+      copy: e => { try { navigator.clipboard.writeText(this.d(e).v); } catch (x) {} this.say('Copied to clipboard.'); },
+      // addons / cart
+      aoAvail: S.addonsL.filter(a => a.st === 'Available').map(amap), aoOwned: S.addonsL.filter(a => a.st !== 'Available').map(amap), cartCount: S.cartL.length,
+      addCart: e => { this.setState({ cartL: [...S.cartL, { id: +this.d(e).v, q: 1 }] }); this.say('Added to your cart.'); },
+      cart, cartEmpty: !cart.length, cartFull: cart.length > 0, subtotal: this.idr(sub), discount: dsc ? '− ' + this.idr(dsc) : '—', total: this.idr(sub - dsc),
+      qPlus: e => this.setState({ cartL: S.cartL.map(c => c.id == this.d(e).v ? { ...c, q: c.q + 1 } : c) }),
+      qMinus: e => this.setState({ cartL: S.cartL.map(c => c.id == this.d(e).v ? { ...c, q: c.q - 1 } : c).filter(c => c.q > 0) }),
+      promo: S.promo, setPromo: e => this.setState({ promo: e.target.value }),
+      applyPromo: () => S.promo.trim().toUpperCase() === 'MULA10' ? (this.setState({ disc: .1 }), this.say('Promo applied: 10% off.')) : this.say('That code doesn’t look right. Try MULA10.'),
+      pay: () => { const items = cart.map(c => c.name).join(', '); this.setState({ cartL: [], disc: 0, txL: [{ id: 'TX-' + (1043 + S.txL.length), date: '31 Oct 2026', desc: items, method: 'QRIS', amt: sub - dsc, st: 'Paid' }, ...S.txL], addonsL: S.addonsL.map(a => S.cartL.some(c => c.id === a.id) ? { ...a, st: 'Purchased' } : a) }); this.nav('billing'); this.say('Payment completed. Your receipt is in Billing.'); },
+      // billing
+      tfs: ['All', 'Paid', 'Pending', 'Failed', 'Refunded'].map(n => ({ n, on: S.tf === n ? 'chip on' : 'chip' })), setTf: e => this.setState({ tf: this.d(e).v }), tq: S.tq, setTq: e => this.setState({ tq: e.target.value }), txs, noTx: !txs.length,
+      tx: { ...txSel, amt: this.idr(txSel.amt), cls: this.cls(txSel.st) }, txOpen: S.txOpen, openTx: e => this.setState({ tx: this.d(e).v, txOpen: true }), dlInv: () => { this.setState({ txOpen: false }); this.say('Your invoice is downloading.'); },
+      // tasks
+      todoDone: done, todoTotal: total, todoLeft, tArch: { dash: Math.round(tPct * 100) + ' 100', x: (120 - 104 * Math.cos(tAng)).toFixed(1), y: (124 - 104 * Math.sin(tAng)).toFixed(1) },
+      nextTask: nextTask ? nextTask.title : 'Nothing left. Enjoy the day.', tSoon: tf.filter(x => !x.done && x.ph === 'Soon').map(tmap), tLater: tf.filter(x => !x.done && x.ph === 'Later').map(tmap), tDone: tf.filter(x => x.done).map(tmap),
+      tcats: ['All', 'Invitation', 'Design', 'Guests', 'Gift', 'Schedule', 'Event day'].map(n => ({ n, on: S.tc === n ? 'chip on' : 'chip' })), setTc: e => this.setState({ tc: this.d(e).v }),
+      nt: S.nt, setNt: e => this.setState({ nt: e.target.value }), setNp: e => this.setState({ np: e.target.value }), ntKey: e => { if (e.key === 'Enter') this.addTask(); }, addTask: () => this.addTask(),
+      togTask: e => { const id = this.d(e).v, tk = S.todosL.find(x => x.id == id), nowDone = !tk.done; this.setState({ todosL: S.todosL.map(x => x.id == id ? { ...x, done: nowDone } : x), recent: nowDone ? [tk.title, ...S.recent.filter(r => r !== tk.title)] : S.recent.filter(r => r !== tk.title) }); if (nowDone) this.say('Done. “' + tk.title + '” is now on your timeline.'); },
+      delTask: e => this.setState({ todosL: S.todosL.filter(x => x.id != this.d(e).v) }),
+      // event day
+      checked: S.checked, expected: 180, arrPct: Math.round(S.checked / 180 * 100) + '%', notYet: 180 - S.checked, sim: S.sim, simOff: !S.sim, toggleSim: this.toggleSim, simLabel: S.sim ? 'Pause rehearsal' : 'Start rehearsal',
+      bars: S.bars.map((b, i) => ({ h: Math.min(100, b * 2.6) + '%', l: ['17:30', '17:45', '18:00', '18:15', '18:30', '18:45'][i] })), feed: S.feed.map(f => ({ ...f, i: this.ini(f.n), c: this.avc(f.n) })),
+      // check-in
+      ckTabs: [['qr', 'QR codes'], ['ushers', 'Ushers']].map(x => ({ id: x[0], n: x[1], on: S.ck === x[0] ? 'on' : '' })), setCk: e => this.setState({ ck: this.d(e).v }), ckQr: S.ck === 'qr', ckUsh: S.ck === 'ushers',
+      qrTabs: [['invite', 'Invitation'], ['event', 'Moment'], ['checkin', 'Check-in']].map(q => ({ id: q[0], n: q[1], on: S.qr === q[0] ? 'chip on' : 'chip' })),
+      setQr: e => this.setState({ qr: this.d(e).v, qrSeed: { invite: 3, event: 7, checkin: 11 }[this.d(e).v] }), qrTitle: qrT[S.qr][0], qrHint: qrT[S.qr][1], qrPath: this.qrPath(S.qrSeed),
+      qrDl: () => this.say('Your QR code is ready. Downloading PNG.'), qrPrint: () => this.say('Opening a print-ready sheet…'), qrRegen: () => { this.setState({ qrSeed: S.qrSeed + 1 }); this.say('New code created. Earlier codes no longer work.'); },
+      ushers: [['Dimas Arya', 'Holy Matrimony · Reception', 'Lead'], ['Putri Ayu', 'Reception', 'Scanner'], ['Fajar Nugraha', 'After Party', 'Lookup only']].map(u => ({ n: u[0], ev: u[1], r: u[2], i: this.ini(u[0]), c: this.avc(u[0]) })),
+      toastUsher: () => this.say('We’ll text them a private link to the usher view.'),
+      perms: [['scan', 'QR scanning', 'Ushers scan guest codes to check them in.'], ['lookup', 'Guest lookup', 'Search by name when a code is missing.'], ['seat', 'Show seating', 'Display table numbers after check-in.'], ['offline', 'Offline mode', 'Keep checking in without signal. Syncs later.']].map(x => ({ n: x[1], d: x[2], k: x[0], on: S.perms[x[0]] ? 'tog on' : 'tog', ar: String(S.perms[x[0]]) })),
+      togPerm: e => this.setState({ perms: { ...S.perms, [this.d(e).v]: !S.perms[this.d(e).v] } }),
+      uq: S.uq, setUq: e => this.setState({ uq: e.target.value }), uguests, checkIn: e => { const g = S.gl.find(x => x.id == this.d(e).v); this.setState({ checked: Math.min(180, S.checked + 1) }); this.say((g ? g.name.split(' ')[0] : 'Guest') + ' is checked in. Table ' + (g ? g.table : '')); },
+      // live
+      liveStates: ['Not configured', 'Scheduled', 'Live', 'Ended'].map(n => ({ n, on: S.live === n ? 'on' : '' })), setLive: e => this.setState({ live: this.d(e).v }), live: S.live, liveCls: L[2], liveTitle: L[0], liveSub: L[1], isLive: S.live === 'Live',
+      // memories / team
+      wishes: fresh ? [] : wishes, noWishes: fresh, hasWishes: !fresh,
+      team: S.team.map(m => ({ ...m, i: this.ini(m.n), c: this.avc(m.n), st: m.on ? 'Active now' : 'Invited' })), invite: S.invite, setInvite: e => this.setState({ invite: e.target.value }),
+      sendInvite: () => { if (!S.invite.trim()) return; this.setState({ team: [...S.team, { id: Date.now(), n: S.invite.split('@')[0], r: 'Family', e: S.invite, on: false }], invite: '' }); this.say('Invitation to collaborate sent.'); },
+      // guide
+      hq: S.hq, setHq: e => this.setState({ hq: e.target.value }), hcats: ['All', 'Getting started', 'Guests', 'RSVP', 'Event day', 'Gift'].map(n => ({ n, on: S.hc === n ? 'chip on' : 'chip' })), setHc: e => this.setState({ hc: this.d(e).v }),
+      guides, noGuides: !guides.length, ga: gl2.find(g => g.id === S.ha) || gl2[0], setHa: e => this.setState({ ha: +this.d(e).v }),
+      terms: [['Using Mula', 'You may use Mula to create and manage invitations for personal and commercial celebrations. You are responsible for the content you publish.'], ['Your content', 'You own the photos, words and guest information you add. You allow Mula to show them to the guests you invite, and nowhere else.'], ['Guest privacy', 'Guest details are used only to deliver and manage your invitation. We never sell them, and you can delete them at any time.'], ['Payments and refunds', 'Add-ons are charged when you check out. Refund requests are reviewed within 7 days of purchase.'], ['After your event', 'Your invitation stays online as a keepsake for 12 months. You can download your memories or take it offline whenever you choose.'], ['Changes to these terms', 'We will tell you by email before any change takes effect.']].map((x, i) => ({ h: x[0], b: x[1], no: String(i + 1).padStart(2, '0') })),
+      notifPrefs: [['New replies', 1], ['Daily summary', 1], ['Payment updates', 1], ['Tips from Mula', 0]].map(n => ({ n: n[0], on: n[1] ? 'tog on' : 'tog' })),
+      swL: [['Ivory', '#F5F3EE'], ['Paper', '#FBFAF7'], ['Stone', '#ECE8E0'], ['Dot', '#A69A89'], ['Deep taupe', '#7A6E5E'], ['Ink', '#272523']].map(s => ({ n: s[0], c: s[1] })),
+      swD: [['Night', '#12110F'], ['Surface', '#191816'], ['Raised', '#211F1D'], ['Dot', '#B8AB97'], ['Muted', '#A39B8E'], ['Ivory ink', '#EEE9DF']].map(s => ({ n: s[0], c: s[1] })),
+      showToast: () => this.say('Your guest has been added.'),
+      // overlays
+      moreOpen: S.moreOpen, notifOpen: S.notifOpen, searchOpen: S.searchOpen, previewOpen: S.previewOpen, obOpen: S.obOpen, toast: S.toast, celebrate: S.celebrate,
+      closeAll: this.closeAll, stop: e => e.stopPropagation(),
+      notifs: S.notifL.map(n => ({ ...n, bg: n.u ? 'background:var(--bg2)' : '', dot: n.u ? 'var(--dot)' : 'transparent' })), readAll: () => this.setState({ notifL: S.notifL.map(n => ({ ...n, u: false })) }),
+      sq: S.sq, setSq: e => this.setState({ sq: e.target.value }), sres: this.search(S.sq),
+      devs: ['Mobile', 'Tablet', 'Desktop'].map(n => ({ n, on: S.dev === n ? 'on' : '' })), setDev: e => this.setState({ dev: this.d(e).v }), devCls: 'dev dev-' + S.dev[0].toLowerCase(),
+      persps: ['Guest', 'Host'].map(n => ({ n, on: S.persp === n ? 'on' : '' })), setPersp: e => this.setState({ persp: this.d(e).v }), host,
+      pvGuests: pvGuests.map((n, i) => ({ n, i })), setPvg: e => this.setState({ pvg: +e.target.value }), pvDear: S.pvg === 2 ? 'Dear guest,' : 'Dear ' + pvGuests[S.pvg] + ',',
+      closed: !S.opened, opened: S.opened, openInv: () => this.setState({ opened: true }), reopen: () => this.setState({ opened: false, rsvp: '' }),
+      rsvpOpen: !S.rsvp, rsvpYesDone: S.rsvp === 'yes', rsvpNoDone: S.rsvp === 'no', rsvpYes: () => this.setState({ rsvp: 'yes' }), rsvpNo: () => this.setState({ rsvp: 'no' }),
+      pvEvents: evList, pvGifts: S.gifts.slice(0, 2), pvWishes: wishes.slice(0, 2), shareP: () => this.say('Preview link copied. It expires in 24 hours.'),
+      ob: this.obStep(), obTicks: [0, 1, 2, 3, 4, 5, 6, 7].map(i => ({ s: i <= S.ob ? 'transform:scaleX(1)' : 'transform:scaleX(0)' })),
+      obTypes: ['Wedding', 'Birthday', '17th Birthday', 'Anniversary', 'Engagement', 'Product launch', 'Private celebration', 'Other'].map(n => ({ n, on: S.obType === n ? 'chip on' : 'chip' })), setObType: e => this.setState({ obType: this.d(e).v }),
+      obNames: S.obNames, setObNames: e => this.setState({ obNames: e.target.value }), obDate: S.obDate, setObDate: e => this.setState({ obDate: e.target.value }), obVenue: S.obVenue, setObVenue: e => this.setState({ obVenue: e.target.value }),
+      obG: S.obG, setObG: e => this.setState({ obG: e.target.value }), addObG: e => { e.preventDefault(); if (S.obG.trim()) this.setState({ obGuests: [...S.obGuests, S.obG.trim()], obG: '' }); }, obGuests: S.obGuests.map(n => ({ n })),
+      obObj: { greet: obGreet, names: S.obNames || 'Your names', date: obDateF, venue: S.obVenue || 'Your venue', type: S.obType, guests: S.obGuests.length ? S.obGuests.length + ' guests added' : 'No guests yet', design: pal.n },
+      obBack: () => S.ob ? this.setState({ ob: S.ob - 1 }) : this.setState({ obOpen: false }),
+      obNext: () => S.ob >= 7 ? this.publish() : this.setState({ ob: S.ob + 1 })
+    };
+  }
+}
+</script>
+</body>
+</html>

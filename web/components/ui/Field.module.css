@@ -1,0 +1,37 @@
+/* Shared by Input / Textarea / Select — prototype .f (label) + .inp (field). */
+.field {
+  display: grid;
+  gap: 7px;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.inp {
+  width: 100%;
+  min-height: 44px;
+  padding: 10px 14px;
+  border: 1px solid var(--line2);
+  border-radius: 12px;
+  background: var(--rs);
+  font: inherit;
+  color: var(--ink);
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.inp:focus {
+  outline: none;
+  border-color: var(--dot);
+  box-shadow: 0 0 0 4px color-mix(in oklab, var(--dot) 24%, transparent);
+}
+
+.textarea {
+  min-height: 100px;
+  resize: vertical;
+}
+
+.error {
+  border-color: var(--no);
+}
+.errorText {
+  color: var(--no);
+  font-weight: 400;
+}

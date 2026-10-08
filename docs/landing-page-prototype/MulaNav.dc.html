@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<a href="#main" style="position:fixed;left:16px;top:-60px;z-index:200;background:#F4EEE4;color:#0E0C0B;padding:10px 16px;border-radius:4px;font-family:'Manrope',sans-serif;font-size:14px;" style-focus="top:12px;">Skip to content</a>
+<header style="position:fixed;top:0;left:0;right:0;z-index:80;font-family:'Manrope',sans-serif;transition:background-color .5s, border-color .5s, color .5s;background:{{ bg }};border-bottom:1px solid {{ border }};backdrop-filter:{{ blur }};-webkit-backdrop-filter:{{ blur }};color:{{ fg }};">
+  <div style="max-width:1440px;margin:0 auto;padding:0 clamp(20px,3.6vw,52px);height:76px;display:flex;align-items:center;justify-content:space-between;gap:24px;">
+    <a href="Home.dc.html" aria-label="Mula home" style="position:relative;display:block;flex:none;width:96px;height:26px;">
+      <img src="assets/mula-lockup-light.png" alt="Mula" style="position:absolute;left:0;top:0;width:96px;height:auto;opacity:{{ lightOp }};transition:opacity .5s;">
+      <img src="assets/mula-lockup-dark.png" alt="" aria-hidden="true" style="position:absolute;left:0;top:0;width:96px;height:auto;opacity:{{ darkOp }};transition:opacity .5s;">
+    </a>
+    <sc-if value="{{ desktop }}" hint-placeholder-val="{{ true }}">
+      <nav aria-label="Primary" style="display:flex;gap:clamp(20px,2.4vw,36px);font-size:13.5px;letter-spacing:.01em;">
+        <sc-for list="{{ links }}" as="l" hint-placeholder-count="5">
+          <a href="{{ l.href }}" aria-current="{{ l.current }}" style="position:relative;display:flex;flex-direction:column;align-items:center;gap:5px;color:inherit;opacity:{{ l.op }};transition:opacity .3s;" style-hover="opacity:1;color:inherit;">
+            <span>{{ l.label }}</span><span style="width:4px;height:4px;border-radius:50%;background:#C9A56E;opacity:{{ l.dot }};"></span>
+          </a>
+        </sc-for>
+      </nav>
+      <div style="display:flex;align-items:center;gap:22px;font-size:13.5px;">
+        <div style="position:relative;">
+          <button onClick="{{ toggleLang }}" aria-haspopup="listbox" aria-expanded="{{ langOpen }}" aria-label="Language" style="display:flex;align-items:center;gap:8px;height:34px;padding:0 12px;border-radius:999px;border:1px solid {{ border2 }};background:transparent;color:inherit;font:inherit;font-size:12px;font-weight:600;letter-spacing:.14em;cursor:pointer;">
+            {{ langShort }}<span style="font-size:9px;opacity:.7;">▾</span>
+          </button>
+          <sc-if value="{{ langOpen }}" hint-placeholder-val="{{ false }}">
+            <div role="listbox" style="position:absolute;right:0;top:44px;min-width:210px;background:#15120F;color:#F4EEE4;border:1px solid rgba(244,238,228,.1);border-radius:8px;padding:6px;box-shadow:0 30px 60px -20px rgba(0,0,0,.6);display:flex;flex-direction:column;">
+              <sc-for list="{{ langs }}" as="g" hint-placeholder-count="3">
+                <button role="option" aria-selected="{{ g.on }}" onClick="{{ g.pick }}" style="display:flex;justify-content:space-between;align-items:center;gap:16px;padding:11px 12px;border:none;border-radius:5px;background:{{ g.bg }};color:inherit;font:inherit;font-size:13px;cursor:pointer;text-align:left;" style-hover="background:rgba(244,238,228,.06);">
+                  <span>{{ g.name }}</span><span style="font-size:11px;font-weight:600;letter-spacing:.14em;color:#C9A56E;">{{ g.short }}</span>
+                </button>
+              </sc-for>
+            </div>
+          </sc-if>
+        </div>
+        <a href="#app" data-app="login" style="color:inherit;opacity:.8;" style-hover="opacity:1;color:inherit;">{{ tLogin }}</a>
+        <a href="#app" data-app="create" data-magnetic="1" style="display:inline-flex;align-items:center;gap:10px;height:42px;padding:0 20px;border-radius:999px;background:{{ btnBg }};color:{{ btnFg }};font-weight:600;font-size:13px;">{{ tCreate }}<span data-arrow="1">→</span></a>
+      </div>
+    </sc-if>
+    <sc-if value="{{ mobile }}" hint-placeholder-val="{{ false }}">
+      <div style="display:flex;align-items:center;gap:10px;font-size:13px;">
+        <a href="#app" data-app="create" style="display:inline-flex;align-items:center;height:44px;padding:0 18px;border-radius:999px;background:{{ btnBg }};color:{{ btnFg }};font-weight:600;">{{ tCreateShort }}</a>
+        <button onClick="{{ toggleMenu }}" aria-label="{{ tMenu }}" aria-expanded="{{ menu }}" style="height:44px;width:44px;border-radius:50%;border:1px solid {{ border2 }};background:transparent;color:inherit;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;cursor:pointer;">
+          <span style="width:16px;height:1px;background:currentColor;"></span><span style="width:16px;height:1px;background:currentColor;"></span>
+        </button>
+      </div>
+    </sc-if>
+  </div>
+</header>
+<sc-if value="{{ menu }}" hint-placeholder-val="{{ false }}">
+  <div role="dialog" aria-modal="true" style="position:fixed;inset:0;z-index:110;background:#0E0C0B;color:#F4EEE4;padding:0 24px 32px;display:flex;flex-direction:column;font-family:'Manrope',sans-serif;overflow-y:auto;">
+    <div style="height:76px;flex:none;display:flex;align-items:center;justify-content:space-between;">
+      <img src="assets/mula-lockup-light.png" alt="Mula" style="display:block;width:96px;height:auto;">
+      <button onClick="{{ toggleMenu }}" style="height:44px;padding:0 18px;border-radius:999px;border:1px solid rgba(244,238,228,.25);background:transparent;color:inherit;font:inherit;font-size:13px;cursor:pointer;">{{ tClose }}</button>
+    </div>
+    <nav aria-label="Mobile" style="display:flex;flex-direction:column;margin-top:28px;">
+      <sc-for list="{{ links }}" as="l" hint-placeholder-count="5">
+        <a href="{{ l.href }}" style="display:flex;justify-content:space-between;align-items:baseline;padding:14px 0;border-bottom:1px solid rgba(244,238,228,.1);font-family:'Cormorant Garamond',serif;font-weight:300;font-size:40px;letter-spacing:-.01em;color:#F4EEE4;"><span>{{ l.label }}</span><span style="font-family:'Manrope',sans-serif;font-size:12px;color:#C9A56E;">{{ l.num }}</span></a>
+      </sc-for>
+    </nav>
+    <div style="display:flex;gap:8px;margin-top:28px;">
+      <sc-for list="{{ langs }}" as="g" hint-placeholder-count="3">
+        <button onClick="{{ g.pick }}" aria-pressed="{{ g.on }}" style="flex:1;height:44px;border-radius:999px;border:1px solid {{ g.bd }};background:transparent;color:inherit;font:inherit;font-size:12px;font-weight:600;letter-spacing:.14em;cursor:pointer;">{{ g.short }}</button>
+      </sc-for>
+    </div>
+    <div style="margin-top:auto;padding-top:32px;display:flex;flex-direction:column;gap:10px;">
+      <a href="#app" data-app="create" style="height:56px;border-radius:999px;background:#F4EEE4;color:#0E0C0B;display:flex;align-items:center;justify-content:center;font-weight:600;">{{ tCreate }}</a>
+      <a href="#app" data-app="login" style="height:56px;border-radius:999px;border:1px solid rgba(244,238,228,.25);display:flex;align-items:center;justify-content:center;color:#F4EEE4;">{{ tLogin }}</a>
+    </div>
+  </div>
+</sc-if>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;active&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;&quot;,&quot;templates&quot;,&quot;features&quot;,&quot;pricing&quot;,&quot;inspiration&quot;,&quot;tips&quot;],&quot;default&quot;:&quot;&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;startLight&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;}}">
+const FALLBACK = { 'nav.templates': 'Templates', 'nav.features': 'Features', 'nav.how': 'How It Works', 'nav.pricing': 'Pricing', 'nav.inspiration': 'Inspiration', 'nav.tips': 'Tips', 'nav.login': 'Login', 'nav.create': 'Create Invitation', 'nav.menu': 'Menu', 'nav.close': 'Close' };
+const LINKS = [['templates', 'Templates.dc.html', 'nav.templates'], ['features', 'Features.dc.html', 'nav.features'], ['pricing', 'Pricing.dc.html', 'nav.pricing'], ['inspiration', 'Inspiration.dc.html', 'nav.inspiration'], ['tips', 'Tips.dc.html', 'nav.tips']];
+const LANGS = [{ code: 'id', short: 'ID', name: 'Bahasa Indonesia' }, { code: 'my', short: 'MY', name: 'Bahasa Melayu' }, { code: 'en', short: 'EN', name: 'English' }];
+
+class Component extends DCLogic {
+  state = { scrolled: false, light: false, mobile: false, menu: false, langOpen: false, lang: (window.MulaI18n && window.MulaI18n.lang) || 'en' };
+  t(k) { return window.MulaI18n ? window.MulaI18n.t(k) : FALLBACK[k]; }
+  componentDidMount() {
+    this.onScroll = () => { if (this.raf) return; this.raf = requestAnimationFrame(() => { this.raf = 0; this.check(); }); };
+    this.onResize = () => { const m = window.innerWidth < 1060; if (m !== this.state.mobile) this.setState({ mobile: m, menu: false, langOpen: false }); this.check(); };
+    this.onLang = (e) => this.setState({ lang: e.detail });
+    this.onData = () => this.setState({ lang: window.MulaI18n ? window.MulaI18n.lang : 'en' });
+    this.onDoc = (e) => { if (this.state.langOpen && !e.target.closest('[aria-haspopup="listbox"]') && !e.target.closest('[role="listbox"]')) this.setState({ langOpen: false }); };
+    this.onKey = (e) => { if (e.key === 'Escape') this.setState({ langOpen: false, menu: false }); };
+    addEventListener('scroll', this.onScroll, { passive: true });
+    addEventListener('resize', this.onResize);
+    addEventListener('mula:lang', this.onLang);
+    addEventListener('mula:data', this.onData);
+    document.addEventListener('click', this.onDoc);
+    document.addEventListener('keydown', this.onKey);
+    this.onResize();
+    this.timer = setInterval(() => this.check(), 600);
+  }
+  componentWillUnmount() {
+    removeEventListener('scroll', this.onScroll); removeEventListener('resize', this.onResize); removeEventListener('mula:lang', this.onLang); removeEventListener('mula:data', this.onData);
+    document.removeEventListener('click', this.onDoc); document.removeEventListener('keydown', this.onKey); clearInterval(this.timer);
+  }
+  check() {
+    const scrolled = window.scrollY > 24;
+    let light = !!this.props.startLight && window.scrollY < 10;
+    document.querySelectorAll('[data-nav="light"]').forEach((s) => { const r = s.getBoundingClientRect(); if (r.top <= 38 && r.bottom >= 38) light = true; });
+    if (scrolled !== this.state.scrolled || light !== this.state.light) this.setState({ scrolled, light });
+  }
+  setLang(code) { if (window.MulaI18n) window.MulaI18n.set(code); else this.setState({ lang: code }); this.setState({ langOpen: false }); }
+  renderVals() {
+    const s = this.state, L = s.light, sc = s.scrolled || s.menu;
+    const fg = L ? '#0E0C0B' : '#F4EEE4';
+    const active = this.props.active || '';
+    const cur = LANGS.find((g) => g.code === s.lang) || LANGS[2];
+    return {
+      desktop: !s.mobile, mobile: s.mobile, menu: s.menu, langOpen: s.langOpen,
+      toggleMenu: () => this.setState({ menu: !s.menu }), toggleLang: () => this.setState({ langOpen: !s.langOpen }),
+      bg: sc ? (L ? 'rgba(244,238,228,.82)' : 'rgba(14,12,11,.62)') : 'rgba(14,12,11,0)',
+      border: sc ? (L ? 'rgba(14,12,11,.09)' : 'rgba(244,238,228,.08)') : 'rgba(14,12,11,0)',
+      border2: L ? 'rgba(14,12,11,.2)' : 'rgba(244,238,228,.24)',
+      blur: sc ? 'blur(20px) saturate(1.3)' : 'none',
+      fg, lightOp: L ? 0 : 1, darkOp: L ? 1 : 0, btnBg: fg, btnFg: L ? '#F4EEE4' : '#0E0C0B',
+      links: LINKS.map(([k, href, key], i) => ({ href, label: this.t(key), op: k === active ? 1 : .72, dot: k === active ? 1 : 0, current: k === active ? 'page' : undefined, num: String(i + 1).padStart(2, '0') })),
+      langs: LANGS.map((g) => ({ ...g, on: g.code === s.lang, bg: g.code === s.lang ? 'rgba(201,165,110,.12)' : 'transparent', bd: g.code === s.lang ? '#C9A56E' : 'rgba(244,238,228,.2)', pick: () => this.setLang(g.code) })),
+      langShort: cur.short,
+      tLogin: this.t('nav.login'), tCreate: this.t('nav.create'), tCreateShort: s.lang === 'en' ? 'Create' : s.lang === 'id' ? 'Buat' : 'Cipta', tMenu: this.t('nav.menu'), tClose: this.t('nav.close')
+    };
+  }
+}
+</script>
+</body>
+</html>
