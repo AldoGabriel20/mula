@@ -4,6 +4,7 @@ package event
 import (
 	"errors"
 	"time"
+	_ "time/tzdata" // embedded zone database: LoadLocation must not depend on the host image
 )
 
 type Event struct {
@@ -14,9 +15,23 @@ type Event struct {
 	CoupleB   *string
 	EventDate *time.Time
 	Venue     *string
+	Timezone  string // IANA zone every invitation date is printed in
 	Status    string
 	CreatedAt time.Time
 	UpdatedAt time.Time
+}
+
+// DefaultTimezone matches the events.timezone column default.
+const DefaultTimezone = "Asia/Jakarta"
+
+// ValidTimezone reports whether s is a loadable IANA zone name. "" and "Local" are rejected:
+// they would resolve to the server's zone, not the event's.
+func ValidTimezone(s string) bool {
+	if s == "" || s == "Local" {
+		return false
+	}
+	_, err := time.LoadLocation(s)
+	return err == nil
 }
 
 // Roles (docs/09). "editor" and "member" are capability sets, not stored values.

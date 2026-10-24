@@ -19,6 +19,10 @@ type Input struct {
 	DressCode   string
 	Description string
 	Visibility  string // "" = everyone
+	Label       string
+	MapURL      string
+	VenueNote   string
+	MediaID     *string
 }
 type Patch struct {
 	Title       *string
@@ -29,6 +33,10 @@ type Patch struct {
 	DressCode   *string
 	Description *string
 	Visibility  *string
+	Label       *string
+	MapURL      *string
+	VenueNote   *string
+	MediaID     *string // nil = unchanged, "" = clear
 }
 
 type Repo interface {
@@ -38,6 +46,8 @@ type Repo interface {
 	Update(ctx context.Context, id string, p Patch) (*schedule.Item, error)
 	Delete(ctx context.Context, id string) error
 	Reorder(ctx context.Context, eventID string, ids []string) error
+	// MediaBelongs reports whether the media row exists and belongs to the event.
+	MediaBelongs(ctx context.Context, eventID, mediaID string) (bool, error)
 }
 
 type Service struct{ repo Repo }
@@ -51,10 +61,37 @@ func (s *Service) Get(ctx context.Context, id string) (*schedule.Item, error) {
 	return s.repo.Get(ctx, id)
 }
 func (s *Service) Create(ctx context.Context, e string, in Input) (*schedule.Item, error) {
+	if err := s.checkMedia(ctx, e, in.MediaID); err != nil {
+		return nil, err
+	}
 	return s.repo.Create(ctx, e, in)
 }
 func (s *Service) Update(ctx context.Context, id string, p Patch) (*schedule.Item, error) {
+	if p.MediaID != nil && *p.MediaID != "" {
+		it, err := s.repo.Get(ctx, id)
+		if err != nil {
+			return nil, err
+		}
+		if err := s.checkMedia(ctx, it.EventID, p.MediaID); err != nil {
+			return nil, err
+		}
+	}
 	return s.repo.Update(ctx, id, p)
+}
+
+// checkMedia rejects a photo that is not an upload of this event (nil/"" = no photo, always fine).
+func (s *Service) checkMedia(ctx context.Context, eventID string, mediaID *string) error {
+	if mediaID == nil || *mediaID == "" {
+		return nil
+	}
+	ok, err := s.repo.MediaBelongs(ctx, eventID, *mediaID)
+	if err != nil {
+		return err
+	}
+	if !ok {
+		return schedule.ErrBadMedia
+	}
+	return nil
 }
 func (s *Service) Delete(ctx context.Context, id string) error { return s.repo.Delete(ctx, id) }
 func (s *Service) Reorder(ctx context.Context, e string, ids []string) error {

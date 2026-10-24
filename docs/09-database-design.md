@@ -133,6 +133,42 @@ Index: `event_id`, unique `token`.
 
 ---
 
+## Migration 0015 — Gilded Seal template (additive)
+
+Design: `15-template-gilded-seal-design.md` §4. File: `api/migrations/0015_gilded_seal.{up,down}.sql`.
+
+| table | change | notes |
+| --- | --- | --- |
+| events | `timezone text not null default 'Asia/Jakarta'` | IANA zone; every date the invitation prints is rendered in it. Validated in the app (`time.LoadLocation`). Existing rows get the default |
+| schedule_items | `label text not null default ''` | eyebrow above the moment title, e.g. "The Ceremony" (≤40, app-validated) |
+| schedule_items | `map_url text not null default ''` | exact maps link; empty or `https://` only, ≤500 (app-validated) |
+| schedule_items | `venue_note text not null default ''` | short location description (≤160, app-validated) |
+| schedule_items | `media_id uuid null fk→media on delete set null` | moment photo; must belong to the same event (app-validated) |
+| templates | row `gilded-seal` / "Gilded Seal" / Wedding / `Elegant · Cinematic` / Ivory / position 8 | `on conflict (slug) do nothing`; down migration deletes it (`invitations.template_id` → NULL) |
+
+No new indexes.
+
+---
+
+## Migration 0016 — Template Kit (additive)
+
+Design: `17-template-kit-design.md` §9.1. File: `api/migrations/0016_template_kit.{up,down}.sql`.
+
+| table | change | notes |
+| --- | --- | --- |
+| templates | `kind text not null default 'coded'` | `coded` \| `themed` (CHECK) |
+| templates | `status text not null default 'published'` | `draft` \| `published` \| `retired` (CHECK). A manifest removed from the repo becomes `retired`, never deleted |
+| templates | `access text not null default 'free'` | `free` \| `premium` (CHECK); enforcement is a product decision |
+| templates | `version int not null default 1` | bumped by `cmd/templates sync` on an additive manifest change |
+| templates | `manifest jsonb not null default '{}'` | the full manifest; written only by `cmd/templates sync`. Sections, required and hidden-until-filled come from here |
+| templates | `owner_id uuid null`, `parent_id uuid null fk→templates on delete set null` | phase 4 (host-made); nothing writes them yet. `owner_id` has no FK until phase 4 adds `fk→users on delete cascade` (a FK to users would make `TRUNCATE users CASCADE` wipe the catalog in the integration tests) |
+| templates | `updated_at timestamptz not null default now()` | touched by sync only when the manifest changed |
+| invitations | `theme jsonb not null default '{}'` | `{palette?, fontPairing?, motion?, tokens?}`; validated against the manifest |
+
+Index `idx_templates_owner` (partial, `owner_id is not null`). `templates.active` stays; sync keeps it equal to `status = 'published'`.
+
+---
+
 ## Relationships (ER summary)
 
 ```

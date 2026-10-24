@@ -1,0 +1,652 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>We Do — Rani &amp; Dimas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Allura&family=Mrs+Saint+Delafield&family=Cormorant+Garamond:wght@400;500;600&family=Playfair+Display:ital,wght@0,400;0,500;0,700;1,400&family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+/* =========================================================
+   KONFIGURASI WARNA & FONT
+   ========================================================= */
+:root{
+  --ink:#141414;
+  --paper:#ffffff;
+  --muted:#5b5b5b;
+  --gold:#b79d6e;
+  --gold-2:#d9c29a;
+  --gold-glow:#f6deb0;
+  --taupe:#a99683;
+  --line:#2b2b2b;
+  --col:400px;
+  --script:'Allura', cursive;
+  --sign:'Mrs Saint Delafield', cursive;
+  --serif:'Cormorant Garamond', 'Times New Roman', serif;
+  --play:'Playfair Display', Georgia, serif;
+  --sans:'Montserrat', system-ui, sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:#f3f1ee;color:var(--ink);font-family:var(--sans);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+img{display:block;max-width:100%}
+a{color:inherit;text-decoration:none}
+
+/* ---------- Layout: kolom tengah + latar samping (desktop) ---------- */
+.sec{position:relative;width:100%;display:flex;justify-content:center;overflow:hidden}
+.sec>.bg{position:absolute;inset:0;background-size:cover;background-position:center;filter:grayscale(1);opacity:.45;transform:scale(1.15)}
+.sec>.bg.tint{opacity:.28}
+.col{position:relative;z-index:1;width:100%;max-width:var(--col);background:var(--paper);overflow:hidden}
+@media (max-width:440px){.sec>.bg{display:none}}
+
+/* ---------- Reveal animation ---------- */
+.rv{opacity:0;transform:translateY(26px);transition:opacity 1.1s ease,transform 1.1s ease}
+.rv.in{opacity:1;transform:none}
+.rv.d1{transition-delay:.15s}.rv.d2{transition-delay:.3s}.rv.d3{transition-delay:.45s}.rv.d4{transition-delay:.6s}
+
+/* ---------- Komponen umum ---------- */
+.the{font-family:var(--sign);font-size:74px;line-height:.8;color:var(--ink);display:inline-block;position:relative}
+.the::after{content:"";position:absolute;left:62%;bottom:16px;width:96px;height:1px;background:var(--ink);transform:rotate(-4deg);transform-origin:left}
+.title{font-family:var(--serif);font-weight:500;letter-spacing:.18em;font-size:30px;text-transform:uppercase}
+.center{text-align:center}
+.pill{display:inline-flex;align-items:center;justify-content:center;gap:12px;border:1.5px solid var(--ink);border-radius:999px;padding:12px 26px;font-family:var(--play);letter-spacing:.2em;text-transform:uppercase;background:#fff;transition:transform .25s, box-shadow .25s;cursor:pointer}
+.pill:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(0,0,0,.12)}
+
+/* =========================================================
+   1. HERO
+   ========================================================= */
+.hero .col{min-height:100svh;max-height:880px;height:100svh;background:#2a2a2a;color:#fff;display:flex;flex-direction:column;justify-content:flex-end;padding:0 22px 34px}
+.hero .photo{position:absolute;inset:0;background-size:cover;background-position:center 30%;filter:grayscale(1) contrast(1.05)}
+.hero .photo::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.05) 0%,rgba(0,0,0,.08) 35%,rgba(20,20,20,.55) 62%,rgba(30,30,30,.82) 100%)}
+.lights{position:absolute;top:0;left:0;width:100%;height:110px;z-index:1}
+.lights .b{fill:#fff6cf;filter:url(#glow);animation:tw 2.4s infinite ease-in-out}
+@keyframes tw{0%,100%{opacity:1}50%{opacity:.45}}
+.hero .inner{position:relative;z-index:2;text-align:center}
+.wedo{position:relative;height:200px;margin-bottom:6px}
+.wedo svg.heart{position:absolute;left:50%;top:-30px;width:150px;height:230px;transform:translateX(-50%)}
+.wedo svg.heart path{stroke-dasharray:900;stroke-dashoffset:900;animation:draw 2.6s .4s ease forwards}
+@keyframes draw{to{stroke-dashoffset:0}}
+.wedo .txt{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;gap:58px;font-family:var(--script);font-size:86px;color:#fff;text-shadow:0 0 6px rgba(255,255,255,.95),0 0 18px rgba(255,255,255,.55),0 0 34px rgba(255,240,210,.45);padding-top:40px}
+.together{font-size:12.5px;letter-spacing:.16em}
+.names{font-family:var(--serif);font-weight:600;font-size:34px;letter-spacing:.06em;color:#fff4e0;text-shadow:0 0 10px rgba(246,222,176,.8),0 0 22px rgba(246,222,176,.4);margin:2px 0 10px;display:flex;align-items:center;justify-content:center;gap:10px}
+.names i{font-family:var(--script);font-style:normal;font-size:30px;font-weight:400;letter-spacing:0}
+.invite{font-size:12.5px;letter-spacing:.12em;line-height:1.35;text-transform:uppercase}
+.dateblock{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:10px;margin:14px 0 10px;font-family:var(--play)}
+.dateblock .side{border-top:1.6px solid #fff;border-bottom:1.6px solid #fff;padding:7px 0;font-size:15px;text-transform:uppercase;letter-spacing:.02em}
+.dateblock .mid{line-height:1}
+.dateblock .mid .m{font-size:20px;text-transform:uppercase}
+.dateblock .mid .d{font-size:38px;margin:2px 0}
+.dateblock .mid .y{font-size:18px;letter-spacing:.14em}
+.addr{font-size:12px;letter-spacing:.12em;text-transform:uppercase}
+.scrollhint{position:absolute;bottom:10px;left:50%;transform:translateX(-50%);z-index:3;width:18px;height:28px;border:1.5px solid rgba(255,255,255,.7);border-radius:12px}
+.scrollhint::after{content:"";position:absolute;left:50%;top:5px;width:3px;height:6px;margin-left:-1.5px;background:#fff;border-radius:2px;animation:sh 1.8s infinite}
+@keyframes sh{0%{opacity:0;transform:translateY(0)}40%{opacity:1}100%{opacity:0;transform:translateY(10px)}}
+
+/* =========================================================
+   2. MUSIC PLAYER
+   ========================================================= */
+.player{padding:40px 30px 30px}
+.ctrls{display:flex;align-items:center;justify-content:space-between}
+.ctrls button{background:none;border:0;cursor:pointer;display:grid;place-items:center;color:var(--ink)}
+.ctrls .play{width:76px;height:76px;border-radius:50%;background:#000;color:#fff;transition:transform .2s}
+.ctrls .play:active{transform:scale(.94)}
+.ctrls .muted{color:#555}
+.bar{margin-top:20px;height:2px;background:#e6e6e6;position:relative}
+.bar span{position:absolute;left:0;top:-.5px;height:3px;background:#000;width:0%}
+.track{margin-top:10px;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#888;text-align:center}
+
+/* =========================================================
+   3. COUNTDOWN
+   ========================================================= */
+.countdown{padding:24px 18px 0;text-align:center}
+.countdown .title{font-size:31px;margin-top:-6px}
+.sub{font-family:var(--serif);color:var(--taupe);letter-spacing:.16em;text-transform:uppercase;font-size:15px;margin-top:2px}
+.timer{display:flex;justify-content:center;align-items:flex-start;gap:6px;margin:26px 0 0;font-family:Arial,Helvetica,sans-serif}
+.timer .u{min-width:62px}
+.timer .n{font-size:42px;line-height:1}
+.timer .n.sec{color:var(--taupe)}
+.timer .l{font-size:10px;letter-spacing:.02em;margin-top:10px;text-transform:uppercase}
+.timer .c{font-size:38px;line-height:1}
+.cantwait{position:relative;height:430px;margin-top:10px}
+.cantwait svg.bigheart{position:absolute;left:50%;top:0;width:330px;height:420px;transform:translateX(-50%)}
+.cantwait .rings{position:absolute;left:50%;top:118px;transform:translateX(-50%);width:130px}
+.cantwait p{position:absolute;left:0;right:0;top:230px;font-family:var(--script);font-size:44px;line-height:1.25;letter-spacing:.08em}
+
+/* =========================================================
+   4. VENUE
+   ========================================================= */
+.venue{padding:20px 22px 40px;text-align:center}
+.venue .title{font-size:30px;margin-top:-4px}
+.venue h3{font-family:var(--serif);font-weight:600;letter-spacing:.14em;font-size:27px;text-transform:uppercase;margin-top:2px}
+.venue .desc{font-size:12.5px;letter-spacing:.06em;color:#444;line-height:1.45;margin:10px 0 14px}
+.venue .ph{border-radius:12px;overflow:hidden;aspect-ratio:4/3;background:#ddd center/cover}
+.maps{margin-top:22px;width:100%;padding:6px 18px 6px 8px;justify-content:flex-start;gap:20px;font-size:26px;letter-spacing:.14em}
+.maps .pin{width:54px;height:54px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#fff,#efe6d4 45%,#cbb38a);display:grid;place-items:center;flex:none}
+.stay{margin-top:30px}
+.stay .icon{width:52px;margin:0 auto}
+.stay h4{font-family:var(--script);font-weight:400;font-size:36px;letter-spacing:.06em;margin:4px 0 6px}
+.stay ul{text-align:left;font-size:13px;letter-spacing:.06em;color:#333;padding-left:22px;line-height:1.45}
+
+/* =========================================================
+   5. THE DAY (timeline)
+   ========================================================= */
+.day{padding:24px 16px 40px;position:relative}
+.day .head{display:flex;align-items:flex-end;justify-content:center;gap:4px;padding-left:40px}
+.day .head .title{font-size:30px;margin-left:-30px}
+.day .head svg{width:92px;margin-left:12px}
+.day .wm{position:absolute;left:50%;top:150px;width:240px;transform:translateX(-45%) rotate(-12deg);opacity:.07}
+.tl{position:relative;margin-top:24px;padding:30px 0 20px}
+.tl::before{content:"";position:absolute;left:72px;top:0;bottom:0;width:1.5px;background:#333}
+.ev{display:grid;grid-template-columns:58px 30px 1fr;align-items:center;column-gap:12px;margin:0 0 46px}
+.ev:last-child{margin-bottom:0}
+.ev .ic{width:52px;height:52px;justify-self:center}
+.ev .dot{width:22px;height:22px;border-radius:50%;justify-self:center;margin-left:-2px;background:radial-gradient(circle at 35% 30%,#efe0b5,#b99a55 55%,#8a6f39);box-shadow:0 1px 2px rgba(0,0,0,.35),inset 0 0 2px rgba(0,0,0,.3)}
+.ev .t{font-family:var(--play);font-size:25px;width:135px;text-align:center;padding-bottom:4px;position:relative}
+.ev .t::after{content:"";position:absolute;left:0;right:0;bottom:0;height:7px;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='135' height='7'%3E%3Cline x1='0' y1='3.5' x2='55' y2='3.5' stroke='%23888' stroke-width='.8'/%3E%3Cline x1='80' y1='3.5' x2='135' y2='3.5' stroke='%23888' stroke-width='.8'/%3E%3Ccircle cx='58' cy='3.5' r='1.6' fill='none' stroke='%23888' stroke-width='.6'/%3E%3Cpath d='M67.5 6 L64 2.8 A1.6 1.6 0 0 1 67.5 1.5 A1.6 1.6 0 0 1 71 2.8 Z' fill='none' stroke='%23888' stroke-width='.6'/%3E%3Ccircle cx='77' cy='3.5' r='1.6' fill='none' stroke='%23888' stroke-width='.6'/%3E%3C/svg%3E") center/135px 7px no-repeat}
+.ev .e{font-family:var(--play);font-size:19px;text-transform:uppercase;margin-top:4px}
+
+/* =========================================================
+   6. DETAILS
+   ========================================================= */
+.details .col{background:#efefef}
+.details .photo{position:absolute;inset:0;background-size:cover;background-position:center;filter:grayscale(1);opacity:.22}
+.details .wrap{position:relative;padding:26px 20px 40px;text-align:right}
+.details .hd{text-align:center;padding-right:50px;margin-bottom:10px}
+.details .hd .title{font-size:30px;margin:-4px 0 0 70px;letter-spacing:.2em}
+.det h5{font-family:var(--play);font-weight:400;font-size:24px;text-transform:uppercase;margin-top:8px}
+.det p{font-family:var(--play);font-size:15.5px;line-height:1.28}
+.vline{display:flex;justify-content:flex-end;margin:12px 0 4px}
+.vline span{position:relative;width:22px;height:84px}
+.vline span::before{content:"";position:absolute;left:50%;top:0;bottom:0;width:1.3px;background:#333}
+.vline span::after{content:"";position:absolute;left:0;top:50%;width:22px;height:22px;margin-top:-11px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#efe0b5,#b99a55 55%,#8a6f39);box-shadow:0 1px 2px rgba(0,0,0,.35)}
+.reg{margin-top:20px;width:100%;font-size:19px;padding:14px 10px}
+
+/* =========================================================
+   7. RSVP
+   ========================================================= */
+.rsvp{padding:22px 18px 30px;text-align:center}
+.please{position:relative;height:96px}
+.please span{font-family:var(--sign);font-size:86px;line-height:1;position:relative;z-index:1}
+.please::before{content:"";position:absolute;left:0;right:0;top:50%;height:1px;background:linear-gradient(90deg,transparent,#222 15%,#222 85%,transparent);transform:rotate(-2deg)}
+.foil{display:grid;grid-template-columns:1fr 1fr;width:270px;margin:6px auto 0;row-gap:0}
+.foil .L{position:relative;font-family:var(--serif);font-weight:500;font-size:170px;line-height:.95;background:linear-gradient(135deg,#efe4cc 0%,#cdb88f 22%,#f4ead6 40%,#bfa678 58%,#e9dcc0 78%,#b49a6a 100%);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 1px 0 rgba(0,0,0,.06))}
+.foil .L svg{position:absolute;width:92px;left:-6px;top:50px;pointer-events:none}
+.foil .L:nth-child(2) svg{left:20px;top:28px;width:80px}
+.foil .L:nth-child(3) svg{left:-10px;top:24px}
+.foil .L:nth-child(4) svg{left:22px;top:46px;width:84px}
+.by{font-family:var(--script);font-size:38px;text-align:right;padding-right:22px;margin-top:6px;letter-spacing:.04em}
+.ready{font-family:var(--play);font-weight:700;font-size:34px;letter-spacing:.06em;margin-top:16px}
+.ready+p{font-family:var(--play);font-size:18px;letter-spacing:.09em;line-height:1.15;margin-top:2px}
+.rsvpbtn{display:flex;align-items:center;justify-content:center;gap:22px;margin:22px auto 0;width:100%;height:62px;border-radius:14px;background:#000;color:#fff7e3;font-family:var(--play);font-size:42px;letter-spacing:.08em;text-shadow:0 0 8px rgba(246,222,176,.95),0 0 20px rgba(246,222,176,.55);border:0;cursor:pointer}
+.rsvpbtn svg{width:34px;filter:drop-shadow(0 0 6px rgba(246,222,176,.8));animation:bob 1.6s infinite ease-in-out}
+@keyframes bob{50%{transform:translateY(5px)}}
+form.rf{margin-top:18px;text-align:left;background:#f6f6f6;border-radius:12px;padding:18px;border-top:10px solid #111}
+form.rf h6{font-family:var(--serif);font-size:28px;font-weight:500;margin-bottom:4px}
+form.rf .hint{font-size:12px;color:#777;margin-bottom:12px}
+.q{background:#fff;border:1px solid #e3e3e3;border-radius:10px;padding:14px;margin-top:10px}
+.q label.t{display:block;font-family:'EB Garamond',var(--serif);font-size:18px;margin-bottom:8px}
+.q input[type=text],.q input[type=number],.q textarea{width:100%;border:0;border-bottom:1px solid #bbb;padding:6px 2px;font:15px var(--sans);background:transparent;outline:none}
+.q input:focus,.q textarea:focus{border-color:#111}
+.q .opt{display:flex;align-items:center;gap:10px;font-family:var(--serif);font-size:17px;padding:5px 0;cursor:pointer}
+.q .opt input{accent-color:#111;width:18px;height:18px}
+.submit{margin-top:14px;background:#111;color:#fff;border:0;border-radius:8px;padding:12px 26px;font:500 14px var(--sans);letter-spacing:.1em;cursor:pointer}
+.sent{display:none;padding:26px 10px;text-align:center;font-family:var(--serif);font-size:20px}
+.thanks{padding:10px 0 26px;text-align:center}
+.thanks span{font-family:var(--sign);font-size:80px;position:relative;display:inline-block;padding:0 40px}
+.thanks span::before,.thanks span::after{content:"";position:absolute;top:58%;width:60px;height:1px;background:#222}
+.thanks span::before{left:-30px}.thanks span::after{right:-30px}
+
+/* =========================================================
+   8. SAVE THE DATE
+   ========================================================= */
+.std{position:relative;min-height:100svh;max-height:900px;display:flex;align-items:flex-end;justify-content:center;overflow:hidden}
+.std .photo{position:absolute;inset:0;background-size:cover;background-position:center 35%;filter:grayscale(1) brightness(.92)}
+.std .photo::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,255,255,.05),rgba(90,90,90,.35) 70%,rgba(60,60,60,.45))}
+.std .inner{position:relative;z-index:1;text-align:center;padding-bottom:42px;color:#fff}
+.std .m{font-family:var(--play);font-size:44px;color:#ffe9c4;text-shadow:0 0 12px rgba(246,222,176,.9)}
+.std .d{font-family:var(--play);font-size:92px;line-height:.95;color:#fffdf6;text-shadow:0 0 14px rgba(255,255,255,.75)}
+.std .s{font-family:var(--script);font-size:66px;color:#ffe5bd;letter-spacing:.08em;text-shadow:0 0 8px rgba(246,222,176,.95),0 0 22px rgba(246,222,176,.5);margin-top:-6px}
+.cal{position:relative;display:inline-block;margin-top:16px}
+.cal .pill{border:0;font-size:16px;padding:11px 20px;color:#111}
+.cal .menu{position:absolute;bottom:calc(100% + 10px);left:50%;transform:translateX(-50%);background:#fff;border-radius:12px;box-shadow:0 10px 30px rgba(0,0,0,.25);overflow:hidden;display:none;min-width:220px;text-align:left}
+.cal .menu.open{display:block}
+.cal .menu a{display:block;padding:12px 16px;color:#111;font-size:13px;letter-spacing:.06em;border-bottom:1px solid #eee}
+.cal .menu a:hover{background:#f5f2ec}
+footer{background:#000;color:#fff;font-size:12px;padding:10px 14px;display:flex;justify-content:space-between}
+
+/* Tombol musik melayang */
+.fab{position:fixed;right:16px;bottom:16px;z-index:50;width:44px;height:44px;border-radius:50%;background:#000;color:#fff;display:grid;place-items:center;border:0;cursor:pointer;box-shadow:0 6px 18px rgba(0,0,0,.3);opacity:0;pointer-events:none;transition:opacity .4s}
+.fab.show{opacity:1;pointer-events:auto}
+.fab.spin svg{animation:spin 3s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+
+<!-- SVG defs -->
+<svg width="0" height="0" style="position:absolute">
+  <defs>
+    <filter id="glow" x="-200%" y="-200%" width="500%" height="500%"><feGaussianBlur stdDeviation="2.4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+    <linearGradient id="goldG" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f3e3b8"/><stop offset=".35" stop-color="#c9a85f"/><stop offset=".6" stop-color="#f1dca6"/><stop offset="1" stop-color="#9c7c3d"/></linearGradient>
+    <g id="rings">
+      <ellipse cx="38" cy="42" rx="28" ry="26" fill="none" stroke="url(#goldG)" stroke-width="9"/>
+      <ellipse cx="38" cy="42" rx="28" ry="26" fill="none" stroke="#7d6230" stroke-width=".8" opacity=".5"/>
+      <ellipse cx="72" cy="40" rx="27" ry="25" fill="none" stroke="url(#goldG)" stroke-width="8"/>
+      <ellipse cx="72" cy="40" rx="27" ry="25" fill="none" stroke="#7d6230" stroke-width=".8" opacity=".5"/>
+      <path d="M48 20 a28 26 0 0 1 14 3" fill="none" stroke="url(#goldG)" stroke-width="9"/>
+      <ellipse cx="55" cy="74" rx="40" ry="5" fill="#000" opacity=".08"/>
+    </g>
+    <g id="flower">
+      <circle cx="30" cy="30" r="16" fill="#e6dede"/>
+      <path d="M30 18c6 0 10 5 9 11-4-4-9-5-14-3 0-4 2-8 5-8z" fill="#cdbfc2"/>
+      <path d="M21 33c1-6 6-9 12-8-3 3-5 8-3 13-5 0-9-2-9-5z" fill="#d7caca"/>
+      <circle cx="30" cy="30" r="5" fill="#b9a9ae"/>
+      <circle cx="54" cy="18" r="9" fill="#ddd2d4"/><circle cx="54" cy="18" r="3" fill="#b7a5ab"/>
+      <circle cx="56" cy="44" r="6" fill="#4b2d4b"/><circle cx="60" cy="40" r="4" fill="#5e3a5e"/>
+      <path d="M8 46 C14 40 20 42 22 48 C16 50 12 50 8 46z" fill="#b8bb8a"/>
+      <path d="M44 6 C50 4 54 8 52 12 C48 12 45 10 44 6z" fill="#c2c493"/>
+      <path d="M66 26 C74 22 78 28 74 32 C70 32 67 30 66 26z" fill="#a9ad7c"/>
+      <circle cx="12" cy="20" r="2.5" fill="#cbb98d"/><circle cx="68" cy="56" r="2.5" fill="#cbb98d"/>
+      <path d="M40 54 l3 10 M46 52 l5 9" stroke="#2f2f2f" stroke-width="1.6" stroke-linecap="round"/>
+    </g>
+  </defs>
+</svg>
+
+<!-- ================= 1. HERO ================= -->
+<section class="sec hero" id="top">
+  <div class="bg" data-img="hero"></div>
+  <div class="col">
+    <div class="photo" data-img="hero"></div>
+    <svg class="lights" viewBox="0 0 400 110" preserveAspectRatio="none">
+      <path d="M0 70 Q90 105 190 60 T400 10" fill="none" stroke="#c9c2a8" stroke-width=".8" opacity=".7"/>
+      <path d="M40 95 Q150 70 250 40 T400 0" fill="none" stroke="#c9c2a8" stroke-width=".8" opacity=".6"/>
+      <g>
+        <circle class="b" cx="20" cy="79" r="3.2"/><circle class="b" cx="62" cy="91" r="3.4" style="animation-delay:.4s"/>
+        <circle class="b" cx="110" cy="92" r="3" style="animation-delay:.9s"/><circle class="b" cx="152" cy="77" r="3.5" style="animation-delay:.2s"/>
+        <circle class="b" cx="198" cy="57" r="3.2" style="animation-delay:1.2s"/><circle class="b" cx="244" cy="39" r="3.4" style="animation-delay:.6s"/>
+        <circle class="b" cx="292" cy="27" r="3" style="animation-delay:1.6s"/><circle class="b" cx="340" cy="20" r="3.4" style="animation-delay:.3s"/>
+        <circle class="b" cx="98" cy="85" r="2.6" style="animation-delay:1.1s"/><circle class="b" cx="182" cy="66" r="2.8" style="animation-delay:.7s"/>
+        <circle class="b" cx="270" cy="31" r="2.6" style="animation-delay:1.4s"/><circle class="b" cx="372" cy="10" r="3" style="animation-delay:.5s"/>
+      </g>
+    </svg>
+    <div class="inner">
+      <div class="wedo rv">
+        <svg class="heart" viewBox="0 0 150 230" fill="none">
+          <path d="M70 228 C 62 200, 40 170, 22 120 C 6 76, 8 34, 34 22 C 58 12, 72 40, 74 62 C 78 34, 96 8, 120 14 C 146 22, 146 66, 126 112 C 110 150, 88 186, 52 214" stroke="#c6a979" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <div class="txt"><span>We</span><span>Do</span></div>
+      </div>
+      <div class="together rv d1">TOGETHER WITH THEIR FAMILIES</div>
+      <div class="names rv d1"><span data-k="bride">RANI</span><i>and</i><span data-k="groom">DIMAS</span></div>
+      <div class="invite rv d2">Invite you<br>to their wedding celebration</div>
+      <div class="dateblock rv d3">
+        <div class="side" data-k="dayName">SATURDAY</div>
+        <div class="mid"><div class="m" data-k="monthName">JULY</div><div class="d" data-k="dayNum">22</div><div class="y" data-k="year">2030</div></div>
+        <div class="side" data-k="timeText">AT 3:30 PM</div>
+      </div>
+      <div class="addr rv d4" data-k="address">Jl. Kemang Raya No. 8, Jakarta Selatan</div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 2. MUSIC ================= -->
+<section class="sec">
+  <div class="bg tint" data-img="music"></div>
+  <div class="col">
+    <div class="player">
+      <div class="ctrls rv">
+        <button aria-label="Shuffle"><svg width="22" height="22" viewBox="0 0 24 24"><circle cx="12" cy="12" r="11"/><path d="M6 8.5h2.5l6 7H18M6 15.5h2.5l1.6-1.9M14.5 8.5H18M16.5 6.8l1.8 1.7-1.8 1.7M16.5 13.8l1.8 1.7-1.8 1.7" stroke="#fff" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg></button>
+        <button aria-label="Previous" class="muted" id="prevBtn"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><rect x="4" y="4" width="2.4" height="16"/><path d="M20 4v16L8 12z"/></svg></button>
+        <button aria-label="Play" class="play" id="playBtn">
+          <svg id="icPlay" width="38" height="38" viewBox="0 0 24 24" fill="#fff"><path d="M7 4.5v15l13-7.5z"/></svg>
+          <svg id="icPause" width="34" height="34" viewBox="0 0 24 24" fill="#fff" style="display:none"><rect x="5.5" y="4" width="4.5" height="16" rx="1"/><rect x="14" y="4" width="4.5" height="16" rx="1"/></svg>
+        </button>
+        <button aria-label="Next" class="muted" id="nextBtn"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><rect x="17.6" y="4" width="2.4" height="16"/><path d="M4 4v16l12-8z"/></svg></button>
+        <button aria-label="Repeat"><svg width="22" height="22" viewBox="0 0 24 24"><circle cx="12" cy="12" r="11"/><path d="M7 11V9.5A1.5 1.5 0 0 1 8.5 8H16m-1.8-1.8L16 8l-1.8 1.8M17 13v1.5a1.5 1.5 0 0 1-1.5 1.5H8m1.8 1.8L8 16l1.8-1.8" stroke="#fff" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg></button>
+      </div>
+      <div class="bar rv d1"><span id="prog"></span></div>
+      <div class="track" id="trackName">Our Song</div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 3. COUNTDOWN ================= -->
+<section class="sec">
+  <div class="bg" data-img="rings"></div>
+  <div class="col">
+    <div class="countdown">
+      <div class="rv"><span class="the">the</span></div>
+      <div class="title rv d1">Countdown</div>
+      <div class="sub rv d2">to forever has begun...</div>
+      <div class="timer rv d3">
+        <div class="u"><div class="n" id="cdD">000</div><div class="l">Days</div></div><div class="c">:</div>
+        <div class="u"><div class="n" id="cdH">00</div><div class="l">Hours</div></div><div class="c">:</div>
+        <div class="u"><div class="n" id="cdM">00</div><div class="l">Minutes</div></div><div class="c">:</div>
+        <div class="u"><div class="n sec" id="cdS">00</div><div class="l">Seconds</div></div>
+      </div>
+      <div class="cantwait">
+        <svg class="bigheart" viewBox="0 0 330 420" fill="none"><path d="M120 418 C 60 330, 20 250, 30 150 C 38 70, 70 30, 112 36 C 150 42, 162 100, 160 160 C 170 80, 210 6, 262 10 C 320 16, 330 90, 300 170 C 270 250, 200 330, 10 410" stroke="#ececec" stroke-width="16" stroke-linecap="round"/></svg>
+        <svg class="rings rv" viewBox="0 0 110 85"><use href="#rings"/></svg>
+        <p class="rv d1">We can't wait<br>to celebrate<br>with you!</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 4. VENUE ================= -->
+<section class="sec" id="venue">
+  <div class="bg" data-img="aisle"></div>
+  <div class="col">
+    <div class="venue">
+      <div class="rv"><span class="the">the</span></div>
+      <div class="title rv d1">Venue</div>
+      <h3 class="rv d1" data-k="venueName">The Glasshouse</h3>
+      <p class="desc rv d2" data-k="venueDesc">Rayakan hari bahagia kami di taman kaca yang hangat dan elegan, di jantung kota Jakarta.</p>
+      <div class="ph rv d2" data-img="venue"></div>
+      <a class="pill maps rv d3" id="mapsBtn" target="_blank" rel="noopener">
+        <span class="pin"><svg width="26" height="34" viewBox="0 0 24 32"><path d="M12 0C5.4 0 0 5.3 0 11.9 0 20.8 12 32 12 32s12-11.2 12-20.1C24 5.3 18.6 0 12 0z" fill="#000"/><circle cx="12" cy="11.5" r="4.5" fill="#fff"/></svg></span>
+        Google Maps
+      </a>
+      <div class="stay rv">
+        <svg class="icon" viewBox="0 0 52 52" fill="none" stroke="#111" stroke-width="2"><rect x="9" y="12" width="34" height="18" rx="2"/><path d="M5 30h42v10H5zM9 40v6M43 40v6M14 30v-6h24v6"/><path d="M26 22.5l-3.6-3.3a2.2 2.2 0 0 1 3.1-3.1l.5.5.5-.5a2.2 2.2 0 0 1 3.1 3.1z"/></svg>
+        <h4 data-k="stayTitle">Stay at The Glasshouse</h4>
+        <ul data-list="stayList"></ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 5. THE DAY ================= -->
+<section class="sec">
+  <div class="bg" data-img="rings"></div>
+  <div class="col">
+    <div class="day">
+      <svg class="wm" viewBox="0 0 110 85"><use href="#rings"/></svg>
+      <div class="head rv">
+        <div><span class="the">the</span><div class="title">Day</div></div>
+        <svg viewBox="0 0 110 85"><use href="#rings"/></svg>
+      </div>
+      <div class="tl" id="timeline"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 6. DETAILS ================= -->
+<section class="sec details">
+  <div class="bg" data-img="details"></div>
+  <div class="col">
+    <div class="photo" data-img="details"></div>
+    <div class="wrap">
+      <div class="hd rv"><span class="the">the</span><div class="title">Details</div></div>
+      <div id="detailList"></div>
+      <a class="pill reg rv" id="registryBtn" target="_blank" rel="noopener">Wedding Registry</a>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 7. RSVP ================= -->
+<section class="sec" id="rsvp">
+  <div class="bg" data-img="bouquet"></div>
+  <div class="col">
+    <div class="rsvp">
+      <div class="please rv"><span>please</span></div>
+      <div class="foil rv d1">
+        <div class="L">R<svg viewBox="0 0 80 70"><use href="#flower"/></svg></div>
+        <div class="L">S<svg viewBox="0 0 80 70"><use href="#flower"/></svg></div>
+        <div class="L">V<svg viewBox="0 0 80 70"><use href="#flower"/></svg></div>
+        <div class="L">P<svg viewBox="0 0 80 70"><use href="#flower"/></svg></div>
+      </div>
+      <div class="by rv" data-k="rsvpBy">by July 15</div>
+      <div class="ready rv">Ready to party?</div>
+      <p class="rv d1">Fill out the RSVP form<br>below and let us know<br>you're in!</p>
+      <button class="rsvpbtn rv d2" id="rsvpBtn">
+        <svg viewBox="0 0 24 30"><path d="M8 2h8v14h6L12 28 2 16h6z" fill="url(#goldG)"/></svg>RSVP<svg viewBox="0 0 24 30"><path d="M8 2h8v14h6L12 28 2 16h6z" fill="url(#goldG)"/></svg>
+      </button>
+
+      <form class="rf rv" id="rsvpForm">
+        <h6><span data-k="brideCap">Rani</span> &amp; <span data-k="groomCap">Dimas</span>' Wedding</h6>
+        <div class="hint">Mohon konfirmasi kehadiran Anda.</div>
+        <div class="q"><label class="t" for="fName">Nama lengkap *</label><input id="fName" type="text" required placeholder="Jawaban Anda"></div>
+        <div class="q"><span class="t" style="display:block;font-family:var(--serif);font-size:18px;margin-bottom:6px">Will you attend? *</span>
+          <label class="opt"><input type="radio" name="att" value="Hadir" required> Joyfully accept — I'll be there!</label>
+          <label class="opt"><input type="radio" name="att" value="Tidak hadir"> Sadly, I won't be able to attend.</label>
+        </div>
+        <div class="q"><label class="t" for="fGuests">Jumlah tamu (termasuk Anda)</label><input id="fGuests" type="number" min="1" max="10" value="1"></div>
+        <div class="q"><label class="t" for="fMsg">Ucapan &amp; doa</label><textarea id="fMsg" rows="2" placeholder="Jawaban Anda"></textarea></div>
+        <button class="submit" type="submit">KIRIM</button>
+      </form>
+      <div class="sent" id="sent">Terima kasih! Konfirmasi Anda sudah kami terima ♡</div>
+    </div>
+    <div class="thanks rv"><span>thank you</span></div>
+  </div>
+</section>
+
+<!-- ================= 8. SAVE THE DATE ================= -->
+<section class="std">
+  <div class="photo" data-img="std"></div>
+  <div class="inner">
+    <div class="m rv" data-k="monthName">JULY</div>
+    <div class="d rv d1" data-k="dayNum">22</div>
+    <div class="s rv d2">Save the date</div>
+    <div class="cal rv d3">
+      <div class="menu" id="calMenu">
+        <a id="gcal" target="_blank" rel="noopener">Google Calendar</a>
+        <a id="ics" href="#">Apple / Outlook (.ics)</a>
+        <a id="ycal" target="_blank" rel="noopener">Yahoo Calendar</a>
+      </div>
+      <button class="pill" id="calBtn">
+        <svg width="24" height="24" viewBox="0 0 24 24"><rect x="2" y="4" width="17" height="16" rx="2" fill="#111"/><rect x="5" y="2" width="2" height="4" rx="1" fill="#111"/><rect x="14" y="2" width="2" height="4" rx="1" fill="#111"/><g fill="#fff"><rect x="5" y="10" width="2.5" height="2.5"/><rect x="9" y="10" width="2.5" height="2.5"/><rect x="13" y="10" width="2.5" height="2.5"/><rect x="5" y="14" width="2.5" height="2.5"/><rect x="9" y="14" width="2.5" height="2.5"/></g><circle cx="18.5" cy="18.5" r="5" fill="#111" stroke="#fff" stroke-width="1.2"/><path d="M18.5 16v5M16 18.5h5" stroke="#fff" stroke-width="1.5"/></svg>
+        Add to calendar
+      </button>
+    </div>
+  </div>
+</section>
+<footer><span>Made with love ♡</span><span data-k="couple">Rani &amp; Dimas</span></footer>
+
+<button class="fab" id="fab" aria-label="Musik"><svg width="20" height="20" viewBox="0 0 24 24" fill="#fff"><path d="M9 3v12.3A3.5 3.5 0 1 0 11 18V8h7V3z"/></svg></button>
+
+<script>
+/* =========================================================
+   KONFIGURASI — ubah semua data undangan di sini
+   ========================================================= */
+const CONFIG = {
+  bride: "Rani",
+  groom: "Dimas",
+  // Format: YYYY-MM-DDTHH:mm (waktu lokal)
+  date: "2030-07-22T15:30",
+  durationHours: 6,
+  address: "Jl. Kemang Raya No. 8, Jakarta Selatan",
+  venueName: "The Glasshouse",
+  venueDesc: "Rayakan hari bahagia kami di taman kaca yang hangat dan elegan, di jantung kota Jakarta.",
+  mapsUrl: "https://maps.google.com/?q=Kemang+Jakarta+Selatan",
+  stayTitle: "Stay at The Glasshouse",
+  stayList: [
+    "Kamar untuk hingga 40 tamu",
+    "Suite elegan & nyaman",
+    "Termasuk sarapan, akses kolam & taman",
+    "Kuota terbatas – RSVP lebih awal",
+    "Mulai Rp 1.500.000 / malam"
+  ],
+  schedule: [
+    { time: "3:30 PM", title: "Wedding Ceremony", icon: "rings" },
+    { time: "4:30 PM", title: "Cocktail Hour",    icon: "cocktail" },
+    { time: "5:00 PM", title: "Photo Session",    icon: "camera" },
+    { time: "6:30 PM", title: "Dinner Reception", icon: "dinner" },
+    { time: "8:00 PM", title: "Dance Party",      icon: "speaker" }
+  ],
+  details: [
+    { title: "Dress Code", text: "Semi-formal dan elegan. Silakan tambahkan sentuhan warna pastel sesuai tema kami." },
+    { title: "Transportation", text: "Shuttle tersedia dari lokasi akad ke resepsi, berangkat tepat setelah acara selesai." },
+    { title: "Accommodation", text: "Untuk memesan kamar di venue, hubungi kami langsung. Sebut \"Wedding Rani & Dimas\" saat reservasi. Telp: +62 8XX XXXX XXXX" },
+    { title: "Wedding Registry", text: "Kehadiran Anda adalah hadiah terindah. Bila ingin memberikan tanda kasih, daftar hadiah kami ada di bawah ini." }
+  ],
+  registryUrl: "#",
+  rsvpBy: "by July 15",
+  // Isi salah satu (opsional):
+  googleFormUrl: "",          // jika diisi, tombol RSVP membuka Google Form
+  whatsappNumber: "",         // contoh "6281234567890" → hasil form dikirim via WhatsApp
+  // URL lagu (mp3). Kosongkan untuk melodi music-box bawaan.
+  music: "",
+  musicTitle: "Our Song",
+  // Foto — ganti dengan URL foto Anda sendiri
+  photos: {
+    hero:    "https://images.unsplash.com/photo-1460978812857-470ed1c77af0?w=1200&q=75",
+    music:   "https://images.unsplash.com/photo-1507504031003-b417219a0fde?w=1200&q=60",
+    rings:   "https://images.unsplash.com/photo-1606800052052-a08af7148866?w=1400&q=60",
+    aisle:   "https://images.unsplash.com/photo-1522673607200-164d1b6ce486?w=1400&q=60",
+    venue:   "https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=900&q=75",
+    details: "https://images.unsplash.com/photo-1465495976277-4387d4b0b4c6?w=1200&q=70",
+    bouquet: "https://images.unsplash.com/photo-1525258946800-98cfd641d0de?w=1400&q=60",
+    std:     "https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=1600&q=75"
+  }
+};
+
+/* ================= Render data ================= */
+const $ = s => document.querySelector(s), $$ = s => document.querySelectorAll(s);
+const d = new Date(CONFIG.date);
+const months = ["JANUARY","FEBRUARY","MARCH","APRIL","MAY","JUNE","JULY","AUGUST","SEPTEMBER","OCTOBER","NOVEMBER","DECEMBER"];
+const days = ["SUNDAY","MONDAY","TUESDAY","WEDNESDAY","THURSDAY","FRIDAY","SATURDAY"];
+const h12 = d.getHours()%12||12, ap = d.getHours()<12?"AM":"PM";
+const map = {
+  bride: CONFIG.bride.toUpperCase(), groom: CONFIG.groom.toUpperCase(),
+  brideCap: CONFIG.bride, groomCap: CONFIG.groom, couple: `${CONFIG.bride} & ${CONFIG.groom}`,
+  dayName: days[d.getDay()], monthName: months[d.getMonth()], dayNum: d.getDate(), year: d.getFullYear(),
+  timeText: `AT ${h12}:${String(d.getMinutes()).padStart(2,"0")} ${ap}`,
+  address: CONFIG.address, venueName: CONFIG.venueName, venueDesc: CONFIG.venueDesc,
+  stayTitle: CONFIG.stayTitle, rsvpBy: CONFIG.rsvpBy
+};
+$$("[data-k]").forEach(el => { const v = map[el.dataset.k]; if (v !== undefined) el.textContent = v; });
+document.title = `We Do — ${CONFIG.bride} & ${CONFIG.groom}`;
+$("[data-list=stayList]").innerHTML = CONFIG.stayList.map(x=>`<li>${x}</li>`).join("");
+$("#mapsBtn").href = CONFIG.mapsUrl;
+$("#registryBtn").href = CONFIG.registryUrl;
+$("#trackName").textContent = CONFIG.musicTitle;
+
+// Foto dengan fallback gradien jika gagal dimuat
+$$("[data-img]").forEach(el => {
+  const url = CONFIG.photos[el.dataset.img]; if (!url) return;
+  const im = new Image();
+  im.onload = () => el.style.backgroundImage = `url("${url}")`;
+  im.onerror = () => el.style.background = "linear-gradient(160deg,#9a9a9a,#3a3a3a)";
+  im.src = url;
+});
+
+// Ikon timeline (line icons)
+const ICONS = {
+  rings:`<svg viewBox="0 0 52 52" fill="none" stroke="#111" stroke-width="2"><circle cx="20" cy="33" r="12"/><circle cx="20" cy="33" r="9"/><circle cx="31" cy="35" r="12"/><circle cx="31" cy="35" r="9"/><path d="M25 18l-4-3.6a2.6 2.6 0 0 1 3.7-3.7l.3.3.3-.3a2.6 2.6 0 0 1 3.7 3.7z"/></svg>`,
+  cocktail:`<svg viewBox="0 0 52 52" fill="none" stroke="#111" stroke-width="2"><path d="M10 12h32L26 30z"/><path d="M26 30v16M18 46h16M15 17h22"/><circle cx="16" cy="9" r="3"/><path d="M8 4l10 10"/></svg>`,
+  camera:`<svg viewBox="0 0 52 52" fill="none" stroke="#111" stroke-width="2"><rect x="4" y="14" width="44" height="30" rx="5"/><path d="M17 14l3-5h12l3 5"/><circle cx="26" cy="29" r="9"/><path d="M26 33l-3.2-3a2 2 0 0 1 3-2.6l.2.2.2-.2a2 2 0 0 1 3 2.6z" fill="#111"/><rect x="9" y="18" width="5" height="3"/></svg>`,
+  dinner:`<svg viewBox="0 0 52 52" fill="none" stroke="#111" stroke-width="2"><circle cx="26" cy="27" r="14"/><circle cx="26" cy="27" r="9"/><path d="M6 10v10a3 3 0 0 0 3 3v20M9 10v8M12 10v10a3 3 0 0 1-3 3M45 10c-4 3-4 10-3 14h3v19"/></svg>`,
+  speaker:`<svg viewBox="0 0 52 52" fill="none" stroke="#111" stroke-width="2"><rect x="14" y="6" width="24" height="40" rx="3"/><circle cx="26" cy="15" r="4"/><circle cx="26" cy="32" r="8"/><circle cx="26" cy="32" r="3"/><path d="M5 22l5 2M5 32h5M5 42l5-2M47 22l-5 2M47 32h-5M47 42l-5-2"/></svg>`
+};
+$("#timeline").innerHTML = CONFIG.schedule.map((e,i)=>`
+  <div class="ev rv d${i%3}">
+    <div class="ic">${ICONS[e.icon]||ICONS.rings}</div>
+    <div class="dot"></div>
+    <div><div class="t">${e.time}</div><div class="e">${e.title}</div></div>
+  </div>`).join("");
+
+$("#detailList").innerHTML = CONFIG.details.map((x,i)=>`
+  ${i? '<div class="vline rv"><span></span></div>':''}
+  <div class="det rv"><h5>${x.title}</h5><p>${x.text}</p></div>`).join("");
+
+/* ================= Countdown ================= */
+const pad = (n,l=2)=>String(n).padStart(l,"0");
+function tick(){
+  let ms = Math.max(0, d - new Date());
+  const D = Math.floor(ms/864e5); ms%=864e5;
+  const H = Math.floor(ms/36e5); ms%=36e5;
+  const M = Math.floor(ms/6e4); const S = Math.floor((ms%6e4)/1e3);
+  $("#cdD").textContent = D>99?D:pad(D); $("#cdH").textContent = pad(H);
+  $("#cdM").textContent = pad(M); $("#cdS").textContent = pad(S);
+}
+tick(); setInterval(tick, 1000);
+
+/* ================= Reveal on scroll ================= */
+const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting){ e.target.classList.add("in"); io.unobserve(e.target);} }), {threshold:.15});
+$$(".rv").forEach(el => io.observe(el));
+
+/* ================= Music ================= */
+let playing = false, audio = null, ctx = null, loopTimer = null, startT = 0;
+const LOOP = 9.6; // detik per putaran melodi bawaan
+function musicBox(){
+  ctx = ctx || new (window.AudioContext||window.webkitAudioContext)();
+  const notes = [ // melodi orisinal sederhana (Hz, beat)
+    [523.25,1],[659.25,1],[783.99,1],[659.25,1],[698.46,1],[880,1],[783.99,2],
+    [659.25,1],[587.33,1],[523.25,1],[587.33,1],[659.25,1],[587.33,1],[523.25,2]];
+  const beat = .6; let t = ctx.currentTime + .05;
+  notes.forEach(([f,b]) => {
+    [f, f/2].forEach((fr,k) => {
+      const o = ctx.createOscillator(), g = ctx.createGain();
+      o.type = k? "sine":"triangle"; o.frequency.value = fr;
+      g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(k?.05:.09, t+.02);
+      g.gain.exponentialRampToValueAtTime(.0005, t + b*beat*1.8);
+      o.connect(g).connect(ctx.destination); o.start(t); o.stop(t + b*beat*1.9);
+    });
+    t += b*beat;
+  });
+  startT = performance.now();
+  loopTimer = setTimeout(()=>{ if (playing) musicBox(); }, LOOP*1000);
+}
+function setUI(){
+  $("#icPlay").style.display = playing?"none":"block";
+  $("#icPause").style.display = playing?"block":"none";
+  $("#fab").classList.toggle("spin", playing);
+}
+function toggle(){
+  playing = !playing;
+  if (CONFIG.music){
+    audio = audio || Object.assign(new Audio(CONFIG.music), {loop:true});
+    playing ? audio.play() : audio.pause();
+  } else {
+    if (playing){ musicBox(); } else { clearTimeout(loopTimer); ctx && ctx.suspend().then(()=>{ctx.close(); ctx=null;}); }
+  }
+  setUI();
+}
+$("#playBtn").onclick = toggle; $("#fab").onclick = toggle;
+$("#prevBtn").onclick = () => { if (audio) audio.currentTime = 0; };
+$("#nextBtn").onclick = () => { if (audio) audio.currentTime = 0; };
+(function prog(){
+  let p = 0;
+  if (audio && audio.duration) p = audio.currentTime/audio.duration;
+  else if (playing && !CONFIG.music) p = ((performance.now()-startT)/1000)/LOOP;
+  $("#prog").style.width = Math.min(100, p*100) + "%";
+  requestAnimationFrame(prog);
+})();
+// Tampilkan tombol musik melayang setelah melewati player
+new IntersectionObserver(([e]) => $("#fab").classList.toggle("show", !e.isIntersecting && e.boundingClientRect.top < 0)).observe($(".player"));
+
+/* ================= RSVP ================= */
+$("#rsvpBtn").onclick = () => {
+  if (CONFIG.googleFormUrl) window.open(CONFIG.googleFormUrl, "_blank");
+  else $("#rsvpForm").scrollIntoView({behavior:"smooth", block:"start"});
+};
+$("#rsvpForm").onsubmit = e => {
+  e.preventDefault();
+  const name = $("#fName").value.trim(), att = ($("input[name=att]:checked")||{}).value;
+  const msg = `RSVP ${CONFIG.bride} & ${CONFIG.groom}\nNama: ${name}\nKehadiran: ${att}\nJumlah tamu: ${$("#fGuests").value}\nUcapan: ${$("#fMsg").value}`;
+  if (CONFIG.whatsappNumber) window.open(`https://wa.me/${CONFIG.whatsappNumber}?text=${encodeURIComponent(msg)}`, "_blank");
+  $("#rsvpForm").style.display = "none"; $("#sent").style.display = "block";
+};
+
+/* ================= Add to calendar ================= */
+const end = new Date(d.getTime() + CONFIG.durationHours*36e5);
+const utc = x => x.toISOString().replace(/[-:]/g,"").replace(/\.\d{3}/,"");
+const title = `Wedding ${CONFIG.bride} & ${CONFIG.groom}`;
+const loc = `${CONFIG.venueName}, ${CONFIG.address}`;
+$("#gcal").href = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(title)}&dates=${utc(d)}/${utc(end)}&location=${encodeURIComponent(loc)}`;
+$("#ycal").href = `https://calendar.yahoo.com/?v=60&title=${encodeURIComponent(title)}&st=${utc(d)}&et=${utc(end)}&in_loc=${encodeURIComponent(loc)}`;
+$("#ics").onclick = e => {
+  e.preventDefault();
+  const ics = ["BEGIN:VCALENDAR","VERSION:2.0","PRODID:-//WeDo//ID","BEGIN:VEVENT",`UID:${Date.now()}@wedo`,`DTSTAMP:${utc(new Date())}`,
+    `DTSTART:${utc(d)}`,`DTEND:${utc(end)}`,`SUMMARY:${title}`,`LOCATION:${loc}`,
+    "BEGIN:VALARM","TRIGGER:-P1D","ACTION:DISPLAY","DESCRIPTION:Reminder","END:VALARM","END:VEVENT","END:VCALENDAR"].join("\r\n");
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(new Blob([ics],{type:"text/calendar"})); a.download = "wedding.ics"; a.click();
+};
+$("#calBtn").onclick = e => { e.stopPropagation(); $("#calMenu").classList.toggle("open"); };
+document.addEventListener("click", () => $("#calMenu").classList.remove("open"));
+</script>
+</body>
+</html>

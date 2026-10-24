@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"github.com/mula/mula/internal/catalog"
 	"image"
 	"image/jpeg"
 	"image/png"
@@ -102,7 +103,16 @@ func setupWith(t *testing.T, tweak func(*Deps)) (http.Handler, *captureMailer, *
 	ovRepo := postgres.NewOverviewRepo(pool)
 	ovSvc := overview.NewService(ovRepo).WithActivity(ovRepo)
 	gSvc := guestapp.NewService(postgres.NewGuestRepo(pool)).WithMailer(mailer, "http://web.test")
-	iSvc := invapp.NewService(postgres.NewInvitationRepo(pool))
+	// the catalog drives section sets, required sections and content validation: load and sync it like `make migrate`
+	cat, problems := catalog.Load("../../../../catalog")
+	problems = append(problems, cat.Validate(catalog.Options{})...)
+	if len(problems) > 0 {
+		t.Fatalf("catalog: %v", problems)
+	}
+	if _, err := catalog.Sync(context.Background(), pool, cat); err != nil {
+		t.Fatalf("catalog sync: %v", err)
+	}
+	iSvc := invapp.NewService(postgres.NewInvitationRepo(pool)).WithContentSchema(cat.ContentChecker()).WithThemeSchema(cat.ThemeChecker())
 	sSvc := schapp.NewService(postgres.NewScheduleRepo(pool))
 	tSvc := taskapp.NewService(postgres.NewTaskRepo(pool))
 	oSvc := opsapp.NewService(postgres.NewOpsRepo(pool))
@@ -112,7 +122,7 @@ func setupWith(t *testing.T, tweak func(*Deps)) (http.Handler, *captureMailer, *
 	}
 	giftSvc := giftapp.NewService(postgres.NewGiftRepo(pool), store, testSigner)
 	billSvc := billapp.NewService(postgres.NewBillingRepo(pool), testPay)
-	d := Deps{Log: discardLogger(), CORSOrigin: "*", Auth: svc, Event: evSvc, Overview: ovSvc, Guest: gSvc, Invitation: iSvc, Schedule: sSvc, Task: tSvc, Ops: oSvc, Gift: giftSvc, Billing: billSvc, Settings: setapp.NewService(postgres.NewSettingsRepo(pool)), Public: pubapp.NewService(postgres.NewPublicInviteRepo(pool)), Pool: pool, Secure: false, AuthRatePerMin: 100000, AuthRateBurst: 100000}
+	d := Deps{Log: discardLogger(), CORSOrigin: "*", Auth: svc, Event: evSvc, Overview: ovSvc, Guest: gSvc, Invitation: iSvc, Schedule: sSvc, Task: tSvc, Ops: oSvc, Gift: giftSvc, Billing: billSvc, Settings: setapp.NewService(postgres.NewSettingsRepo(pool)), Public: pubapp.NewService(postgres.NewPublicInviteRepo(pool), testSigner), Pool: pool, Secure: false, AuthRatePerMin: 100000, AuthRateBurst: 100000}
 	if tweak != nil {
 		tweak(&d)
 	}

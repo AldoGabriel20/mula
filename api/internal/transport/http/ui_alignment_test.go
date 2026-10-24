@@ -1,8 +1,11 @@
 package http
 
 import (
+	"context"
 	"encoding/json"
 	"net/http"
+	"net/http/httptest"
+	"reflect"
 	"strconv"
 	"strings"
 	"testing"
@@ -696,7 +699,7 @@ func TestInvitationDeadlineAndTemplates(t *testing.T) {
 		}
 	}
 	_ = json.Unmarshal(r.Body.Bytes(), &cat)
-	if r.Code != 200 || len(cat.Data) != 8 || cat.Data[0].Slug != "linen-vow" || len(cat.Data[0].Tags) != 2 {
+	if r.Code != 200 || len(cat.Data) != 10 || cat.Data[0].Slug != "linen-vow" || len(cat.Data[0].Tags) != 2 || cat.Data[8].Slug != "gilded-seal" || cat.Data[9].Slug != "we-do" {
 		t.Fatalf("templates: %d %s", r.Code, r.Body)
 	}
 
@@ -863,5 +866,871 @@ func TestAddonCheckout(t *testing.T) {
 	}
 	if c, _ := post(checkoutReq{Package: "nope"}); c != 404 {
 		t.Fatalf("unknown package: want 404 got %d", c)
+	}
+}
+
+func TestEventTimezone(t *testing.T) {
+	e := uiSetup(t, "tz-ui@example.com")
+	zone := func(b []byte) string {
+		var ev eventDTO
+		_ = json.Unmarshal(b, &ev)
+		return ev.Timezone
+	}
+
+	// created without a zone → the Jakarta default, echoed on read
+	code, b := e.callOn(t, "GET", e.base, nil)
+	want(t, "get", code, 200, b)
+	if z := zone(b); z != "Asia/Jakarta" {
+		t.Fatalf("default timezone = %q", z)
+	}
+
+	// created with a zone → stored as given
+	rr := do(t, e.h, "POST", "/api/v1/events", createEventReq{Type: "wedding", Timezone: ptr("Europe/Amsterdam")}, e.ck, e.csrf)
+	want(t, "create with tz", rr.Code, 201, rr.Body.Bytes())
+	if z := zone(rr.Body.Bytes()); z != "Europe/Amsterdam" {
+		t.Fatalf("created timezone = %q", z)
+	}
+
+	// an unknown or empty zone is a field error on create and patch, and changes nothing
+	for _, bad := range []string{"Mars/Base", "", "Local"} {
+		rr = do(t, e.h, "POST", "/api/v1/events", createEventReq{Type: "wedding", Timezone: ptr(bad)}, e.ck, e.csrf)
+		want(t, "create bad tz "+bad, rr.Code, 400, rr.Body.Bytes())
+		fieldErr(t, rr.Body.Bytes(), "timezone")
+		code, b = e.callOn(t, "PATCH", e.base, patchEventReq{Timezone: ptr(bad)})
+		want(t, "patch bad tz "+bad, code, 400, b)
+		fieldErr(t, b, "timezone")
+	}
+	code, b = e.callOn(t, "GET", e.base, nil)
+	if z := zone(b); code != 200 || z != "Asia/Jakarta" {
+		t.Fatalf("timezone changed by rejected patches: %d %q", code, z)
+	}
+
+	// patch updates it; a patch without the field keeps it; the list shows it too
+	code, b = e.callOn(t, "PATCH", e.base, patchEventReq{Timezone: ptr("Asia/Makassar")})
+	want(t, "patch tz", code, 200, b)
+	if z := zone(b); z != "Asia/Makassar" {
+		t.Fatalf("patched timezone = %q", z)
+	}
+	code, b = e.callOn(t, "PATCH", e.base, patchEventReq{Venue: ptr("Glasshouse")})
+	want(t, "patch venue", code, 200, b)
+	if z := zone(b); z != "Asia/Makassar" {
+		t.Fatalf("timezone lost on unrelated patch: %q", z)
+	}
+	code, b = e.callOn(t, "GET", "/api/v1/events", nil)
+	want(t, "list", code, 200, b)
+	if !strings.Contains(string(b), `"timezone":"Asia/Makassar"`) {
+		t.Fatalf("list lacks timezone: %s", b)
+	}
+}
+
+func TestScheduleTemplateExtras(t *testing.T) {
+	e := uiSetup(t, "sch-gs@example.com")
+	other := uiSetup2(t, e, "sch-gs-other@example.com")
+	media := func(ev uiEnv) string {
+		var id string
+		if err := e.pool.QueryRow(t.Context(),
+			`INSERT INTO media (event_id, kind, storage_key, url, content_type, size_bytes) VALUES ($1,'photo','k','u','image/png',1) RETURNING id`, ev.id).Scan(&id); err != nil {
+			t.Fatal(err)
+		}
+		return id
+	}
+	own, foreign := media(e), media(other)
+	dto := func(b []byte) scheduleDTO {
+		var d scheduleDTO
+		_ = json.Unmarshal(b, &d)
+		return d
+	}
+
+	// bare moment: empty extras, no photo
+	code, b := e.call(t, "POST", "/schedule", scheduleReq{Title: "Bare"})
+	want(t, "bare", code, 201, b)
+	if d := dto(b); d.Label != "" || d.MapURL != "" || d.VenueNote != "" || d.MediaID != nil {
+		t.Fatalf("defaults: %+v", d)
+	}
+
+	// create with every extra; round trip through list
+	code, b = e.call(t, "POST", "/schedule", scheduleReq{Title: "Akad", Label: "The Ceremony", MapURL: "https://maps.app.goo.gl/x", VenueNote: "Garden pavilion", MediaID: &own})
+	want(t, "create extras", code, 201, b)
+	it := dto(b)
+	if it.Label != "The Ceremony" || it.MapURL != "https://maps.app.goo.gl/x" || it.VenueNote != "Garden pavilion" || it.MediaID == nil || *it.MediaID != own {
+		t.Fatalf("round trip: %+v", it)
+	}
+	code, b = e.call(t, "GET", "/schedule", nil)
+	want(t, "list", code, 200, b)
+	if !strings.Contains(string(b), `"label":"The Ceremony"`) || !strings.Contains(string(b), `"media_id":"`+own+`"`) {
+		t.Fatalf("list lacks extras: %s", b)
+	}
+
+	// map_url must be https with a host
+	for _, bad := range []string{"javascript:alert(1)", "http://maps.example.com/x", "data:text/html,x", "https://", "//evil.example", "https://" + strings.Repeat("a", 500)} {
+		code, b = e.call(t, "POST", "/schedule", scheduleReq{Title: "x", MapURL: bad})
+		want(t, "create map_url "+bad[:min(len(bad), 20)], code, 400, b)
+		fieldErr(t, b, "map_url")
+		code, b = e.call(t, "PATCH", "/schedule/"+it.ID, schedulePatchReq{MapURL: ptr(bad)})
+		want(t, "patch map_url "+bad[:min(len(bad), 20)], code, 400, b)
+		fieldErr(t, b, "map_url")
+	}
+
+	// length caps
+	code, b = e.call(t, "POST", "/schedule", scheduleReq{Title: "x", Label: strings.Repeat("a", 41)})
+	want(t, "label too long", code, 400, b)
+	fieldErr(t, b, "label")
+	code, b = e.call(t, "PATCH", "/schedule/"+it.ID, schedulePatchReq{VenueNote: ptr(strings.Repeat("a", 161))})
+	want(t, "venue_note too long", code, 400, b)
+	fieldErr(t, b, "venue_note")
+
+	// photo: another event's media and malformed ids are rejected; nothing changes
+	for _, bad := range []string{foreign, "00000000-0000-0000-0000-000000000000", "not-a-uuid"} {
+		code, b = e.call(t, "POST", "/schedule", scheduleReq{Title: "x", MediaID: &bad})
+		want(t, "create media "+bad, code, 400, b)
+		fieldErr(t, b, "media_id")
+		code, b = e.call(t, "PATCH", "/schedule/"+it.ID, schedulePatchReq{MediaID: &bad})
+		want(t, "patch media "+bad, code, 400, b)
+		fieldErr(t, b, "media_id")
+	}
+	code, b = e.call(t, "GET", "/schedule", nil)
+	if !strings.Contains(string(b), `"media_id":"`+own+`"`) {
+		t.Fatalf("photo changed by rejected patches: %d %s", code, b)
+	}
+
+	// patch: untouched fields stay; "" clears map_url and the photo
+	code, b = e.call(t, "PATCH", "/schedule/"+it.ID, schedulePatchReq{Label: ptr("Holy Matrimony")})
+	want(t, "patch label", code, 200, b)
+	if d := dto(b); d.Label != "Holy Matrimony" || d.MapURL != it.MapURL || d.VenueNote != it.VenueNote || d.MediaID == nil {
+		t.Fatalf("partial patch: %+v", d)
+	}
+	code, b = e.call(t, "PATCH", "/schedule/"+it.ID, schedulePatchReq{MediaID: ptr(""), MapURL: ptr("")})
+	want(t, "clear", code, 200, b)
+	if d := dto(b); d.MediaID != nil || d.MapURL != "" || d.Label != "Holy Matrimony" {
+		t.Fatalf("clear: %+v", d)
+	}
+
+	// deleting the photo (media cleanup) detaches it instead of failing or dangling
+	code, b = e.call(t, "PATCH", "/schedule/"+it.ID, schedulePatchReq{MediaID: &own})
+	want(t, "reattach", code, 200, b)
+	if _, err := e.pool.Exec(t.Context(), `DELETE FROM media WHERE id=$1`, own); err != nil {
+		t.Fatal(err)
+	}
+	code, b = e.call(t, "GET", "/schedule", nil)
+	want(t, "list after media delete", code, 200, b)
+	if strings.Contains(string(b), own) {
+		t.Fatalf("deleted photo still referenced: %s", b)
+	}
+}
+
+func TestTemplateSectionSet(t *testing.T) {
+	e := uiSetup(t, "tpl-sec@example.com")
+
+	r := do(t, e.h, "GET", "/api/v1/templates", nil, nil, "")
+	var cat struct{ Data []struct{ ID, Slug string } }
+	_ = json.Unmarshal(r.Body.Bytes(), &cat)
+	ids := map[string]string{}
+	for _, c := range cat.Data {
+		ids[c.Slug] = c.ID
+	}
+	gs, other := ids["gilded-seal"], ids["linen-vow"]
+	if gs == "" || other == "" {
+		t.Fatalf("catalog lacks templates: %s", r.Body)
+	}
+
+	type inv struct {
+		Sections []struct {
+			ID, Type string
+			Visible  bool
+			Content  map[string]any
+		}
+	}
+	get := func() inv {
+		code, b := e.call(t, "GET", "/invitation", nil)
+		want(t, "get invitation", code, 200, b)
+		var v inv
+		_ = json.Unmarshal(b, &v)
+		return v
+	}
+	types := func(v inv) []string {
+		var out []string
+		for _, s := range v.Sections {
+			out = append(out, s.Type)
+		}
+		return out
+	}
+
+	if got := types(get()); !reflect.DeepEqual(got, []string{"hero", "story", "schedule", "gift", "rsvp"}) {
+		t.Fatalf("default sections = %v", got)
+	}
+
+	// a host edit made before the switch must survive it
+	before := get()
+	code, b := e.call(t, "PATCH", "/invitation/sections/"+before.Sections[1].ID, map[string]any{"content": map[string]any{"title": "Our story", "body": "Kept"}})
+	want(t, "edit story", code, 200, b)
+
+	// picking Gilded Seal adds the missing five, in template order; gallery and music start hidden
+	code, b = e.call(t, "PATCH", "/invitation", invitationPatchReq{TemplateID: &gs})
+	want(t, "pick gilded seal", code, 200, b)
+	exp := []string{"hero", "opening", "story", "schedule", "gallery", "gift", "rsvp", "wishes", "music", "closing"}
+	after := get()
+	if got := types(after); !reflect.DeepEqual(got, exp) {
+		t.Fatalf("sections after pick = %v want %v", got, exp)
+	}
+	for _, s := range after.Sections {
+		hidden := s.Type == "gallery" || s.Type == "music"
+		if s.Visible == hidden {
+			t.Fatalf("%s visible=%v", s.Type, s.Visible)
+		}
+		if s.Type == "story" && s.Content["body"] != "Kept" {
+			t.Fatalf("story content lost: %v", s.Content)
+		}
+	}
+
+	// the host shows the gallery and reorders; picking the same template again changes nothing
+	var galleryID string
+	for _, s := range after.Sections {
+		if s.Type == "gallery" {
+			galleryID = s.ID
+		}
+	}
+	code, b = e.call(t, "PATCH", "/invitation/sections/"+galleryID, map[string]any{"visible": true})
+	want(t, "show gallery", code, 200, b)
+	order := []string{}
+	for i := len(after.Sections) - 1; i >= 0; i-- {
+		order = append(order, after.Sections[i].ID)
+	}
+	code, b = e.call(t, "POST", "/invitation/sections/reorder", reorderReq{Order: order})
+	want(t, "reorder", code, 200, b)
+	manual := get()
+	code, b = e.call(t, "PATCH", "/invitation", invitationPatchReq{TemplateID: &gs})
+	want(t, "re-pick", code, 200, b)
+	if again := get(); !reflect.DeepEqual(again, manual) {
+		t.Fatalf("re-picking changed the invitation:\nbefore %+v\nafter  %+v", manual, again)
+	}
+
+	// switching to a template with no section set removes nothing
+	code, b = e.call(t, "PATCH", "/invitation", invitationPatchReq{TemplateID: &other})
+	want(t, "switch away", code, 200, b)
+	if again := get(); !reflect.DeepEqual(again, manual) {
+		t.Fatalf("switching template changed sections: %+v", again)
+	}
+
+	// unknown template: still a 400, sections untouched
+	code, b = e.call(t, "PATCH", "/invitation", invitationPatchReq{TemplateID: ptr("00000000-0000-0000-0000-000000000000")})
+	want(t, "unknown template", code, 400, b)
+	fieldErr(t, b, "template_id")
+}
+
+func TestPublicTemplateProjection(t *testing.T) {
+	e := uiSetup(t, "pub-gs@example.com")
+	other := uiSetup2(t, e, "pub-gs-other@example.com")
+
+	up := func(ev uiEnv) string {
+		r := upload(t, ev.h, ev.base+"/media", "p.png", tinyPNG, ev.ck, ev.csrf)
+		want(t, "upload", r.Code, 201, r.Body.Bytes())
+		var m struct{ ID string }
+		_ = json.Unmarshal(r.Body.Bytes(), &m)
+		return m.ID
+	}
+	own, foreign := up(e), up(other)
+
+	code, b := e.call(t, "POST", "/guests", guestReq{Name: "Sarah"})
+	want(t, "guest", code, 201, b)
+	var g guestDTO
+	_ = json.Unmarshal(b, &g)
+	personal := strings.TrimPrefix(*g.InvitePath, "/invite/")
+	code, b = e.call(t, "POST", "/invitation/publish", nil)
+	want(t, "publish", code, 200, b)
+	var pub struct{ Token string }
+	_ = json.Unmarshal(b, &pub)
+
+	type pageT struct {
+		Template *string `json:"template"`
+		Timezone string  `json:"timezone"`
+		Schedule []struct {
+			Title   string  `json:"title"`
+			Label   string  `json:"label"`
+			PhotoID *string `json:"photo_id"`
+		} `json:"schedule"`
+		Media   map[string]string `json:"media"`
+		Preview bool              `json:"preview"`
+	}
+	page := func(token string) (pageT, string) {
+		r := do(t, e.h, "GET", "/api/v1/invite/"+token, nil, nil, "")
+		want(t, "public page", r.Code, 200, r.Body.Bytes())
+		var p pageT
+		_ = json.Unmarshal(r.Body.Bytes(), &p)
+		return p, r.Body.String()
+	}
+	titles := func(p pageT) []string {
+		out := []string{}
+		for _, m := range p.Schedule {
+			out = append(out, m.Title)
+		}
+		return out
+	}
+
+	// (a, b) no template picked: null; zone is the event default; nothing to show yet
+	p, raw := page(pub.Token)
+	if p.Template != nil || p.Timezone != "Asia/Jakarta" || len(p.Schedule) != 0 || len(p.Media) != 0 || p.Preview {
+		t.Fatalf("bare page: %+v", p)
+	}
+	for _, k := range []string{`"schedule":[]`, `"media":{}`} {
+		if !strings.Contains(raw, k) {
+			t.Fatalf("want %s (never null) in %s", k, raw)
+		}
+	}
+
+	// set up: template, zone, three moments (one per visibility, the first with a photo), content photos
+	tpls := do(t, e.h, "GET", "/api/v1/templates", nil, nil, "")
+	var cat struct{ Data []struct{ ID, Slug string } }
+	_ = json.Unmarshal(tpls.Body.Bytes(), &cat)
+	var gs string
+	for _, c := range cat.Data {
+		if c.Slug == "gilded-seal" {
+			gs = c.ID
+		}
+	}
+	code, b = e.call(t, "PATCH", "/invitation", invitationPatchReq{TemplateID: &gs})
+	want(t, "template", code, 200, b)
+	code, b = e.callOn(t, "PATCH", e.base, patchEventReq{Timezone: ptr("Asia/Makassar")})
+	want(t, "timezone", code, 200, b)
+	for _, m := range []scheduleReq{
+		{Title: "Ceremony", Label: "The Ceremony", Visibility: "everyone", MediaID: &own, StartsAt: ptr("2099-04-12T01:00:00Z")},
+		{Title: "Dinner", Visibility: "invite_only"},
+		{Title: "Family lunch", Visibility: "family_only"},
+	} {
+		code, b = e.call(t, "POST", "/schedule", m)
+		want(t, "moment "+m.Title, code, 201, b)
+	}
+	var inv invitationDTO
+	code, b = e.call(t, "GET", "/invitation", nil)
+	want(t, "invitation", code, 200, b)
+	_ = json.Unmarshal(b, &inv)
+	secID := map[string]string{}
+	for _, s := range inv.Sections {
+		secID[s.Type] = s.ID
+	}
+	content := map[string]map[string]any{
+		"hero":    {"photo_id": own},
+		"story":   {"photo_ids": []any{foreign, own}},
+		"gallery": {"photos": []any{map[string]any{"id": foreign}, map[string]any{"id": "not-a-uuid"}}},
+		"closing": {"photo_id": foreign},
+	}
+	// The API refuses content that points at another event's photo (or a non-UUID); the projection must still
+	// never sign one, so this test plants such content straight in the table (defence in depth).
+	for typ, c := range content {
+		code, b = e.call(t, "PATCH", "/invitation/sections/"+secID[typ], map[string]any{"content": c})
+		if typ == "hero" {
+			want(t, "content "+typ, code, 200, b)
+			continue
+		}
+		want(t, "content "+typ+" with a foreign photo", code, 400, b)
+		raw, _ := json.Marshal(c)
+		if _, err := e.pool.Exec(context.Background(), `UPDATE invitation_sections SET content=$2 WHERE id=$1`, secID[typ], raw); err != nil {
+			t.Fatal(err)
+		}
+	}
+
+	// (a, b, c, e) generic link
+	p, raw = page(pub.Token)
+	if p.Template == nil || *p.Template != "gilded-seal" || p.Timezone != "Asia/Makassar" {
+		t.Fatalf("template/timezone: %+v", p)
+	}
+	if got := titles(p); !reflect.DeepEqual(got, []string{"Ceremony"}) {
+		t.Fatalf("generic link moments = %v (invite_only and family_only must stay hidden)", got)
+	}
+	if p.Schedule[0].Label != "The Ceremony" || p.Schedule[0].PhotoID == nil || *p.Schedule[0].PhotoID != own {
+		t.Fatalf("moment fields: %+v", p.Schedule[0])
+	}
+	if len(p.Media) != 1 || p.Media[own] == "" {
+		t.Fatalf("media = %v, want only the event's own photo", p.Media)
+	}
+	// the foreign id may still sit in the host's own content JSON, but it is never signed or served
+	if p.Media[foreign] != "" || strings.Contains(raw, "/media/"+foreign) || strings.Contains(raw, "Family lunch") || strings.Contains(raw, "Dinner") {
+		t.Fatalf("leak in public page: %s", raw)
+	}
+
+	// (c) personal link also sees invite_only, never family_only
+	p, raw = page(personal)
+	if got := titles(p); !reflect.DeepEqual(got, []string{"Ceremony", "Dinner"}) || strings.Contains(raw, "Family lunch") {
+		t.Fatalf("personal link moments = %v", got)
+	}
+
+	// (d) the signed URL serves the image without a session; a tampered or other-id token does not
+	r := do(t, e.h, "GET", p.Media[own], nil, nil, "")
+	if r.Code != 200 || !strings.HasPrefix(r.Header().Get("Content-Type"), "image/") {
+		t.Fatalf("signed photo: %d %s", r.Code, r.Header().Get("Content-Type"))
+	}
+	if r := do(t, e.h, "GET", p.Media[own]+"x", nil, nil, ""); r.Code != 404 {
+		t.Fatalf("tampered signature: want 404 got %d", r.Code)
+	}
+	if r := do(t, e.h, "GET", strings.Replace(p.Media[own], own, foreign, 1), nil, nil, ""); r.Code != 404 {
+		t.Fatalf("token replayed on another photo: want 404 got %d", r.Code)
+	}
+
+	// (f) schedule section hidden → no moments, and their photos drop out of media
+	code, b = e.call(t, "PATCH", "/invitation/sections/"+secID["schedule"], map[string]any{"visible": false})
+	want(t, "hide schedule", code, 200, b)
+	if p, _ = page(personal); len(p.Schedule) != 0 {
+		t.Fatalf("hidden schedule leaked: %+v", p.Schedule)
+	}
+	if len(p.Media) != 1 || p.Media[own] == "" { // still referenced by hero/story
+		t.Fatalf("media after hiding schedule = %v", p.Media)
+	}
+
+	// a photo deleted by the host disappears from the page instead of dangling
+	if code, b = e.call(t, "DELETE", "/media/"+own, nil); code != 204 {
+		t.Fatalf("delete media: %d %s", code, b)
+	}
+	if p, _ = page(pub.Token); len(p.Media) != 0 {
+		t.Fatalf("deleted photo still listed: %v", p.Media)
+	}
+}
+
+func TestPublicWishes(t *testing.T) {
+	e := uiSetup(t, "pub-wish@example.com")
+	other := uiSetup2(t, e, "pub-wish-other@example.com")
+	code, b := e.call(t, "POST", "/guests", guestReq{Name: "Sarah"})
+	want(t, "guest", code, 201, b)
+	var g guestDTO
+	_ = json.Unmarshal(b, &g)
+	personal := strings.TrimPrefix(*g.InvitePath, "/invite/")
+	code, b = e.call(t, "POST", "/invitation/publish", nil)
+	want(t, "publish", code, 200, b)
+	var pub struct{ Token string }
+	_ = json.Unmarshal(b, &pub)
+
+	ctx := t.Context()
+	add := func(evID, msg string, approved bool, ageSec int) {
+		if _, err := e.pool.Exec(ctx,
+			`INSERT INTO wishes (event_id, author_name, message, approved, created_at) VALUES ($1,'Guest',$2,$3, now() - make_interval(secs => $4))`,
+			evID, msg, approved, ageSec); err != nil {
+			t.Fatal(err)
+		}
+	}
+	// 25 approved (the two oldest share a timestamp, so the id tie-break is exercised), plus noise
+	for i := 0; i < 25; i++ {
+		age := i
+		if i == 24 {
+			age = 23
+		}
+		add(e.id, "wish "+strconv.Itoa(i), true, age)
+	}
+	add(e.id, "HIDDEN by host", false, 0)
+	add(other.id, "OTHER EVENT", true, 0)
+
+	type listT struct {
+		Items []struct{ ID, Name, Message string } `json:"items"`
+		Next  *string                              `json:"next_cursor"`
+		Total int                                  `json:"total"`
+	}
+	list := func(token, query string) (listT, *httptest.ResponseRecorder) {
+		r := do(t, e.h, "GET", "/api/v1/invite/"+token+"/wishes"+query, nil, nil, "")
+		var l listT
+		_ = json.Unmarshal(r.Body.Bytes(), &l)
+		return l, r
+	}
+
+	// page 1: newest 20 first, a cursor, total counts approved wishes of this event only
+	p1, r := list(pub.Token, "")
+	want(t, "page 1", r.Code, 200, r.Body.Bytes())
+	if len(p1.Items) != 20 || p1.Next == nil || p1.Total != 25 || p1.Items[0].Message != "wish 0" || p1.Items[19].Message != "wish 19" {
+		t.Fatalf("page 1: n=%d next=%v total=%d first=%q", len(p1.Items), p1.Next, p1.Total, p1.Items[0].Message)
+	}
+	if cc := r.Header().Get("Cache-Control"); cc != "private, max-age=15" {
+		t.Fatalf("Cache-Control = %q", cc)
+	}
+	// page 2: the remaining 5, no cursor; nothing repeated or skipped (ties included)
+	p2, r := list(personal, "?cursor="+*p1.Next) // a personal link reads the same guestbook
+	want(t, "page 2", r.Code, 200, r.Body.Bytes())
+	if len(p2.Items) != 5 || p2.Next != nil {
+		t.Fatalf("page 2: n=%d next=%v", len(p2.Items), p2.Next)
+	}
+	seen := map[string]bool{}
+	for _, it := range append(p1.Items, p2.Items...) {
+		if seen[it.ID] {
+			t.Fatalf("wish %s listed twice", it.ID)
+		}
+		seen[it.ID] = true
+		if it.Message == "HIDDEN by host" || it.Message == "OTHER EVENT" {
+			t.Fatalf("leaked %q", it.Message)
+		}
+	}
+	if len(seen) != 25 {
+		t.Fatalf("saw %d distinct wishes, want 25", len(seen))
+	}
+
+	// exact page size: 25 = 5 × 5 → the last full page carries no cursor
+	pg, _ := list(pub.Token, "?limit=5")
+	for i := 0; i < 4; i++ {
+		if pg.Next == nil {
+			t.Fatalf("page %d of 5 has no cursor", i+1)
+		}
+		pg, _ = list(pub.Token, "?limit=5&cursor="+*pg.Next)
+	}
+	if len(pg.Items) != 5 || pg.Next != nil {
+		t.Fatalf("last full page: n=%d next=%v", len(pg.Items), pg.Next)
+	}
+
+	// limit clamps (0, negative, huge, garbage) and never errors
+	for q, n := range map[string]int{"?limit=0": 20, "?limit=-3": 20, "?limit=abc": 20, "?limit=1": 1, "?limit=999": 25} {
+		if l, r := list(pub.Token, q); r.Code != 200 || len(l.Items) != n {
+			t.Fatalf("%s: code %d, %d items, want %d", q, r.Code, len(l.Items), n)
+		}
+	}
+
+	// bad cursor 400 with a field error; unknown token 404 even when the cursor is bad too
+	_, r = list(pub.Token, "?cursor=garbage")
+	want(t, "bad cursor", r.Code, 400, r.Body.Bytes())
+	fieldErr(t, r.Body.Bytes(), "cursor")
+	if _, r = list(pub.Token+"zz", "?cursor=garbage"); r.Code != 404 {
+		t.Fatalf("unknown token with bad cursor: want 404 got %d", r.Code)
+	}
+
+	// an unpublished event's guestbook is not readable
+	code, b = e.call(t, "POST", "/invitation/unpublish", nil)
+	want(t, "unpublish", code, 204, b)
+	if _, r = list(pub.Token, ""); r.Code != 404 {
+		t.Fatalf("unpublished guestbook: want 404 got %d", r.Code)
+	}
+	code, b = e.call(t, "POST", "/invitation/publish", nil)
+	want(t, "republish", code, 200, b)
+	_ = json.Unmarshal(b, &pub)
+
+	// POST returns the stored item; a personal link's author is the guest, whatever the body says
+	post := func(token string, req wishReq) (publicWishDTO, int) {
+		r := do(t, e.h, "POST", "/api/v1/invite/"+token+"/wish", req, nil, "")
+		var d publicWishDTO
+		_ = json.Unmarshal(r.Body.Bytes(), &d)
+		return d, r.Code
+	}
+	d, code := post(personal, wishReq{Name: "THE POPE", Message: "<b>Love</b> you"})
+	if code != 201 || d.ID == "" || d.Name != "Sarah" || d.Message != "bLove/b you" /* sanitize strips < and > only */ {
+		t.Fatalf("personal wish: %d %+v", code, d)
+	}
+	d2, code := post(pub.Token, wishReq{Name: "Walk-in", Message: "Best wishes"})
+	if code != 201 || d2.Name != "Walk-in" || d2.ID == "" || d2.ID == d.ID {
+		t.Fatalf("generic wish: %d %+v", code, d2)
+	}
+	// the new wishes are first in the list, with the ids POST returned
+	top, _ := list(pub.Token, "?limit=2")
+	if len(top.Items) != 2 || top.Items[0].ID != d2.ID || top.Items[1].ID != d.ID || top.Total != 27 {
+		t.Fatalf("after posting: %+v", top)
+	}
+}
+
+func TestInvitationPreview(t *testing.T) {
+	e := uiSetup(t, "preview@example.com")
+	stranger := uiSetup2(t, e, "preview-stranger@example.com")
+
+	// the editor loads the invitation first (that is what creates it), then the host adds draft content
+	code, b := e.call(t, "GET", "/invitation", nil)
+	want(t, "invitation", code, 200, b)
+	var inv invitationDTO
+	_ = json.Unmarshal(b, &inv)
+	hero := ""
+	for _, s := range inv.Sections {
+		if s.Type == "hero" {
+			hero = s.ID
+		}
+	}
+	code, b = e.call(t, "PATCH", "/invitation/sections/"+hero, map[string]any{"content": map[string]any{"title": "Draft eyebrow"}})
+	want(t, "hero draft", code, 200, b)
+	for _, m := range []scheduleReq{{Title: "Ceremony", Visibility: "everyone"}, {Title: "Dinner", Visibility: "invite_only"}, {Title: "Family lunch", Visibility: "family_only"}} {
+		code, b = e.call(t, "POST", "/schedule", m)
+		want(t, "moment", code, 201, b)
+	}
+	if code, b = e.call(t, "POST", "/guests", guestReq{Name: "Sarah"}); code != 201 {
+		t.Fatalf("guest: %d %s", code, b)
+	}
+
+	// never published: the host still gets the page, flagged as a preview, in the generic-link shape
+	code, b = e.call(t, "GET", "/invitation/preview", nil)
+	want(t, "preview", code, 200, b)
+	var p struct {
+		Preview  bool            `json:"preview"`
+		Guest    json.RawMessage `json:"guest"`
+		Template *string         `json:"template"`
+		Timezone string          `json:"timezone"`
+		Sections []struct {
+			Type    string
+			Content map[string]any
+		} `json:"sections"`
+		Schedule []struct{ Title string } `json:"schedule"`
+		Media    map[string]string        `json:"media"`
+	}
+	_ = json.Unmarshal(b, &p)
+	if !p.Preview || string(p.Guest) != "null" || p.Timezone != "Asia/Jakarta" || p.Media == nil {
+		t.Fatalf("preview flags: %s", b)
+	}
+	if len(p.Schedule) != 1 || p.Schedule[0].Title != "Ceremony" {
+		t.Fatalf("preview moments = %+v (only 'everyone' belongs in the generic view)", p.Schedule)
+	}
+	if len(p.Sections) == 0 || p.Sections[0].Type != "hero" || p.Sections[0].Content["title"] != "Draft eyebrow" {
+		t.Fatalf("draft content missing: %+v", p.Sections)
+	}
+	if cc := do(t, e.h, "GET", e.base+"/invitation/preview", nil, e.ck, "").Header().Get("Cache-Control"); cc != "private, no-store" {
+		t.Fatalf("Cache-Control = %q", cc)
+	}
+
+	// a hidden section is not in the preview either (it is what a guest would see)
+	code, b = e.call(t, "PATCH", "/invitation/sections/"+hero, map[string]any{"visible": false})
+	want(t, "hide hero", code, 200, b)
+	_, b = e.call(t, "GET", "/invitation/preview", nil)
+	if strings.Contains(string(b), "Draft eyebrow") {
+		t.Fatalf("hidden section shown in preview: %s", b)
+	}
+
+	// anonymous 401; another event's owner 404 (no existence leak); the guest-facing page stays private
+	if r := do(t, e.h, "GET", e.base+"/invitation/preview", nil, nil, ""); r.Code != 401 {
+		t.Fatalf("anonymous: want 401 got %d", r.Code)
+	}
+	if code, b = stranger.callOn(t, "GET", e.base+"/invitation/preview", nil); code != 404 {
+		t.Fatalf("stranger: want 404 got %d %s", code, b)
+	}
+
+	// a deleted event has no preview
+	code, b = e.callOn(t, "DELETE", e.base, nil)
+	want(t, "delete event", code, 204, b)
+	if code, _ = e.call(t, "GET", "/invitation/preview", nil); code != 404 {
+		t.Fatalf("deleted event: want 404 got %d", code)
+	}
+}
+
+// TestSectionContentValidation: section content is checked against catalog/sections.schema.json and the
+// event's own media (docs/17 §10.3); field errors carry the content path.
+func TestSectionContentValidation(t *testing.T) {
+	e := uiSetup(t, "content@example.com")
+	other := uiSetup2(t, e, "content-other@example.com")
+	own := upload(t, e.h, e.base+"/media", "p.png", tinyPNG, e.ck, e.csrf)
+	want(t, "upload", own.Code, 201, own.Body.Bytes())
+	var m struct{ ID string }
+	_ = json.Unmarshal(own.Body.Bytes(), &m)
+	theirs := upload(t, other.h, other.base+"/media", "p.png", tinyPNG, other.ck, other.csrf)
+	var tm struct{ ID string }
+	_ = json.Unmarshal(theirs.Body.Bytes(), &tm)
+
+	code, b := e.call(t, "GET", "/invitation", nil)
+	want(t, "get", code, 200, b)
+	var inv invitationDTO
+	_ = json.Unmarshal(b, &inv)
+	sec := map[string]string{}
+	for _, s := range inv.Sections {
+		sec[s.Type] = s.ID
+	}
+	patch := func(typ string, content map[string]any) (int, []byte) {
+		return e.call(t, "PATCH", "/invitation/sections/"+sec[typ], map[string]any{"content": content})
+	}
+
+	code, b = patch("hero", map[string]any{"title": "The wedding of", "line": "Join us", "photo_id": m.ID})
+	want(t, "valid hero with own photo", code, 200, b)
+	code, b = patch("hero", map[string]any{"photo_id": ""})
+	want(t, "clearing the photo", code, 200, b)
+
+	code, b = patch("hero", map[string]any{"line": strings.Repeat("x", 161)})
+	want(t, "long line", code, 400, b)
+	fieldErr(t, b, "content.line")
+	code, b = patch("hero", map[string]any{"photo_id": tm.ID})
+	want(t, "another event's photo", code, 400, b)
+	fieldErr(t, b, "content.media")
+	code, b = patch("story", map[string]any{"chapters": make([]any, 6)})
+	want(t, "six chapters", code, 400, b)
+	fieldErr(t, b, "content.chapters")
+	code, b = patch("story", map[string]any{"future_key": "kept"})
+	want(t, "unknown key is kept", code, 200, b)
+
+	// the same rules on create
+	code, b = e.call(t, "POST", "/invitation/sections", addSectionReq{Type: "music", Content: map[string]any{"track": "nope"}})
+	want(t, "unknown track", code, 400, b)
+	fieldErr(t, b, "content.track")
+	code, b = e.call(t, "POST", "/invitation/sections", addSectionReq{Type: "music", Content: map[string]any{"track": "satie-gymnopedie-1"}})
+	want(t, "known track", code, 200, b)
+}
+
+// TestInvitationTheme: a host's theme is validated against the picked template's manifest, stored, shown to the
+// host, served to guests through the sanitised projection with the template version, and dropped when the design changes.
+func TestInvitationTheme(t *testing.T) {
+	e := uiSetup(t, "theme@example.com")
+	r := do(t, e.h, "GET", "/api/v1/templates", nil, nil, "")
+	var cat struct{ Data []struct{ ID, Slug string } }
+	_ = json.Unmarshal(r.Body.Bytes(), &cat)
+	var gs, other string
+	for _, c := range cat.Data {
+		switch c.Slug {
+		case "gilded-seal":
+			gs = c.ID
+		case "linen-vow":
+			other = c.ID
+		}
+	}
+	patch := func(theme map[string]any) (int, []byte) {
+		return e.call(t, "PATCH", "/invitation", map[string]any{"theme": theme})
+	}
+
+	code, b := patch(map[string]any{"palette": "rose-linen"})
+	want(t, "theme without a design", code, 400, b)
+	fieldErr(t, b, "theme")
+
+	code, b = e.call(t, "PATCH", "/invitation", invitationPatchReq{TemplateID: &gs})
+	want(t, "pick", code, 200, b)
+	var inv struct{ Theme map[string]any }
+	_ = json.Unmarshal(b, &inv)
+	if len(inv.Theme) != 0 {
+		t.Fatalf("a fresh invitation has an empty theme object, got %v", inv.Theme)
+	}
+
+	for name, tc := range map[string]struct {
+		theme map[string]any
+		field string
+	}{
+		"palette not offered":     {map[string]any{"palette": "midnight-gold"}, "theme.palette"},
+		"pairing unknown":         {map[string]any{"fontPairing": "nope"}, "theme.fontPairing"},
+		"motion off not offered":  {map[string]any{"motion": "off"}, "theme.motion"},
+		"background not editable": {map[string]any{"tokens": map[string]string{"bg": "#000000"}}, "theme.tokens.bg"},
+		"not a hex colour":        {map[string]any{"tokens": map[string]string{"accent": "javascript:alert(1)"}}, "theme.tokens.accent"},
+		"unreadable on accent":    {map[string]any{"tokens": map[string]string{"accent": "#1A1A1A"}}, "theme.tokens"},
+	} {
+		code, b = patch(tc.theme)
+		want(t, name, code, 400, b)
+		fieldErr(t, b, tc.field)
+	}
+
+	// a valid one: a legacy label is stored as the palette id
+	code, b = patch(map[string]any{"palette": "Blush", "motion": "calm", "fontPairing": "classic-serif", "tokens": map[string]string{"accent": "#C9A27A"}})
+	want(t, "valid theme", code, 200, b)
+	var got struct {
+		Theme struct {
+			Palette, FontPairing, Motion string
+			Tokens                       map[string]string
+		}
+	}
+	_ = json.Unmarshal(b, &got)
+	if got.Theme.Palette != "rose-linen" || got.Theme.Motion != "calm" || got.Theme.Tokens["accent"] != "#C9A27A" {
+		t.Fatalf("theme = %+v", got.Theme)
+	}
+
+	// other fields of the invitation leave it alone
+	code, b = e.call(t, "PATCH", "/invitation", invitationPatchReq{Palette: ptr("Stone")})
+	want(t, "palette label", code, 200, b)
+	_ = json.Unmarshal(b, &got)
+	if got.Theme.Palette != "rose-linen" {
+		t.Fatalf("theme lost: %+v", got.Theme)
+	}
+
+	// guests get the theme and the template version, and nothing else of it
+	code, b = e.call(t, "POST", "/invitation/publish", nil)
+	want(t, "publish", code, 200, b)
+	var pub struct{ Token string }
+	_ = json.Unmarshal(b, &pub)
+	r = do(t, e.h, "GET", "/api/v1/invite/"+pub.Token, nil, nil, "")
+	var page struct {
+		Theme struct {
+			Palette, Motion string
+			Tokens          map[string]string
+		}
+		TemplateVersion int `json:"template_version"`
+	}
+	_ = json.Unmarshal(r.Body.Bytes(), &page)
+	if page.Theme.Palette != "rose-linen" || page.Theme.Motion != "calm" || page.Theme.Tokens["accent"] != "#C9A27A" || page.TemplateVersion < 1 {
+		t.Fatalf("public theme: %s", r.Body)
+	}
+
+	// defence in depth: even if the table held junk, the guest page serves only plain ids and hex colours
+	if _, err := e.pool.Exec(context.Background(), `UPDATE invitations SET theme='{"palette":"<script>","motion":"wild","tokens":{"accent":"url(x)","line":"#B08E52"}}'::jsonb WHERE event_id=$1`, e.id); err != nil {
+		t.Fatal(err)
+	}
+	r = do(t, e.h, "GET", "/api/v1/invite/"+pub.Token, nil, nil, "")
+	if strings.Contains(r.Body.String(), "script") || strings.Contains(r.Body.String(), "url(x)") || strings.Contains(r.Body.String(), "wild") {
+		t.Fatalf("unsafe theme reached a guest: %s", r.Body)
+	}
+
+	// switching design drops the theme (it was checked against another design); clearing is always allowed
+	code, b = patch(map[string]any{"palette": "sage-parchment"})
+	want(t, "set again", code, 200, b)
+	code, b = e.call(t, "PATCH", "/invitation", invitationPatchReq{TemplateID: &other})
+	want(t, "switch", code, 200, b)
+	got.Theme.Palette = ""
+	got.Theme.Tokens = nil
+	_ = json.Unmarshal(b, &got)
+	if got.Theme.Palette != "" {
+		t.Fatalf("theme must reset on a design switch: %+v", got.Theme)
+	}
+	code, b = e.call(t, "PATCH", "/invitation", invitationPatchReq{TemplateID: &gs})
+	want(t, "back", code, 200, b)
+	code, b = patch(map[string]any{"palette": "sage-parchment"})
+	want(t, "set", code, 200, b)
+	code, b = patch(map[string]any{})
+	want(t, "clear", code, 200, b)
+	got.Theme.Palette = ""
+	_ = json.Unmarshal(b, &got)
+	if got.Theme.Palette != "" {
+		t.Fatalf("clear: %+v", got.Theme)
+	}
+}
+
+// TestTemplateCatalog: the catalog carries the synced manifest facts, retired rows are not listed, and one entry
+// can be read by slug with its full manifest. Public and cacheable.
+func TestTemplateCatalog(t *testing.T) {
+	h, _, pool := setup(t)
+	r := do(t, h, "GET", "/api/v1/templates", nil, nil, "")
+	want(t, "list", r.Code, 200, r.Body.Bytes())
+	if cc := r.Header().Get("Cache-Control"); !strings.Contains(cc, "public") {
+		t.Fatalf("catalog must be cacheable, got %q", cc)
+	}
+	var list struct {
+		Data []struct {
+			Slug, Kind, Status, Access string
+			Version                    int
+			Thumbnail                  *string
+			Customizable               map[string][]string
+			Capabilities               map[string]any
+			Marketing                  map[string]any
+		}
+	}
+	_ = json.Unmarshal(r.Body.Bytes(), &list)
+	by := map[string]int{}
+	for i, d := range list.Data {
+		by[d.Slug] = i
+	}
+	gs, ok := by["gilded-seal"]
+	if !ok {
+		t.Fatalf("no gilded-seal in %s", r.Body)
+	}
+	g := list.Data[gs]
+	if g.Kind != "coded" || g.Status != "published" || g.Access != "free" || g.Version < 1 || g.Thumbnail == nil || *g.Thumbnail != "/templates/gilded-seal/thumb.webp" ||
+		len(g.Customizable["palette"]) == 0 || g.Capabilities["rsvp"] != true || g.Marketing["desc"] == "" {
+		t.Fatalf("gilded-seal entry: %+v", g)
+	}
+	if lv := list.Data[by["linen-vow"]]; lv.Customizable != nil || lv.Thumbnail != nil || lv.Kind != "coded" {
+		t.Fatalf("a row without a manifest has no manifest facts: %+v", lv)
+	}
+
+	// one entry, full manifest
+	r = do(t, h, "GET", "/api/v1/templates/gilded-seal", nil, nil, "")
+	want(t, "by slug", r.Code, 200, r.Body.Bytes())
+	var one struct {
+		Template struct{ Slug string }
+		Manifest struct {
+			ManifestVersion int
+			Sections        []struct{ Type string }
+			Tokens          struct{ Color map[string]string }
+		}
+	}
+	_ = json.Unmarshal(r.Body.Bytes(), &one)
+	if one.Template.Slug != "gilded-seal" || one.Manifest.ManifestVersion != 1 || len(one.Manifest.Sections) != 10 || one.Manifest.Tokens.Color["bg"] == "" {
+		t.Fatalf("manifest: %s", r.Body)
+	}
+	if r = do(t, h, "GET", "/api/v1/templates/nope", nil, nil, ""); r.Code != 404 {
+		t.Fatalf("unknown slug: %d", r.Code)
+	}
+
+	// retired rows disappear from both reads (and come back when restored)
+	if _, err := pool.Exec(context.Background(), `UPDATE templates SET status='retired', active=false WHERE slug='linen-vow'`); err != nil {
+		t.Fatal(err)
+	}
+	defer pool.Exec(context.Background(), `UPDATE templates SET status='published', active=true WHERE slug='linen-vow'`) //nolint:errcheck
+	r = do(t, h, "GET", "/api/v1/templates", nil, nil, "")
+	if strings.Contains(r.Body.String(), `"linen-vow"`) {
+		t.Fatalf("retired row listed: %s", r.Body)
+	}
+	if r = do(t, h, "GET", "/api/v1/templates/linen-vow", nil, nil, ""); r.Code != 404 {
+		t.Fatalf("retired by slug: %d", r.Code)
 	}
 }

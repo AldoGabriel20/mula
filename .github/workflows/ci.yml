@@ -47,6 +47,15 @@ jobs:
       - name: migrate down-all → up (proves every down migration works)
         # down-all (not "down N") so the step can't go stale or fail on a different starting state.
         run: go run ./cmd/migrate down-all && go run ./cmd/migrate up && go run ./cmd/migrate version
+      - name: template catalog (validate, sync, generated web files are fresh)
+        # docs/17 §9.2: the manifest rows drive section sets and publish rules, so tests need them synced.
+        working-directory: .
+        run: |
+          cd api
+          go run ./cmd/templates validate
+          go run ./cmd/templates sync
+          go run ./cmd/templates gen-web
+          git diff --exit-code -- ../web/lib/kit/generated ../catalog || { echo "generated files are stale: run make templates and commit"; exit 1; }
       # Includes the authorization matrix, CSRF-on-every-write, publish rules, public invite,
       # billing webhook signing, and the rate limiter. -count=1 defeats the test cache.
       - name: test
@@ -104,7 +113,9 @@ jobs:
       API_ORIGIN: http://localhost:8080
       CORS_ORIGIN: http://localhost:3000
       MEDIA_DIR: ${{ runner.temp }}/media
+      CATALOG_DIR: ${{ github.workspace }}/catalog
       E2E_FULL_STACK: "1"
+      DEV_AUTH_RATE_PER_MIN: "6000" # the whole suite shares one IP; the production limit would throttle it
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-go@v5
@@ -122,6 +133,7 @@ jobs:
           go build -o "$RUNNER_TEMP/mula-api" ./cmd/api
           go build -o "$RUNNER_TEMP/mula-seed" ./cmd/seed
           go run ./cmd/migrate up
+          go run ./cmd/templates sync -catalog "$CATALOG_DIR" -web ../web
       - name: start api
         run: |
           "$RUNNER_TEMP/mula-api" > "$RUNNER_TEMP/api.log" 2>&1 &

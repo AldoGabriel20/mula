@@ -28,3 +28,14 @@ func TestRoleCapabilities(t *testing.T) {
 		}
 	}
 }
+
+func TestValidTimezone(t *testing.T) {
+	for tz, want := range map[string]bool{
+		"Asia/Jakarta": true, "Europe/Amsterdam": true, "UTC": true,
+		"": false, "Local": false, "Mars/Base": false, "asia jakarta": false,
+	} {
+		if got := ValidTimezone(tz); got != want {
+			t.Errorf("ValidTimezone(%q)=%v want %v", tz, got, want)
+		}
+	}
+}

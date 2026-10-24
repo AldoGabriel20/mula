@@ -17,11 +17,11 @@ type ScheduleRepo struct{ pool *pgxpool.Pool }
 
 func NewScheduleRepo(pool *pgxpool.Pool) *ScheduleRepo { return &ScheduleRepo{pool: pool} }
 
-const schCols = `id, event_id, starts_at, ends_at, title, venue, address, dress_code, description, visibility, position`
+const schCols = `id, event_id, starts_at, ends_at, title, venue, address, dress_code, description, visibility, label, map_url, venue_note, media_id, position`
 
 func scanItem(row pgx.Row) (*schedule.Item, error) {
 	var it schedule.Item
-	if err := row.Scan(&it.ID, &it.EventID, &it.StartsAt, &it.EndsAt, &it.Title, &it.Venue, &it.Address, &it.DressCode, &it.Description, &it.Visibility, &it.Position); err != nil {
+	if err := row.Scan(&it.ID, &it.EventID, &it.StartsAt, &it.EndsAt, &it.Title, &it.Venue, &it.Address, &it.DressCode, &it.Description, &it.Visibility, &it.Label, &it.MapURL, &it.VenueNote, &it.MediaID, &it.Position); err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
 			return nil, schedule.ErrNotFound
 		}
@@ -30,11 +30,17 @@ func scanItem(row pgx.Row) (*schedule.Item, error) {
 	return &it, nil
 }
 
-// mapScheduleErr turns the ends_at >= starts_at CHECK into a domain error (→ 400).
+// mapScheduleErr turns the ends_at >= starts_at CHECK and the media FK into domain errors (→ 400).
+// The FK case is the race where a photo is deleted between the ownership check and the write.
 func mapScheduleErr(err error) error {
 	var pg *pgconn.PgError
-	if errors.As(err, &pg) && pg.ConstraintName == "chk_schedule_range" {
-		return schedule.ErrBadRange
+	if errors.As(err, &pg) {
+		switch pg.ConstraintName {
+		case "chk_schedule_range":
+			return schedule.ErrBadRange
+		case "schedule_items_media_id_fkey":
+			return schedule.ErrBadMedia
+		}
 	}
 	return err
 }
@@ -59,7 +65,7 @@ func (r *ScheduleRepo) List(ctx context.Context, eventID string) ([]schedule.Ite
 	out := []schedule.Item{}
 	for rows.Next() {
 		var it schedule.Item
-		if err := rows.Scan(&it.ID, &it.EventID, &it.StartsAt, &it.EndsAt, &it.Title, &it.Venue, &it.Address, &it.DressCode, &it.Description, &it.Visibility, &it.Position); err != nil {
+		if err := rows.Scan(&it.ID, &it.EventID, &it.StartsAt, &it.EndsAt, &it.Title, &it.Venue, &it.Address, &it.DressCode, &it.Description, &it.Visibility, &it.Label, &it.MapURL, &it.VenueNote, &it.MediaID, &it.Position); err != nil {
 			return nil, err
 		}
 		out = append(out, it)
@@ -85,9 +91,9 @@ func (r *ScheduleRepo) Create(ctx context.Context, eventID string, in appsch.Inp
 		vis = "everyone"
 	}
 	return scanItem(r.pool.QueryRow(ctx,
-		`INSERT INTO schedule_items (event_id, title, starts_at, ends_at, venue, address, dress_code, description, visibility, position)
-		 VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,(SELECT COALESCE(MAX(position),-1)+1 FROM schedule_items WHERE event_id=$1))
-		 RETURNING `+schCols, eventID, in.Title, at, end, in.Venue, in.Address, in.DressCode, in.Description, vis))
+		`INSERT INTO schedule_items (event_id, title, starts_at, ends_at, venue, address, dress_code, description, visibility, label, map_url, venue_note, media_id, position)
+		 VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,NULLIF($13::text,'')::uuid,(SELECT COALESCE(MAX(position),-1)+1 FROM schedule_items WHERE event_id=$1))
+		 RETURNING `+schCols, eventID, in.Title, at, end, in.Venue, in.Address, in.DressCode, in.Description, vis, in.Label, in.MapURL, in.VenueNote, in.MediaID))
 }
 
 func (r *ScheduleRepo) Update(ctx context.Context, id string, p appsch.Patch) (*schedule.Item, error) {
@@ -102,9 +108,11 @@ func (r *ScheduleRepo) Update(ctx context.Context, id string, p appsch.Patch) (*
 	return scanItem(r.pool.QueryRow(ctx,
 		`UPDATE schedule_items SET title=COALESCE($2,title), starts_at=COALESCE($3,starts_at), ends_at=COALESCE($4,ends_at),
 		   venue=COALESCE($5,venue), address=COALESCE($6,address), dress_code=COALESCE($7,dress_code),
-		   description=COALESCE($8,description), visibility=COALESCE($9,visibility), updated_at=now()
+		   description=COALESCE($8,description), visibility=COALESCE($9,visibility),
+		   label=COALESCE($10,label), map_url=COALESCE($11,map_url), venue_note=COALESCE($12,venue_note),
+		   media_id=CASE WHEN $13::text IS NULL THEN media_id ELSE NULLIF($13::text,'')::uuid END, updated_at=now()
 		 WHERE id=$1 RETURNING `+schCols,
-		id, p.Title, at, end, p.Venue, p.Address, p.DressCode, p.Description, p.Visibility))
+		id, p.Title, at, end, p.Venue, p.Address, p.DressCode, p.Description, p.Visibility, p.Label, p.MapURL, p.VenueNote, p.MediaID))
 }
 
 func (r *ScheduleRepo) Delete(ctx context.Context, id string) error {
@@ -130,4 +138,10 @@ func (r *ScheduleRepo) Reorder(ctx context.Context, eventID string, ids []string
 		}
 	}
 	return tx.Commit(ctx)
+}
+
+func (r *ScheduleRepo) MediaBelongs(ctx context.Context, eventID, mediaID string) (bool, error) {
+	var ok bool
+	err := r.pool.QueryRow(ctx, `SELECT EXISTS (SELECT 1 FROM media WHERE id=$1 AND event_id=$2)`, mediaID, eventID).Scan(&ok)
+	return ok, err
 }

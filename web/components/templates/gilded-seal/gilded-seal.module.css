@@ -1,0 +1,57 @@
+/* Only what inline styles cannot express: reset, selection, focus ring, and the prototype's
+ * `style-hover` / `style-focus` states. Everything is under .root so it cannot leak. */
+.root *,
+.root *::before,
+.root *::after {
+  box-sizing: border-box;
+}
+.root ::selection {
+  background: var(--k-accent-soft);
+  color: #211d1a;
+}
+.root :focus-visible {
+  outline: 2px solid var(--k-accent);
+  outline-offset: 3px;
+}
+.root a {
+  color: #7a5f33;
+  text-decoration: none;
+}
+.root a:hover {
+  color: var(--k-ink);
+}
+.root input,
+.root textarea,
+.root button {
+  font: inherit;
+  color: inherit;
+}
+.root ::placeholder {
+  color: #94857a;
+  opacity: 1;
+}
+
+/* dark pill (Kindly RSVP, Open in Maps, submit) */
+.pill:hover {
+  background: #4a3b30 !important;
+  color: var(--k-bg) !important;
+}
+/* outlined pill / round control that fills dark (Open Invitation, arrows, copy, send wish) */
+.ink:hover {
+  background: var(--k-ink) !important;
+  color: var(--k-bg) !important;
+  border-color: var(--k-ink) !important;
+}
+/* text link with a rule (The Celebration, See the venue) */
+.link:hover {
+  color: var(--k-x-eyebrow-soft) !important;
+}
+/* underline fields (RSVP, wishes) */
+.field:focus {
+  border-bottom-color: var(--k-x-eyebrow-soft) !important;
+  box-shadow: 0 1px 0 var(--k-x-eyebrow-soft);
+}
+/* music button */
+.music:hover {
+  background: #fffdf8 !important;
+}

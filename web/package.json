@@ -12,11 +12,13 @@
     "test:e2e": "playwright test",
     "test:e2e:install": "playwright install",
     "api:gen": "orval",
-    "api:check": "orval && git diff --exit-code lib/api/generated.ts"
+    "api:check": "orval && git diff --exit-code lib/api/generated.ts",
+    "templates:thumbs": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/template-thumbs.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "5.9.1",
     "@tanstack/react-query": "5.104.1",
+    "lenis": "1.3.26",
     "next": "14.2.35",
     "react": "18.3.1",
     "react-dom": "18.3.1",

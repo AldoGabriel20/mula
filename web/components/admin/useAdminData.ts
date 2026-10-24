@@ -83,7 +83,8 @@ export function useAdminData(logic: any, S: any) {
   const subSlug = subscription.data?.subscription?.package;
   const pkg = subSlug === "signature" ? "advanced" : subSlug ? "onetime" : "free";
   const palName: string | undefined = invitation.data?.palette;
-  const palIdx = palName ? M.PALETTE_TO_PROTO[palName] : undefined;
+  logic.pals = M.protoPals(); // swatches come from catalog/palettes.json
+  const palIdx = M.paletteIndex(palName);
   logic.expected = eventday.data?.expected ?? 0;
   logic.base0 = checked;
 

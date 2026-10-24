@@ -1,0 +1,82 @@
+{
+  "manifestVersion": 1,
+  "slug": "gilded-seal",
+  "name": "Gilded Seal",
+  "kind": "coded",
+  "renderer": "gilded-seal/GildedSeal",
+  "status": "published",
+  "access": "free",
+  "category": "Wedding",
+  "eventTypes": ["wedding"],
+  "tags": ["Elegant", "Cinematic"],
+  "position": 8,
+  "palette": "gold-ivory",
+
+  "marketing": {
+    "desc": "A wax-sealed envelope opens onto a layered world of arches, silk and falling petals. Cinematic, and entirely yours.",
+    "style": "Elegant",
+    "mood": "Romantic",
+    "demo": { "route": "/demo/gilded-seal" }
+  },
+
+  "sections": [
+    { "type": "hero", "required": true },
+    { "type": "opening" },
+    { "type": "story" },
+    { "type": "schedule" },
+    { "type": "gallery", "hiddenUntilFilled": true, "max": 12 },
+    { "type": "gift" },
+    { "type": "rsvp", "required": true },
+    { "type": "wishes" },
+    { "type": "music", "hiddenUntilFilled": true },
+    { "type": "closing" }
+  ],
+
+  "capabilities": {
+    "music": true,
+    "gallery": { "max": 12 },
+    "wishes": true,
+    "rsvp": true,
+    "gift": true,
+    "timezone": true,
+    "multiMoment": { "max": 10 },
+    "languages": ["en", "id"],
+    "needsWebGL": false,
+    "reducedMotion": "static"
+  },
+
+  "tokens": {
+    "color": {
+      "bg": "#F7F2E9",
+      "surface": "#FCF9F3",
+      "ink": "#302720",
+      "inkSoft": "#4A3E35",
+      "muted": "#6B5D52",
+      "accent": "#A98545",
+      "accentSoft": "#E8D7AD",
+      "line": "#B08E52",
+      "danger": "#8E4A43",
+      "onAccent": "#271F19"
+    },
+    "font": { "display": "cormorant", "body": "manrope", "script": "pinyon" },
+    "motion": { "level": "full" },
+    "extra": {
+      "inkStrong": "#271F19",
+      "mutedStrong": "#5E5046",
+      "eyebrow": "#6E5730",
+      "eyebrowSoft": "#7E6436",
+      "veilFrom": "#FBF6EE",
+      "veilTo": "#EDE3D4"
+    }
+  },
+
+  "customizable": {
+    "palette": ["gold-ivory", "stone-linen", "rose-linen", "sage-parchment", "terracotta-sand"],
+    "fontPairings": ["classic-serif"],
+    "tokens": ["accent"],
+    "motion": ["full", "calm"]
+  },
+
+  "thumbnail": "thumb.webp",
+  "thumbnailMobile": "thumb-mobile.webp"
+}

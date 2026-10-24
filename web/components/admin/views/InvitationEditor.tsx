@@ -3,6 +3,7 @@
 "use client";
 // Ported from docs/dashboard-admin-prototype "Mula Admin v3" (lines 535–583). `v` is the prototype's renderVals() object (bound as V so prototype loop variables named v still work).
 import { Fragment } from "react";
+import { SectionForm, hasText } from "./SectionForm";
 
 export function InvitationEditorView({ v: V }: { v: any }) {
   return (
@@ -131,6 +132,9 @@ export function InvitationEditorView({ v: V }: { v: any }) {
                       </span>
                       <input className="inp" value={V.ev.line} onChange={V.setLine} />
                     </label>
+                    {V.sf ? (
+                      <SectionForm type="hero" api={V.sf} skip={["title", "line"]} />
+                    ) : (
                     <div
                       className="arch"
                       style={{
@@ -148,6 +152,7 @@ export function InvitationEditorView({ v: V }: { v: any }) {
                     >
                       Replace cover photo
                     </div>
+                    )}
                   </>
                 )}
                 {V.sec.main && (
@@ -167,32 +172,42 @@ export function InvitationEditorView({ v: V }: { v: any }) {
                       Host names
                       <input className="inp" defaultValue={V.ev.host} />
                     </label>{" "}
-                    <label className="f">
-                      Opening message<textarea className="inp" defaultValue="With gratitude, we invite you to share the beginning of our forever." />
-                    </label>
+                    {V.sf?.has("opening") ? (
+                      <SectionForm type="opening" api={V.sf} />
+                    ) : (
+                      <label className="f">
+                        Opening message<textarea className="inp" defaultValue="With gratitude, we invite you to share the beginning of our forever." />
+                      </label>
+                    )}
                   </>
                 )}
                 {V.sec.gallery && (
                   <>
-                    <div
-                      style={{
-                        display: "grid",
-                        justifyItems: "center",
-                        textAlign: "center",
-                        gap: "12px",
-                        padding: "44px 16px",
-                        border: "1px dashed var(--line2)",
-                        borderRadius: "18px",
-                      }}
-                    >
-                      <div className="h2">Bring your story to life.</div>
-                      <p className="sm mut" style={{ margin: "0", maxWidth: "40ch" }}>
-                        Guests won’t see this section until it has photos. Add up to 12, and they’ll appear in a gentle carousel.
-                      </p>
-                      <button className="btn btn-p" onClick={V.toastGallery}>
-                        Upload photos
-                      </button>
-                    </div>
+                    {V.sf ? (
+                      <SectionForm type="gallery" api={V.sf} skip={["title"]} />
+                    ) : (
+                      <>
+                        <div
+                          style={{
+                            display: "grid",
+                            justifyItems: "center",
+                            textAlign: "center",
+                            gap: "12px",
+                            padding: "44px 16px",
+                            border: "1px dashed var(--line2)",
+                            borderRadius: "18px",
+                          }}
+                        >
+                          <div className="h2">Bring your story to life.</div>
+                          <p className="sm mut" style={{ margin: "0", maxWidth: "40ch" }}>
+                            Guests won’t see this section until it has photos. Add up to 12, and they’ll appear in a gentle carousel.
+                          </p>
+                          <button className="btn btn-p" onClick={V.toastGallery}>
+                            Upload photos
+                          </button>
+                        </div>
+                      </>
+                    )}
                   </>
                 )}
                 {V.sec.rsvp && (
@@ -221,13 +236,20 @@ export function InvitationEditorView({ v: V }: { v: any }) {
                       <span>Show this section</span>
                       <button className={V.secOn ? "tog on" : "tog"} role="switch" aria-checked={V.secOn} onClick={V.togSection} aria-label="Show this section"></button>
                     </div>
-                    <label className="f">
-                      Heading
-                      <input className="inp" data-f="heading" defaultValue={V.secHeading} />
-                    </label>{" "}
-                    <label className="f">
-                      What guests will read<textarea className="inp" data-f="body" defaultValue={V.secBody} />
-                    </label>
+                    {V.sf && V.sf.has(V.secId) && !hasText(V.secId) ? (
+                      <SectionForm type={V.secId} api={V.sf} />
+                    ) : (
+                      <>
+                        <label className="f">
+                          Heading
+                          <input className="inp" data-f="heading" defaultValue={V.secHeading} />
+                        </label>{" "}
+                        <label className="f">
+                          What guests will read<textarea className="inp" data-f="body" defaultValue={V.secBody} />
+                        </label>
+                      </>
+                    )}
+                    {V.sf && V.sf.has(V.secId) && hasText(V.secId) && <SectionForm type={V.secId} api={V.sf} skip={["title", "body"]} />}
                   </>
                 )}
                 <div className="row" style={{ justifyContent: "flex-end", borderTop: "1px solid var(--line)", paddingTop: "18px" }}>

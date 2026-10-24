@@ -2,6 +2,7 @@ package http
 
 import (
 	"net/http"
+	"strconv"
 	"time"
 
 	"github.com/mula/mula/internal/application/publicinvite"
@@ -34,6 +35,19 @@ type publicLiveDTO struct {
 	Status    string  `json:"status"`
 	StartsAt  *string `json:"starts_at"`
 }
+type publicMomentDTO struct {
+	Label       string  `json:"label"`
+	Title       string  `json:"title"`
+	StartsAt    *string `json:"starts_at"`
+	EndsAt      *string `json:"ends_at"`
+	Venue       *string `json:"venue"`
+	Address     string  `json:"address"`
+	MapURL      string  `json:"map_url"`
+	VenueNote   string  `json:"venue_note"`
+	DressCode   string  `json:"dress_code"`
+	Description string  `json:"description"`
+	PhotoID     *string `json:"photo_id"`
+}
 type publicGuestDTO struct {
 	Name       string `json:"name"`
 	RSVPStatus string `json:"rsvp_status"`
@@ -41,19 +55,26 @@ type publicGuestDTO struct {
 	MaxParty   int    `json:"max_party"`
 }
 type publicInvitationDTO struct {
-	EventType    string             `json:"event_type"`
-	CoupleA      *string            `json:"couple_a"`
-	CoupleB      *string            `json:"couple_b"`
-	EventDate    *string            `json:"event_date"`
-	Venue        *string            `json:"venue"`
-	Palette      string             `json:"palette"`
-	Language     string             `json:"language"`
-	Sections     []publicSectionDTO `json:"sections"`
-	Gifts        []publicGiftDTO    `json:"gifts"`
-	Methods      []publicMethodDTO  `json:"gift_methods"`
-	Live         *publicLiveDTO     `json:"live"`
-	RSVPDeadline *string            `json:"rsvp_deadline"`
-	Guest        *publicGuestDTO    `json:"guest"` // present only on a personal link
+	Template        *string            `json:"template"`
+	Timezone        string             `json:"timezone"`
+	EventType       string             `json:"event_type"`
+	CoupleA         *string            `json:"couple_a"`
+	CoupleB         *string            `json:"couple_b"`
+	EventDate       *string            `json:"event_date"`
+	Venue           *string            `json:"venue"`
+	Palette         string             `json:"palette"`
+	Theme           themeDTO           `json:"theme"`
+	TemplateVersion int                `json:"template_version"`
+	Language        string             `json:"language"`
+	Sections        []publicSectionDTO `json:"sections"`
+	Schedule        []publicMomentDTO  `json:"schedule"`
+	Media           map[string]string  `json:"media"`
+	Preview         bool               `json:"preview"`
+	Gifts           []publicGiftDTO    `json:"gifts"`
+	Methods         []publicMethodDTO  `json:"gift_methods"`
+	Live            *publicLiveDTO     `json:"live"`
+	RSVPDeadline    *string            `json:"rsvp_deadline"`
+	Guest           *publicGuestDTO    `json:"guest"` // present only on a personal link
 }
 
 type rsvpReq struct {
@@ -75,6 +96,21 @@ func (h *PublicHandler) Get(w http.ResponseWriter, r *http.Request) {
 		writeErr(w, r, err)
 		return
 	}
+	writePage(w, page)
+}
+
+// Preview serves the host's draft in the guest shape. It runs behind needAuth + member, so the
+// event id in ctx is already authorised for the caller.
+func (h *PublicHandler) Preview(w http.ResponseWriter, r *http.Request) {
+	page, err := h.svc.Preview(r.Context(), eventID(r.Context()))
+	if err != nil {
+		writeErr(w, r, err)
+		return
+	}
+	writePage(w, page)
+}
+
+func writePage(w http.ResponseWriter, page *invitation.PublicPage) {
 	v := page.View
 	var date *string
 	if v.EventDate != nil {
@@ -93,9 +129,15 @@ func (h *PublicHandler) Get(w http.ResponseWriter, r *http.Request) {
 	for _, m := range page.Methods {
 		methods = append(methods, publicMethodDTO{m.Type, m.Title, m.Detail, m.CopyValue})
 	}
+	moments := make([]publicMomentDTO, 0, len(page.Schedule))
+	for _, m := range page.Schedule {
+		moments = append(moments, publicMomentDTO{Label: m.Label, Title: m.Title, StartsAt: rfc3339(m.StartsAt), EndsAt: rfc3339(m.EndsAt),
+			Venue: m.Venue, Address: m.Address, MapURL: m.MapURL, VenueNote: m.VenueNote, DressCode: m.DressCode, Description: m.Description, PhotoID: m.PhotoID})
+	}
 	out := publicInvitationDTO{
+		Template: v.Template, Timezone: v.Timezone, Schedule: moments, Media: page.Media, Preview: page.Preview,
 		EventType: v.EventType, CoupleA: v.CoupleA, CoupleB: v.CoupleB, EventDate: date, Venue: v.Venue,
-		Palette: v.Palette, Language: v.Language, Sections: secs, Gifts: gifts, Methods: methods, RSVPDeadline: rfc3339(page.RSVPDeadline),
+		Palette: v.Palette, Theme: toThemeDTO(v.Theme), TemplateVersion: v.TemplateVersion, Language: v.Language, Sections: secs, Gifts: gifts, Methods: methods, RSVPDeadline: rfc3339(page.RSVPDeadline),
 	}
 	if page.Live != nil {
 		out.Live = &publicLiveDTO{page.Live.Provider, page.Live.StreamURL, page.Live.Status, rfc3339(page.Live.StartsAt)}
@@ -136,9 +178,33 @@ func (h *PublicHandler) Wish(w http.ResponseWriter, r *http.Request) {
 	if !decode(w, r, &req) {
 		return
 	}
-	if err := h.svc.Wish(r.Context(), r.PathValue("token"), req.Name, req.Message); err != nil {
+	wish, err := h.svc.Wish(r.Context(), r.PathValue("token"), req.Name, req.Message)
+	if err != nil {
 		writeErr(w, r, err)
 		return
 	}
-	w.WriteHeader(http.StatusCreated)
+	writeJSON(w, http.StatusCreated, publicWishDTO{ID: wish.ID, Name: wish.Name, Message: wish.Message})
+}
+
+type publicWishDTO struct {
+	ID      string `json:"id"`
+	Name    string `json:"name"`
+	Message string `json:"message"`
+}
+
+// Wishes serves the guestbook: approved wishes, newest first, keyset-paginated. Any valid link
+// (event or personal) may read it. A garbage ?limit falls back to the default; ?limit is clamped.
+func (h *PublicHandler) Wishes(w http.ResponseWriter, r *http.Request) {
+	limit, _ := strconv.Atoi(r.URL.Query().Get("limit"))
+	page, err := h.svc.Wishes(r.Context(), r.PathValue("token"), limit, r.URL.Query().Get("cursor"))
+	if err != nil {
+		writeErr(w, r, err)
+		return
+	}
+	items := make([]publicWishDTO, 0, len(page.Items))
+	for _, x := range page.Items {
+		items = append(items, publicWishDTO{ID: x.ID, Name: x.Name, Message: x.Message})
+	}
+	w.Header().Set("Cache-Control", "private, max-age=15")
+	writeJSON(w, http.StatusOK, map[string]any{"items": items, "next_cursor": page.Next, "total": page.Total})
 }

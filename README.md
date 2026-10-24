@@ -27,6 +27,8 @@ Open `http://localhost:3000/login`, or a printed `/invite/<token>` link as a gue
 |---|---|
 | `make test` | Go unit + integration tests (own `mula_test` DB; they truncate tables) |
 | `make seed` | Re-run the demo seed (idempotent; refuses unless `APP_ENV=dev`) |
+| `make templates` | Validate `catalog/`, sync it to the DB (`SKIP_SYNC=1` to skip) and regenerate `web/lib/kit/generated/` (commit the result; CI fails on a diff). `make migrate` syncs too |
+| `cd web && npm run templates:thumbs` | Regenerate the template thumbnails from a running build (`E2E_WEB_URL=…`; Node 22.18+). To add a template see `docs/17-template-kit-design.md` §17 |
 | `make db-reset` | **Destroys** the dev database volume and rebuilds it |
 | `cd web && npm run typecheck && npm run lint && npm test` | Frontend checks (unit + component) |
 | `cd web && E2E_FULL_STACK=1 npx playwright test` | End-to-end, responsive and accessibility specs (needs `make api`, Postgres, and the web build; see below) |

@@ -3,6 +3,7 @@
 "use client";
 // Ported from docs/dashboard-admin-prototype "Mula Admin v3" (lines 585–649). `v` is the prototype's renderVals() object (bound as V so prototype loop variables named v still work).
 import { Fragment } from "react";
+import { ThemePanel } from "./ThemePanel";
 
 export function DesignView({ v: V }: { v: any }) {
   return (
@@ -115,6 +116,7 @@ export function DesignView({ v: V }: { v: any }) {
                           ))}
                         </div>
                       </div>
+                      {V.themeApi && <ThemePanel key={JSON.stringify(V.themeApi.theme)} api={V.themeApi} />}
                       <div className="row">
                         <button className="btn" style={{ background: "#EEE9DF", color: "#12110F", borderColor: "#EEE9DF" }} onClick={V.save}>
                           Save design
@@ -157,11 +159,16 @@ export function DesignView({ v: V }: { v: any }) {
                           <div className="dthumb" style={{ background: d.bg, color: d.fg }}>
                             {d.cur && (
                               <>
-                                <span className="bdg" style={{ position: "absolute", top: "14px", left: "14px", background: d.fg, color: d.bg }}>
+                                <span className="bdg" style={{ position: "absolute", top: "14px", left: "14px", zIndex: 1, background: d.fg, color: d.bg }}>
                                   In use
                                 </span>
                               </>
                             )}
+                            {d.thumb ? (
+                              // the real template, captured from its demo (npm run templates:thumbs)
+                              // eslint-disable-next-line @next/next/no-img-element
+                              <img src={d.thumb} alt={`${d.name} preview`} loading="lazy" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: "top" }} />
+                            ) : (
                             <div className="dthumb-in">
                               <div className="arch" style={{ width: "78%", aspectRatio: "3/3.4", background: d.photo }}></div>
                               <div className="xs" style={{ letterSpacing: ".16em", textTransform: "uppercase", opacity: ".85" }}>
@@ -171,6 +178,7 @@ export function DesignView({ v: V }: { v: any }) {
                                 {d.mock}
                               </div>
                             </div>
+                            )}
                           </div>
                           <div style={{ padding: "14px 2px 0", display: "grid", gap: "10px" }}>
                             <div className="row sb">
@@ -181,7 +189,7 @@ export function DesignView({ v: V }: { v: any }) {
                               <button className="btn btn-s" onClick={V.openPreview}>
                                 Preview
                               </button>
-                              <button className="btn btn-p btn-s" data-v={d.name} data-pal={d.pal} onClick={V.useDesign}>
+                              <button className="btn btn-p btn-s" data-v={d.slug} data-pal={d.pal} onClick={V.useDesign}>
                                 Use this design
                               </button>
                             </div>

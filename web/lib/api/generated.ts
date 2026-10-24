@@ -74,6 +74,312 @@ export interface EventList {
   next_cursor?: string | null;
 }
 
+export type ThemeMotion = typeof ThemeMotion[keyof typeof ThemeMotion];
+
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const ThemeMotion = {
+  full: 'full',
+  calm: 'calm',
+  off: 'off',
+} as const;
+
+/**
+ * colour role ->
+ */
+export type ThemeTokens = {[key: string]: string};
+
+/**
+ * The host's visual overrides of a template (docs/17 §6, §10.2); {} when nothing is changed. Writes are checked against the template manifest's `customizable` lists and the AA 4.5:1 text-contrast rule, so a guest only ever sees plain ids and #RRGGBB colours.
+
+ */
+export interface Theme {
+  /** catalog palette id (a legacy label such as Blush is accepted on write and stored as its id) */
+  palette?: string;
+  fontPairing?: string;
+  motion?: ThemeMotion;
+  /** colour role -> */
+  tokens?: ThemeTokens;
+}
+
+export type CatalogTemplateKind = typeof CatalogTemplateKind[keyof typeof CatalogTemplateKind];
+
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const CatalogTemplateKind = {
+  coded: 'coded',
+  themed: 'themed',
+} as const;
+
+export type CatalogTemplateStatus = typeof CatalogTemplateStatus[keyof typeof CatalogTemplateStatus];
+
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const CatalogTemplateStatus = {
+  published: 'published',
+  draft: 'draft',
+} as const;
+
+export type CatalogTemplateAccess = typeof CatalogTemplateAccess[keyof typeof CatalogTemplateAccess];
+
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const CatalogTemplateAccess = {
+  free: 'free',
+  premium: 'premium',
+} as const;
+
+/**
+ * what a host may change: palette[], fontPairings[], tokens[], motion[]
+ * @nullable
+ */
+export type CatalogTemplateCustomizable = { [key: string]: unknown } | null;
+
+/**
+ * @nullable
+ */
+export type CatalogTemplateCapabilities = { [key: string]: unknown } | null;
+
+/**
+ * @nullable
+ */
+export type CatalogTemplateMarketing = { [key: string]: unknown } | null;
+
+/**
+ * one design of the catalog; the fields after `palette` come from the synced manifest (absent for a design that has none yet)
+ */
+export interface CatalogTemplate {
+  id?: string;
+  slug?: string;
+  name?: string;
+  category?: string;
+  tags?: string[];
+  /** legacy palette label */
+  palette?: string;
+  kind?: CatalogTemplateKind;
+  status?: CatalogTemplateStatus;
+  access?: CatalogTemplateAccess;
+  version?: number;
+  /** @nullable */
+  thumbnail?: string | null;
+  /**
+   * what a host may change: palette[], fontPairings[], tokens[], motion[]
+   * @nullable
+   */
+  customizable?: CatalogTemplateCustomizable;
+  /** @nullable */
+  capabilities?: CatalogTemplateCapabilities;
+  /** @nullable */
+  marketing?: CatalogTemplateMarketing;
+}
+
+/**
+ * signed, session-less photo URLs by media id; only photos of this event are listed
+ */
+export type PublicInvitationMedia = {[key: string]: string};
+
+/**
+ * @nullable
+ */
+export type PublicInvitationLive = InviteLive | null;
+
+/**
+ * present only on a personal link
+ * @nullable
+ */
+export type PublicInvitationGuest = InviteGuest | null;
+
+/**
+ * guest-safe projection of an invitation (an explicit allowlist, see docs/15 §5.4)
+ */
+export interface PublicInvitation {
+  /**
+   * template slug, null when none was picked
+   * @nullable
+   */
+  template: string | null;
+  /** IANA zone every date is printed in */
+  timezone: string;
+  event_type: string;
+  /** @nullable */
+  couple_a: string | null;
+  /** @nullable */
+  couple_b: string | null;
+  /** @nullable */
+  event_date: string | null;
+  /** @nullable */
+  venue: string | null;
+  palette: string;
+  /** templates.version of the picked template, 0 when none */
+  template_version: number;
+  theme: Theme;
+  language: string;
+  /** visible sections in order; `content` is host-authored free-form JSON, render as text */
+  sections: InviteSection[];
+  /** moments this link may see (empty when the schedule section is hidden) */
+  schedule: InviteMoment[];
+  /** signed, session-less photo URLs by media id; only photos of this event are listed */
+  media: PublicInvitationMedia;
+  /** true only on the host's draft view */
+  preview: boolean;
+  gifts: InviteGift[];
+  gift_methods: InviteGiftMethod[];
+  /** @nullable */
+  live: PublicInvitationLive;
+  /** @nullable */
+  rsvp_deadline: string | null;
+  /**
+   * present only on a personal link
+   * @nullable
+   */
+  guest: PublicInvitationGuest;
+}
+
+export type InviteSectionContent = { [key: string]: unknown };
+
+export interface InviteSection {
+  type: string;
+  content: InviteSectionContent;
+}
+
+export interface InviteMoment {
+  label: string;
+  title: string;
+  /** @nullable */
+  starts_at: string | null;
+  /** @nullable */
+  ends_at: string | null;
+  /** @nullable */
+  venue: string | null;
+  address: string;
+  /** empty or an https:// link */
+  map_url: string;
+  venue_note: string;
+  dress_code: string;
+  description: string;
+  /**
+   * key into `media`
+   * @nullable
+   */
+  photo_id: string | null;
+}
+
+export interface InviteGift {
+  title: string;
+  description: string;
+  /** @nullable */
+  url: string | null;
+  /** @nullable */
+  target_amount: number | null;
+}
+
+export type InviteGiftMethodType = typeof InviteGiftMethodType[keyof typeof InviteGiftMethodType];
+
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const InviteGiftMethodType = {
+  bank: 'bank',
+  wallet: 'wallet',
+  physical: 'physical',
+} as const;
+
+export interface InviteGiftMethod {
+  type: InviteGiftMethodType;
+  title: string;
+  detail: string;
+  copy_value: string;
+}
+
+export type InviteLiveStatus = typeof InviteLiveStatus[keyof typeof InviteLiveStatus];
+
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const InviteLiveStatus = {
+  scheduled: 'scheduled',
+  live: 'live',
+} as const;
+
+export interface InviteLive {
+  provider: string;
+  stream_url: string;
+  status: InviteLiveStatus;
+  /** @nullable */
+  starts_at: string | null;
+}
+
+export type InviteGuestRsvpStatus = typeof InviteGuestRsvpStatus[keyof typeof InviteGuestRsvpStatus];
+
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const InviteGuestRsvpStatus = {
+  pending: 'pending',
+  yes: 'yes',
+  no: 'no',
+} as const;
+
+export interface InviteGuest {
+  name: string;
+  rsvp_status: InviteGuestRsvpStatus;
+  party_size: number;
+  /** 1 + the plus-ones the host allowed */
+  max_party: number;
+}
+
+export type InviteRsvpStatus = typeof InviteRsvpStatus[keyof typeof InviteRsvpStatus];
+
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const InviteRsvpStatus = {
+  yes: 'yes',
+  no: 'no',
+} as const;
+
+export interface InviteRsvp {
+  status: InviteRsvpStatus;
+  /** @minimum 0 */
+  party_size: number;
+  /**
+   * @maxLength 80
+   * @nullable
+   */
+  meal?: string | null;
+  /**
+   * @maxLength 300
+   * @nullable
+   */
+  note?: string | null;
+}
+
+export interface InviteWishCreate {
+  /**
+   * required on a generic link, ignored on a personal link
+   * @maxLength 80
+   */
+  name?: string;
+  /**
+   * @minLength 1
+   * @maxLength 500
+   */
+  message: string;
+}
+
+export interface InviteWish {
+  id: string;
+  name: string;
+  message: string;
+}
+
+export interface InviteWishList {
+  items: InviteWish[];
+  /**
+   * opaque; null on the last page
+   * @nullable
+   */
+  next_cursor: string | null;
+  /** approved wishes of the event */
+  total: number;
+}
+
 /**
  * not authenticated
  */
@@ -83,6 +389,11 @@ export type UnauthorizedResponse = Error;
  * request failed validation
  */
 export type ValidationErrorResponse = Error;
+
+/**
+ * unknown, unpublished or not visible to the caller
+ */
+export type NotFoundResponse = Error;
 
 export type LimitParameter = number;
 
@@ -94,6 +405,31 @@ export type ListEventsParams = {
  * @maximum 200
  */
 limit?: LimitParameter;
+cursor?: CursorParameter;
+};
+
+export type GetApiV1Templates200 = {
+  data?: CatalogTemplate[];
+};
+
+/**
+ * catalog/templates/<slug>/manifest.json as synced
+ */
+export type GetApiV1TemplatesSlug200Manifest = { [key: string]: unknown };
+
+export type GetApiV1TemplatesSlug200 = {
+  template?: CatalogTemplate;
+  /** catalog/templates/<slug>/manifest.json as synced */
+  manifest?: GetApiV1TemplatesSlug200Manifest;
+};
+
+export type ListInviteWishesParams = {
+/**
+ * page size; out-of-range or non-numeric values fall back to the default / are clamped
+ * @minimum 1
+ * @maximum 50
+ */
+limit?: number;
 cursor?: CursorParameter;
 };
 
@@ -441,3 +777,613 @@ export const useCreateEvent = <TError = ValidationErrorResponse | UnauthorizedRe
 
       return useMutation(mutationOptions, queryClient);
     }
+    
+/**
+ * Never cached (`Cache-Control: private, no-store`). A personal link adds `guest` and records the first open. Unknown, unpublished and revoked tokens are indistinguishable (404).
+
+ * @summary A published invitation, guest-safe (event link or a guest's personal link)
+ */
+export const getInvite = (
+    token: string,
+ signal?: AbortSignal
+) => {
+      
+      
+      return customInstance<PublicInvitation>(
+      {url: `/api/v1/invite/${token}`, method: 'GET', signal
+    },
+      );
+    }
+  
+
+
+
+export const getGetInviteQueryKey = (token?: string,) => {
+    return [
+    `/api/v1/invite/${token}`
+    ] as const;
+    }
+
+    
+export const getGetInviteQueryOptions = <TData = Awaited<ReturnType<typeof getInvite>>, TError = NotFoundResponse>(token: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getInvite>>, TError, TData>>, }
+) => {
+
+const {query: queryOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetInviteQueryKey(token);
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getInvite>>> = ({ signal }) => getInvite(token, signal);
+
+      
+
+      
+
+   return  { queryKey, queryFn, enabled: !!(token), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getInvite>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetInviteQueryResult = NonNullable<Awaited<ReturnType<typeof getInvite>>>
+export type GetInviteQueryError = NotFoundResponse
+
+
+export function useGetInvite<TData = Awaited<ReturnType<typeof getInvite>>, TError = NotFoundResponse>(
+ token: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getInvite>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getInvite>>,
+          TError,
+          Awaited<ReturnType<typeof getInvite>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetInvite<TData = Awaited<ReturnType<typeof getInvite>>, TError = NotFoundResponse>(
+ token: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getInvite>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getInvite>>,
+          TError,
+          Awaited<ReturnType<typeof getInvite>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetInvite<TData = Awaited<ReturnType<typeof getInvite>>, TError = NotFoundResponse>(
+ token: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getInvite>>, TError, TData>>, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary A published invitation, guest-safe (event link or a guest's personal link)
+ */
+
+export function useGetInvite<TData = Awaited<ReturnType<typeof getInvite>>, TError = NotFoundResponse>(
+ token: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getInvite>>, TError, TData>>, }
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetInviteQueryOptions(token,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+
+
+
+
+/**
+ * Published platform designs in picker order. Retired designs are not listed.
+ * @summary The design catalog (public, cacheable 300 s)
+ */
+export const getApiV1Templates = (
+    
+ signal?: AbortSignal
+) => {
+      
+      
+      return customInstance<GetApiV1Templates200>(
+      {url: `/api/v1/templates`, method: 'GET', signal
+    },
+      );
+    }
+  
+
+
+
+export const getGetApiV1TemplatesQueryKey = () => {
+    return [
+    `/api/v1/templates`
+    ] as const;
+    }
+
+    
+export const getGetApiV1TemplatesQueryOptions = <TData = Awaited<ReturnType<typeof getApiV1Templates>>, TError = unknown>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiV1Templates>>, TError, TData>>, }
+) => {
+
+const {query: queryOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetApiV1TemplatesQueryKey();
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiV1Templates>>> = ({ signal }) => getApiV1Templates(signal);
+
+      
+
+      
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getApiV1Templates>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetApiV1TemplatesQueryResult = NonNullable<Awaited<ReturnType<typeof getApiV1Templates>>>
+export type GetApiV1TemplatesQueryError = unknown
+
+
+export function useGetApiV1Templates<TData = Awaited<ReturnType<typeof getApiV1Templates>>, TError = unknown>(
+  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiV1Templates>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiV1Templates>>,
+          TError,
+          Awaited<ReturnType<typeof getApiV1Templates>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiV1Templates<TData = Awaited<ReturnType<typeof getApiV1Templates>>, TError = unknown>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiV1Templates>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiV1Templates>>,
+          TError,
+          Awaited<ReturnType<typeof getApiV1Templates>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiV1Templates<TData = Awaited<ReturnType<typeof getApiV1Templates>>, TError = unknown>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiV1Templates>>, TError, TData>>, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary The design catalog (public, cacheable 300 s)
+ */
+
+export function useGetApiV1Templates<TData = Awaited<ReturnType<typeof getApiV1Templates>>, TError = unknown>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiV1Templates>>, TError, TData>>, }
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetApiV1TemplatesQueryOptions(options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+
+
+
+
+/**
+ * @summary One design with its full manifest (public, cacheable 300 s)
+ */
+export const getApiV1TemplatesSlug = (
+    slug: string,
+ signal?: AbortSignal
+) => {
+      
+      
+      return customInstance<GetApiV1TemplatesSlug200>(
+      {url: `/api/v1/templates/${slug}`, method: 'GET', signal
+    },
+      );
+    }
+  
+
+
+
+export const getGetApiV1TemplatesSlugQueryKey = (slug?: string,) => {
+    return [
+    `/api/v1/templates/${slug}`
+    ] as const;
+    }
+
+    
+export const getGetApiV1TemplatesSlugQueryOptions = <TData = Awaited<ReturnType<typeof getApiV1TemplatesSlug>>, TError = NotFoundResponse>(slug: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiV1TemplatesSlug>>, TError, TData>>, }
+) => {
+
+const {query: queryOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetApiV1TemplatesSlugQueryKey(slug);
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiV1TemplatesSlug>>> = ({ signal }) => getApiV1TemplatesSlug(slug, signal);
+
+      
+
+      
+
+   return  { queryKey, queryFn, enabled: !!(slug), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getApiV1TemplatesSlug>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetApiV1TemplatesSlugQueryResult = NonNullable<Awaited<ReturnType<typeof getApiV1TemplatesSlug>>>
+export type GetApiV1TemplatesSlugQueryError = NotFoundResponse
+
+
+export function useGetApiV1TemplatesSlug<TData = Awaited<ReturnType<typeof getApiV1TemplatesSlug>>, TError = NotFoundResponse>(
+ slug: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiV1TemplatesSlug>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiV1TemplatesSlug>>,
+          TError,
+          Awaited<ReturnType<typeof getApiV1TemplatesSlug>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiV1TemplatesSlug<TData = Awaited<ReturnType<typeof getApiV1TemplatesSlug>>, TError = NotFoundResponse>(
+ slug: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiV1TemplatesSlug>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiV1TemplatesSlug>>,
+          TError,
+          Awaited<ReturnType<typeof getApiV1TemplatesSlug>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiV1TemplatesSlug<TData = Awaited<ReturnType<typeof getApiV1TemplatesSlug>>, TError = NotFoundResponse>(
+ slug: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiV1TemplatesSlug>>, TError, TData>>, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary One design with its full manifest (public, cacheable 300 s)
+ */
+
+export function useGetApiV1TemplatesSlug<TData = Awaited<ReturnType<typeof getApiV1TemplatesSlug>>, TError = NotFoundResponse>(
+ slug: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiV1TemplatesSlug>>, TError, TData>>, }
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetApiV1TemplatesSlugQueryOptions(slug,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+
+
+
+
+/**
+ * @summary Reply to the invitation (personal link only)
+ */
+export const submitInviteRsvp = (
+    token: string,
+    inviteRsvp: InviteRsvp,
+ signal?: AbortSignal
+) => {
+      
+      
+      return customInstance<void>(
+      {url: `/api/v1/invite/${token}/rsvp`, method: 'POST',
+      headers: {'Content-Type': 'application/json', },
+      data: inviteRsvp, signal
+    },
+      );
+    }
+  
+
+
+export const getSubmitInviteRsvpMutationOptions = <TError = ValidationErrorResponse | Error | NotFoundResponse,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof submitInviteRsvp>>, TError,{token: string;data: InviteRsvp}, TContext>, }
+): UseMutationOptions<Awaited<ReturnType<typeof submitInviteRsvp>>, TError,{token: string;data: InviteRsvp}, TContext> => {
+
+const mutationKey = ['submitInviteRsvp'];
+const {mutation: mutationOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof submitInviteRsvp>>, {token: string;data: InviteRsvp}> = (props) => {
+          const {token,data} = props ?? {};
+
+          return  submitInviteRsvp(token,data,)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type SubmitInviteRsvpMutationResult = NonNullable<Awaited<ReturnType<typeof submitInviteRsvp>>>
+    export type SubmitInviteRsvpMutationBody = InviteRsvp
+    export type SubmitInviteRsvpMutationError = ValidationErrorResponse | Error | NotFoundResponse
+
+    /**
+ * @summary Reply to the invitation (personal link only)
+ */
+export const useSubmitInviteRsvp = <TError = ValidationErrorResponse | Error | NotFoundResponse,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof submitInviteRsvp>>, TError,{token: string;data: InviteRsvp}, TContext>, }
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof submitInviteRsvp>>,
+        TError,
+        {token: string;data: InviteRsvp},
+        TContext
+      > => {
+
+      const mutationOptions = getSubmitInviteRsvpMutationOptions(options);
+
+      return useMutation(mutationOptions, queryClient);
+    }
+    
+/**
+ * A personal link attributes the wish to its guest (the `name` field is ignored). A generic link needs a `name`. Angle brackets are stripped from both.
+
+ * @summary Leave a wish
+ */
+export const createInviteWish = (
+    token: string,
+    inviteWishCreate: InviteWishCreate,
+ signal?: AbortSignal
+) => {
+      
+      
+      return customInstance<InviteWish>(
+      {url: `/api/v1/invite/${token}/wish`, method: 'POST',
+      headers: {'Content-Type': 'application/json', },
+      data: inviteWishCreate, signal
+    },
+      );
+    }
+  
+
+
+export const getCreateInviteWishMutationOptions = <TError = ValidationErrorResponse | NotFoundResponse,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createInviteWish>>, TError,{token: string;data: InviteWishCreate}, TContext>, }
+): UseMutationOptions<Awaited<ReturnType<typeof createInviteWish>>, TError,{token: string;data: InviteWishCreate}, TContext> => {
+
+const mutationKey = ['createInviteWish'];
+const {mutation: mutationOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof createInviteWish>>, {token: string;data: InviteWishCreate}> = (props) => {
+          const {token,data} = props ?? {};
+
+          return  createInviteWish(token,data,)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type CreateInviteWishMutationResult = NonNullable<Awaited<ReturnType<typeof createInviteWish>>>
+    export type CreateInviteWishMutationBody = InviteWishCreate
+    export type CreateInviteWishMutationError = ValidationErrorResponse | NotFoundResponse
+
+    /**
+ * @summary Leave a wish
+ */
+export const useCreateInviteWish = <TError = ValidationErrorResponse | NotFoundResponse,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createInviteWish>>, TError,{token: string;data: InviteWishCreate}, TContext>, }
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof createInviteWish>>,
+        TError,
+        {token: string;data: InviteWishCreate},
+        TContext
+      > => {
+
+      const mutationOptions = getCreateInviteWishMutationOptions(options);
+
+      return useMutation(mutationOptions, queryClient);
+    }
+    
+/**
+ * Keyset-paginated. Pass the previous page's `next_cursor` as `cursor`; the last page has `next_cursor: null`. Readable on both link kinds. `Cache-Control: private, max-age=15`.
+
+ * @summary The guestbook — approved wishes, newest first
+ */
+export const listInviteWishes = (
+    token: string,
+    params?: ListInviteWishesParams,
+ signal?: AbortSignal
+) => {
+      
+      
+      return customInstance<InviteWishList>(
+      {url: `/api/v1/invite/${token}/wishes`, method: 'GET',
+        params, signal
+    },
+      );
+    }
+  
+
+
+
+export const getListInviteWishesQueryKey = (token?: string,
+    params?: ListInviteWishesParams,) => {
+    return [
+    `/api/v1/invite/${token}/wishes`, ...(params ? [params]: [])
+    ] as const;
+    }
+
+    
+export const getListInviteWishesQueryOptions = <TData = Awaited<ReturnType<typeof listInviteWishes>>, TError = ValidationErrorResponse | NotFoundResponse>(token: string,
+    params?: ListInviteWishesParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listInviteWishes>>, TError, TData>>, }
+) => {
+
+const {query: queryOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getListInviteWishesQueryKey(token,params);
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof listInviteWishes>>> = ({ signal }) => listInviteWishes(token,params, signal);
+
+      
+
+      
+
+   return  { queryKey, queryFn, enabled: !!(token), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof listInviteWishes>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type ListInviteWishesQueryResult = NonNullable<Awaited<ReturnType<typeof listInviteWishes>>>
+export type ListInviteWishesQueryError = ValidationErrorResponse | NotFoundResponse
+
+
+export function useListInviteWishes<TData = Awaited<ReturnType<typeof listInviteWishes>>, TError = ValidationErrorResponse | NotFoundResponse>(
+ token: string,
+    params: undefined |  ListInviteWishesParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof listInviteWishes>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listInviteWishes>>,
+          TError,
+          Awaited<ReturnType<typeof listInviteWishes>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useListInviteWishes<TData = Awaited<ReturnType<typeof listInviteWishes>>, TError = ValidationErrorResponse | NotFoundResponse>(
+ token: string,
+    params?: ListInviteWishesParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listInviteWishes>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listInviteWishes>>,
+          TError,
+          Awaited<ReturnType<typeof listInviteWishes>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useListInviteWishes<TData = Awaited<ReturnType<typeof listInviteWishes>>, TError = ValidationErrorResponse | NotFoundResponse>(
+ token: string,
+    params?: ListInviteWishesParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listInviteWishes>>, TError, TData>>, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary The guestbook — approved wishes, newest first
+ */
+
+export function useListInviteWishes<TData = Awaited<ReturnType<typeof listInviteWishes>>, TError = ValidationErrorResponse | NotFoundResponse>(
+ token: string,
+    params?: ListInviteWishesParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listInviteWishes>>, TError, TData>>, }
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getListInviteWishesQueryOptions(token,params,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+
+
+
+
+/**
+ * Same body as the guest page with `preview: true` and `guest: null`; only `everyone` moments. Works before the invitation is published. 404 for non-members and for events whose invitation has not been created yet.
+
+ * @summary The host's draft in the guest shape (any event member)
+ */
+export const getInvitationPreview = (
+    id: string,
+ signal?: AbortSignal
+) => {
+      
+      
+      return customInstance<PublicInvitation>(
+      {url: `/api/v1/events/${id}/invitation/preview`, method: 'GET', signal
+    },
+      );
+    }
+  
+
+
+
+export const getGetInvitationPreviewQueryKey = (id?: string,) => {
+    return [
+    `/api/v1/events/${id}/invitation/preview`
+    ] as const;
+    }
+
+    
+export const getGetInvitationPreviewQueryOptions = <TData = Awaited<ReturnType<typeof getInvitationPreview>>, TError = UnauthorizedResponse | NotFoundResponse>(id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getInvitationPreview>>, TError, TData>>, }
+) => {
+
+const {query: queryOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetInvitationPreviewQueryKey(id);
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getInvitationPreview>>> = ({ signal }) => getInvitationPreview(id, signal);
+
+      
+
+      
+
+   return  { queryKey, queryFn, enabled: !!(id), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getInvitationPreview>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetInvitationPreviewQueryResult = NonNullable<Awaited<ReturnType<typeof getInvitationPreview>>>
+export type GetInvitationPreviewQueryError = UnauthorizedResponse | NotFoundResponse
+
+
+export function useGetInvitationPreview<TData = Awaited<ReturnType<typeof getInvitationPreview>>, TError = UnauthorizedResponse | NotFoundResponse>(
+ id: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getInvitationPreview>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getInvitationPreview>>,
+          TError,
+          Awaited<ReturnType<typeof getInvitationPreview>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetInvitationPreview<TData = Awaited<ReturnType<typeof getInvitationPreview>>, TError = UnauthorizedResponse | NotFoundResponse>(
+ id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getInvitationPreview>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getInvitationPreview>>,
+          TError,
+          Awaited<ReturnType<typeof getInvitationPreview>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetInvitationPreview<TData = Awaited<ReturnType<typeof getInvitationPreview>>, TError = UnauthorizedResponse | NotFoundResponse>(
+ id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getInvitationPreview>>, TError, TData>>, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary The host's draft in the guest shape (any event member)
+ */
+
+export function useGetInvitationPreview<TData = Awaited<ReturnType<typeof getInvitationPreview>>, TError = UnauthorizedResponse | NotFoundResponse>(
+ id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getInvitationPreview>>, TError, TData>>, }
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetInvitationPreviewQueryOptions(id,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}

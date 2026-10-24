@@ -1,0 +1,135 @@
+{
+  "manifestVersion": 1,
+  "slug": "we-do",
+  "name": "We Do",
+  "kind": "coded",
+  "renderer": "we-do/WeDo",
+  "status": "published",
+  "access": "free",
+  "category": "Wedding",
+  "eventTypes": [
+    "wedding"
+  ],
+  "tags": [
+    "Modern",
+    "Monochrome"
+  ],
+  "position": 9,
+  "palette": "noir-gold",
+  "marketing": {
+    "desc": "Black-and-white portraits, hand-lettered gold and a heart drawn in light. A modern, story-first invitation with a countdown, a timeline and a calendar link.",
+    "style": "Modern",
+    "mood": "Romantic",
+    "demo": {
+      "route": "/demo/we-do"
+    }
+  },
+  "sections": [
+    {
+      "type": "hero",
+      "required": true
+    },
+    {
+      "type": "opening"
+    },
+    {
+      "type": "music",
+      "hiddenUntilFilled": true
+    },
+    {
+      "type": "story"
+    },
+    {
+      "type": "schedule"
+    },
+    {
+      "type": "gallery",
+      "hiddenUntilFilled": true,
+      "max": 12
+    },
+    {
+      "type": "gift"
+    },
+    {
+      "type": "rsvp",
+      "required": true
+    },
+    {
+      "type": "wishes"
+    },
+    {
+      "type": "closing"
+    }
+  ],
+  "capabilities": {
+    "music": true,
+    "gallery": {
+      "max": 12
+    },
+    "wishes": true,
+    "rsvp": true,
+    "gift": true,
+    "timezone": true,
+    "multiMoment": {
+      "max": 10
+    },
+    "languages": [
+      "en",
+      "id"
+    ],
+    "needsWebGL": false,
+    "reducedMotion": "static"
+  },
+  "tokens": {
+    "color": {
+      "bg": "#F3F1EE",
+      "surface": "#FFFFFF",
+      "ink": "#141414",
+      "inkSoft": "#333333",
+      "muted": "#5B5B5B",
+      "accent": "#B79D6E",
+      "accentSoft": "#D9C29A",
+      "line": "#B79D6E",
+      "danger": "#8E4A43",
+      "onAccent": "#141414"
+    },
+    "font": {
+      "display": "playfair",
+      "body": "montserrat",
+      "script": "allura"
+    },
+    "motion": {
+      "level": "full"
+    },
+    "extra": {
+      "inkStrong": "#141414",
+      "mutedStrong": "#444444",
+      "eyebrow": "#6F5A2E",
+      "eyebrowSoft": "#7A6330",
+      "veilFrom": "#FFFFFF",
+      "veilTo": "#E9E6E1"
+    }
+  },
+  "customizable": {
+    "palette": [
+      "noir-gold",
+      "gold-ivory",
+      "stone-linen",
+      "rose-linen",
+      "sage-parchment"
+    ],
+    "fontPairings": [
+      "we-do",
+      "classic-serif"
+    ],
+    "tokens": [
+      "accent"
+    ],
+    "motion": [
+      "full",
+      "calm"
+    ]
+  },
+  "thumbnail": "thumb.webp",
+  "thumbnailMobile": "thumb-mobile.webp"
+}

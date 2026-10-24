@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"time"
 
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -47,16 +48,36 @@ func (r *PublicInviteRepo) Resolve(ctx context.Context, token string) (*publicin
 	return &res, nil
 }
 
-func (r *PublicInviteRepo) Page(ctx context.Context, _ string, res *publicinvite.Resolved) (*invitation.PublicPage, error) {
-	var v invitation.PublicView
-	var invID string
+// ResolveEvent is Resolve for a host: any live event that has an invitation, published or not.
+func (r *PublicInviteRepo) ResolveEvent(ctx context.Context, eventID string) (*publicinvite.Resolved, error) {
+	res := publicinvite.Resolved{EventID: eventID}
 	err := r.pool.QueryRow(ctx,
-		`SELECT e.type, e.couple_a, e.couple_b, e.event_date, e.venue, i.palette, i.content_language, i.id
-		 FROM events e JOIN invitations i ON i.event_id = e.id WHERE e.id = $1`, res.EventID).
-		Scan(&v.EventType, &v.CoupleA, &v.CoupleB, &v.EventDate, &v.Venue, &v.Palette, &v.Language, &invID)
+		`SELECT e.event_date, i.rsvp_deadline FROM events e JOIN invitations i ON i.event_id = e.id
+		 WHERE e.id = $1 AND e.deleted_at IS NULL`, eventID).Scan(&res.EventDate, &res.RSVPDeadline)
+	if errors.Is(err, pgx.ErrNoRows) {
+		return nil, invitation.ErrNotFound
+	}
 	if err != nil {
 		return nil, err
 	}
+	return &res, nil
+}
+
+func (r *PublicInviteRepo) Page(ctx context.Context, _ string, res *publicinvite.Resolved) (*invitation.PublicPage, error) {
+	var v invitation.PublicView
+	var invID string
+	var rawTheme []byte
+	err := r.pool.QueryRow(ctx,
+		`SELECT e.type, e.couple_a, e.couple_b, e.event_date, e.venue, e.timezone, t.slug, COALESCE(t.version, 0), i.palette, i.theme, i.content_language, i.id
+		 FROM events e JOIN invitations i ON i.event_id = e.id LEFT JOIN templates t ON t.id = i.template_id
+		 WHERE e.id = $1`, res.EventID).
+		Scan(&v.EventType, &v.CoupleA, &v.CoupleB, &v.EventDate, &v.Venue, &v.Timezone, &v.Template, &v.TemplateVersion, &v.Palette, &rawTheme, &v.Language, &invID)
+	if err != nil {
+		return nil, err
+	}
+	var theme invitation.Theme
+	_ = json.Unmarshal(rawTheme, &theme)
+	v.Theme = theme.Sanitized()
 	rows, err := r.pool.Query(ctx,
 		`SELECT type, content FROM invitation_sections WHERE invitation_id=$1 AND visible ORDER BY position`, invID)
 	if err != nil {
@@ -78,6 +99,29 @@ func (r *PublicInviteRepo) Page(ctx context.Context, _ string, res *publicinvite
 		return nil, err
 	}
 	page := &invitation.PublicPage{View: &v, RSVPDeadline: res.RSVPDeadline}
+
+	// moments are shown only when the host left the schedule section visible, and only those this
+	// link may see. family_only is never public: nothing maps a guest to the family yet.
+	for _, s := range v.Sections {
+		if s.Type == "schedule" {
+			vis := []string{"everyone"}
+			if res.GuestID != "" {
+				vis = append(vis, "invite_only")
+			}
+			if page.Schedule, err = r.moments(ctx, res.EventID, vis); err != nil {
+				return nil, err
+			}
+			break
+		}
+	}
+	if page.Schedule == nil {
+		page.Schedule = []invitation.PublicMoment{}
+	}
+
+	// only photos that belong to this event are ever referenced (content is host-authored JSON)
+	if page.MediaIDs, err = r.ownedMedia(ctx, res.EventID, invitation.MediaRefs(v.Sections, page.Schedule)); err != nil {
+		return nil, err
+	}
 
 	// gifts are shown only when the host left the gift section visible
 	for _, s := range v.Sections {
@@ -163,9 +207,88 @@ func (r *PublicInviteRepo) SubmitRSVP(ctx context.Context, guestID string, in in
 	return nil
 }
 
-func (r *PublicInviteRepo) AddWish(ctx context.Context, eventID string, guestID *string, author, message string) error {
-	_, err := r.pool.Exec(ctx,
-		`INSERT INTO wishes (event_id, guest_id, author_name, message, phase) VALUES ($1,$2,$3,$4,'pre')`,
-		eventID, guestID, author, message)
-	return err
+func (r *PublicInviteRepo) AddWish(ctx context.Context, eventID string, guestID *string, author, message string) (string, error) {
+	var id string
+	err := r.pool.QueryRow(ctx,
+		`INSERT INTO wishes (event_id, guest_id, author_name, message, phase) VALUES ($1,$2,$3,$4,'pre') RETURNING id::text`,
+		eventID, guestID, author, message).Scan(&id)
+	return id, err
+}
+
+// ListWishes pages approved wishes newest first on (created_at, id). It fetches one extra row to
+// learn whether another page exists, so the last page never carries a cursor.
+func (r *PublicInviteRepo) ListWishes(ctx context.Context, eventID string, limit int, after *invitation.WishCursor) ([]invitation.PublicWish, bool, int, error) {
+	var at *time.Time
+	var id *string
+	if after != nil {
+		at, id = &after.At, &after.ID
+	}
+	rows, err := r.pool.Query(ctx,
+		`SELECT id::text, author_name, message, created_at FROM wishes
+		 WHERE event_id=$1 AND approved AND ($2::timestamptz IS NULL OR (created_at, id) < ($2::timestamptz, $3::uuid))
+		 ORDER BY created_at DESC, id DESC LIMIT $4`, eventID, at, id, limit+1)
+	if err != nil {
+		return nil, false, 0, err
+	}
+	defer rows.Close()
+	items := []invitation.PublicWish{}
+	for rows.Next() {
+		var w invitation.PublicWish
+		if err := rows.Scan(&w.ID, &w.Name, &w.Message, &w.CreatedAt); err != nil {
+			return nil, false, 0, err
+		}
+		items = append(items, w)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, false, 0, err
+	}
+	more := len(items) > limit
+	if more {
+		items = items[:limit]
+	}
+	var total int
+	if err := r.pool.QueryRow(ctx, `SELECT count(*) FROM wishes WHERE event_id=$1 AND approved`, eventID).Scan(&total); err != nil {
+		return nil, false, 0, err
+	}
+	return items, more, total, nil
+}
+
+func (r *PublicInviteRepo) moments(ctx context.Context, eventID string, visibility []string) ([]invitation.PublicMoment, error) {
+	rows, err := r.pool.Query(ctx,
+		`SELECT label, title, venue, address, map_url, venue_note, dress_code, description, starts_at, ends_at, media_id::text
+		 FROM schedule_items WHERE event_id=$1 AND visibility = ANY($2) ORDER BY position`, eventID, visibility)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	out := []invitation.PublicMoment{}
+	for rows.Next() {
+		var m invitation.PublicMoment
+		if err := rows.Scan(&m.Label, &m.Title, &m.Venue, &m.Address, &m.MapURL, &m.VenueNote, &m.DressCode, &m.Description, &m.StartsAt, &m.EndsAt, &m.PhotoID); err != nil {
+			return nil, err
+		}
+		out = append(out, m)
+	}
+	return out, rows.Err()
+}
+
+// ownedMedia keeps the candidate ids that are media rows of this event.
+func (r *PublicInviteRepo) ownedMedia(ctx context.Context, eventID string, candidates []string) ([]string, error) {
+	if len(candidates) == 0 {
+		return nil, nil
+	}
+	rows, err := r.pool.Query(ctx, `SELECT id::text FROM media WHERE event_id=$1 AND id = ANY($2::uuid[])`, eventID, candidates)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var out []string
+	for rows.Next() {
+		var id string
+		if err := rows.Scan(&id); err != nil {
+			return nil, err
+		}
+		out = append(out, id)
+	}
+	return out, rows.Err()
 }

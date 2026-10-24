@@ -5,22 +5,22 @@ import localFont from "next/font/local";
 
 const cormorant = localFont({
   src: [
-    { path: "./fonts/CormorantGaramond-normal.woff2", style: "normal", weight: "300 700" },
-    { path: "./fonts/CormorantGaramond-italic.woff2", style: "italic", weight: "300 700" },
+    { path: "../../public/fonts/cormorant/CormorantGaramond-normal.woff2", style: "normal", weight: "300 700" },
+    { path: "../../public/fonts/cormorant/CormorantGaramond-italic.woff2", style: "italic", weight: "300 700" },
   ],
   display: "swap", variable: "--l-cormorant", adjustFontFallback: false,
 });
-const manrope = localFont({ src: [{ path: "./fonts/Manrope-normal.woff2", style: "normal", weight: "200 800" }], display: "swap", variable: "--l-manrope", adjustFontFallback: false });
+const manrope = localFont({ src: [{ path: "../../public/fonts/manrope/Manrope-normal.woff2", style: "normal", weight: "200 800" }], display: "swap", variable: "--l-manrope", adjustFontFallback: false });
 const bodoni = localFont({
   src: [
-    { path: "./fonts/BodoniModa-normal.woff2", style: "normal", weight: "400 900" },
-    { path: "./fonts/BodoniModa-italic.woff2", style: "italic", weight: "400 900" },
+    { path: "../../public/fonts/bodoni/BodoniModa-normal.woff2", style: "normal", weight: "400 900" },
+    { path: "../../public/fonts/bodoni/BodoniModa-italic.woff2", style: "italic", weight: "400 900" },
   ],
   display: "swap", variable: "--l-bodoni", adjustFontFallback: false,
 });
-const italiana = localFont({ src: [{ path: "./fonts/Italiana-normal.woff2", style: "normal", weight: "400" }], display: "swap", variable: "--l-italiana", adjustFontFallback: false });
-const pinyon = localFont({ src: [{ path: "./fonts/PinyonScript-normal.woff2", style: "normal", weight: "400" }], display: "swap", variable: "--l-pinyon", adjustFontFallback: false });
-const unbounded = localFont({ src: [{ path: "./fonts/Unbounded-normal.woff2", style: "normal", weight: "200 900" }], display: "swap", variable: "--l-unbounded", adjustFontFallback: false });
+const italiana = localFont({ src: [{ path: "../../public/fonts/italiana/Italiana-normal.woff2", style: "normal", weight: "400" }], display: "swap", variable: "--l-italiana", adjustFontFallback: false });
+const pinyon = localFont({ src: [{ path: "../../public/fonts/pinyon/PinyonScript-normal.woff2", style: "normal", weight: "400" }], display: "swap", variable: "--l-pinyon", adjustFontFallback: false });
+const unbounded = localFont({ src: [{ path: "../../public/fonts/unbounded/Unbounded-normal.woff2", style: "normal", weight: "200 900" }], display: "swap", variable: "--l-unbounded", adjustFontFallback: false });
 
 export const landingFontVars = [cormorant, manrope, bodoni, italiana, pinyon, unbounded].map((f) => f.variable).join(" ");
 

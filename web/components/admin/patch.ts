@@ -1,5 +1,8 @@
 // Overlays the prototype's renderVals() output with real data and API-backed handlers.
 import * as M from "./mappers";
+import { hasLiveTemplate } from "@/components/templates/registry";
+import { manifestOf } from "@/lib/kit/manifest";
+import { collectSection } from "./views/SectionForm";
 import { dateToRFC3339, splitNames, typeSlug } from "./onboarding-map";
 
 const GO: Record<string, string> = { invitation: "invitation", guests: "guests", rsvp: "guests", schedule: "events", gift: "gift", seating: "guests", checkin: "checkin", live: "live", final: "todo" };
@@ -15,6 +18,24 @@ export function patchVals(v: any, D: any, logic: any) {
   const base = D.base;
   const cardOf = (e: any, sel: string) => (e.currentTarget as HTMLElement).closest(sel) as HTMLElement;
   const fval = (root: HTMLElement, f: string) => (root.querySelector(`[data-f="${f}"]`) as HTMLInputElement | null)?.value || "";
+
+  // Field errors from the API ("map_url: must be an https:// link…") are what the host needs to see.
+  const apiMsg = (err: any) => {
+    const f = err?.fields ? Object.values(err.fields as Record<string, string>).join(" ") : "";
+    return f || (err?.message ? String(err.message) : "Something went wrong. Please try again.");
+  };
+  // Photos (cover, story, gallery, moments, closing): validated here for a fast answer, by the API for real.
+  const MAX_IMG = 5 << 20;
+  const upload = async (file: File, kind: "photo" | "cover" = "photo"): Promise<string> => {
+    if (!file.type.startsWith("image/")) throw new Error("Please choose an image file (JPEG, PNG or WebP).");
+    if (file.size > MAX_IMG) throw new Error("That photo is larger than 5 MB. Please choose a smaller one.");
+    const fd = new FormData();
+    fd.append("file", file);
+    fd.append("kind", kind);
+    const m = await D.mut("POST", `${base}/media`, fd);
+    D.refresh("media");
+    return m.id as string;
+  };
 
   // ---- identity ---------------------------------------------------------------------------
   const name = D.me?.name || "You";
@@ -188,6 +209,7 @@ export function patchVals(v: any, D: any, logic: any) {
     run(() => D.mut("POST", `${base}/schedule`, {
       title: m.name + " (copy)", starts_at: m.starts_at, ends_at: m.ends_at, venue: m.venue === "Add a venue" ? null : m.venue,
       address: m.addr, dress_code: m.dress === "—" ? "" : m.dress, description: m.desc, visibility: M.VIS_VALUE[m.vis] || "everyone",
+      label: m.label, map_url: m.map, venue_note: m.note, ...(m.photoId ? { media_id: m.photoId } : {}),
     }), "Moment duplicated.", ["schedule"]);
   };
   const move = (e: any, dir: number) => {
@@ -206,11 +228,27 @@ export function patchVals(v: any, D: any, logic: any) {
     const end = val("end");
     const starts_at = date && start ? new Date(`${date}T${start}`).toISOString() : m.starts_at;
     const ends_at = date && end ? new Date(`${date}T${end}`).toISOString() : "";
+    const map = val("map").trim();
+    if (map && !/^https:\/\//i.test(map)) { say("The map link must start with https://"); return; }
+    const photo = (card.querySelector('[data-f="photo"]') as HTMLInputElement | null)?.files?.[0];
+    const extra = card.querySelector('[data-f="label"]') ? { label: val("label").trim(), venue_note: val("note").trim() } : {};
     D.setOpenIds((o: any) => ({ ...o, [m.uid]: false }));
-    run(() => D.mut("PATCH", `${base}/schedule/${m.uid}`, {
-      title: val("title") || m.name, starts_at, ends_at, venue: val("venue") || null,
-      address: val("address"), dress_code: val("dress"), description: val("desc"), visibility: M.VIS_VALUE[val("vis")] || "everyone",
-    }), "Moment saved.", ["schedule", "overview"]);
+    (async () => {
+      try {
+        const media = photo ? { media_id: await upload(photo) } : {};
+        await D.mut("PATCH", `${base}/schedule/${m.uid}`, {
+          title: val("title") || m.name, starts_at, ends_at, venue: val("venue") || null,
+          address: val("address"), dress_code: val("dress"), description: val("desc"), visibility: M.VIS_VALUE[val("vis")] || "everyone",
+          map_url: map, ...extra, ...media,
+        });
+        say("Moment saved.");
+        D.refresh("schedule", "overview");
+      } catch (err) { D.setOpenIds((o: any) => ({ ...o, [m.uid]: true })); say(apiMsg(err)); }
+    })();
+  };
+  v.evClearPhoto = (e: any) => {
+    const u = idOf(moments, logic.d(e).v); if (!u) return;
+    run(() => D.mut("PATCH", `${base}/schedule/${u}`, { media_id: "" }), "Photo removed.", ["schedule"]);
   };
 
   // ---- gifts / registry ----------------------------------------------------------------------
@@ -286,16 +324,40 @@ export function patchVals(v: any, D: any, logic: any) {
 
   // ---- invitation / design -------------------------------------------------------------------
   const pubd = !!D.invitation?.published;
-  const setPalette = (i: number) => run(() => D.mut("PATCH", `${base}/invitation`, { palette: M.PROTO_TO_PALETTE[i] }), "Your design has been updated.", ["invitation"]);
+  const setPalette = (i: number) => run(() => D.mut("PATCH", `${base}/invitation`, { palette: M.paletteValue(i) }), "Your design has been updated.", ["invitation"]);
   const origSetPal = v.setPal, origUse = v.useDesign;
   v.setPal = (e: any) => { origSetPal(e); setPalette(+logic.d(e).v); };
+  // The design list is the catalog (GET /templates), matched by slug: one card per published design.
+  const tplList = D.templatesRaw as any[];
+  const MOCK: Record<string, string> = { Wedding: "Ana & Ken", Anniversary: "50 Years", "17th Birthday": "Nadia, 17", Editorial: "A New Chapter", Birthday: "Happy 30", "Product Launch": "Launch 26", Brand: "Opening Night" };
+  const curTpl = tplList.find((x) => x.id === D.invitation?.template_id);
+  const tplSlug = curTpl?.slug as string | undefined;
+  const manifest = manifestOf(tplSlug);
+  v.designs = tplList
+    .map((t) => ({ t, tags: (t.tags as string[]).join(" · ") }))
+    .filter(({ t, tags }) => (S.dcat === "All" || t.category === S.dcat || tags.includes(S.dcat)) && t.name.toLowerCase().includes((S.dq || "").toLowerCase()))
+    .map(({ t, tags }) => {
+      const pi = M.paletteIndex(t.palette) ?? 0, pp = logic.pals[pi];
+      return { name: t.name, slug: t.slug, cat: t.category, tags, mock: MOCK[t.category] ?? t.name, bg: pp.bg, fg: pp.fg, photo: `linear-gradient(165deg,color-mix(in oklab,${pp.ac} 45%,${pp.bg}),${pp.ac})`, cur: t.id === D.invitation?.template_id, pal: pi, thumb: ((t.thumbnail_mobile ?? t.thumbnail) as string | null) ?? null };
+    });
+  v.noDesigns = !v.designs.length;
+  // theme panel: only for a design whose manifest lists something a host may change
+  const can = manifest?.customizable;
+  v.themeApi = manifest && can && (can.palette.length || can.tokens.length || can.motion.length || can.fontPairings.length > 1) && D.invitation
+    ? { manifest, theme: D.invitation.theme ?? {}, save: (theme: any) => D.mut("PATCH", `${base}/invitation`, { theme }).then(() => { D.refresh("invitation"); say(Object.keys(theme).length ? "Your theme has been saved." : "Back to the design's own look."); }) }
+    : null;
+  if (curTpl) v.designName = curTpl.name;
   v.useDesign = (e: any) => {
     origUse(e);
     const d = logic.d(e);
-    const t = (D.templatesRaw as any[]).find((x) => x.name === d.v);
-    run(() => D.mut("PATCH", `${base}/invitation`, { ...(t ? { template_id: t.id } : {}), palette: M.PROTO_TO_PALETTE[+d.pal] }), "Your design has been updated.", ["invitation"]);
+    const t = tplList.find((x) => x.slug === d.v);
+    run(() => D.mut("PATCH", `${base}/invitation`, { ...(t ? { template_id: t.id } : {}), palette: M.paletteValue(+d.pal) }), "Your design has been updated.", ["invitation"]);
   };
-  const SEC: Record<string, string> = { cover: "hero", story: "story", events: "schedule", rsvp: "rsvp", gift: "gift" };
+  // A template with a coded renderer opens its real draft in a new tab on Preview (other designs keep the phone mock);
+  // one with a manifest gets the schema-driven section form (docs/17 §11).
+  const origOpenPreview = v.openPreview;
+  v.openPreview = () => { if (hasLiveTemplate(tplSlug) && D.id) window.open(`/preview/${D.id}`, "_blank", "noopener"); else origOpenPreview(); };
+  const SEC: Record<string, string> = { cover: "hero", main: "opening", story: "story", events: "schedule", gallery: "gallery", rsvp: "rsvp", wishes: "wishes", gift: "gift", music: "music", closing: "closing" };
   const apiSecs: any[] = D.invitation?.sections ?? [];
   const apiSec = (id: string) => apiSecs.find((x) => x.type === SEC[id]);
   v.secs = v.secs.map((x: any) => { const a = apiSec(x.id); return a ? { ...x, c: a.visible ? "var(--ok)" : "var(--wt)" } : x; });
@@ -310,6 +372,7 @@ export function patchVals(v: any, D: any, logic: any) {
   const cur = apiSec(S.sec);
   v.secHeading = cur?.content?.title ?? v.secName;
   v.secBody = cur?.content?.body ?? "";
+  v.secId = S.sec;
   v.saveInv = (e: any) => {
     const panel = (e.currentTarget as HTMLElement).closest(".card, section, div[data-inv]") as HTMLElement | null;
     const root = (panel?.parentElement ?? document.body) as HTMLElement;
@@ -321,14 +384,67 @@ export function patchVals(v: any, D: any, logic: any) {
       calls.push(D.mut("PATCH", `${base}/invitation/sections/${hero.id}`, { content }));
     }
     const field = (f: string) => root.querySelector(`[data-f="${f}"]`) as HTMLInputElement | null;
-    // Generic sections (story, moments, gift, closing…): heading + body are what guests read.
-    if (cur && field("body") && cur.type !== "hero") {
-      calls.push(D.mut("PATCH", `${base}/invitation/sections/${cur.id}`, { content: { ...(cur.content || {}), title: field("heading")?.value ?? "", body: field("body")?.value ?? "" } }));
+    const inPanel = (sel: string) => [...(panel ?? root).querySelectorAll<HTMLInputElement>(sel)];
+    // One PATCH per section: heading + body (generic sections), plus what the Gilded Seal panels add.
+    if (cur && cur.type !== "hero") {
+      let content: Record<string, any> | null = null;
+      let visible: boolean | undefined;
+      if (field("body")) content = { ...(cur.content || {}), title: field("heading")?.value ?? "", body: field("body")?.value ?? "" };
+      const form = manifest ? collectSection(panel ?? root, cur.type, cur.content || {}) : null;
+      if (form) {
+        content = { ...(content ?? cur.content ?? {}), ...form.content };
+        visible = form.visible;
+      }
+      if (content) calls.push(D.mut("PATCH", `${base}/invitation/sections/${cur.id}`, { content, ...(visible !== undefined ? { visible } : {}) }));
     }
     const by = field("rsvpBy");
     if (by) calls.push(D.mut("PATCH", `${base}/invitation`, { rsvp_deadline: by.value ? new Date(`${by.value}T23:59:59Z`).toISOString() : "" }));
     if (!calls.length) return say("Your changes have been saved.");
-    run(async () => { await Promise.all(calls); }, "Your changes have been saved.", ["invitation", "overview"]);
+    (async () => {
+      try { await Promise.all(calls); say("Your changes have been saved."); D.refresh("invitation", "overview"); } catch (err) { say(apiMsg(err)); }
+    })();
+  };
+
+  // ---- section form: photos and structured content (docs/15 §4.1, docs/17 §11.2) --------------
+  // Photo controls act at once (upload, then merge the id into the section); text fields wait for "Save changes".
+  const secOf = (type: string) => apiSecs.find((x) => x.type === type);
+  const patchSection = async (type: string, patch: Record<string, any>, visible?: boolean) => {
+    const s = secOf(type);
+    if (!s) throw new Error("Pick a design with this section under Design first.");
+    await D.mut("PATCH", `${base}/invitation/sections/${s.id}`, { content: { ...(s.content || {}), ...patch }, ...(visible !== undefined ? { visible } : {}) });
+    D.refresh("invitation");
+  };
+  const act = async (fn: () => Promise<unknown>, ok: string) => {
+    try { await fn(); say(ok); } catch (err) { say(apiMsg(err)); }
+  };
+  const maxGallery = manifest?.capabilities.gallery.max ?? 12;
+  v.sf = !manifest ? null : {
+    has: (type: string) => !!secOf(type),
+    content: (type: string) => secOf(type)?.content ?? {},
+    mediaUrl: (id?: string | null) => (id ? ((D.mediaRaw as any[]).find((m) => m.id === id)?.url as string | undefined) : undefined),
+    maxGallery,
+    /** Set a single-photo field (hero.photo_id, closing.photo_id). `file` null clears it. */
+    setPhoto: (type: string, field: string, file: File | null, kind: "photo" | "cover" = "photo") =>
+      act(async () => patchSection(type, { [field]: file ? await upload(file, kind) : "" }), file ? "Photo saved." : "Photo removed."),
+    /** A photo-id list (story.photo_ids) keeps one slot per photo; a cleared slot is "". */
+    setPhotoAt: (type: string, field: string, index: number, slots: number, file: File | null) =>
+      act(async () => {
+        const ids: string[] = [...((secOf(type)?.content?.[field] as string[]) ?? [])];
+        while (ids.length < slots) ids.push("");
+        ids[index] = file ? await upload(file) : "";
+        await patchSection(type, { [field]: ids });
+      }, file ? "Photo saved." : "Photo removed."),
+    addGallery: (files: File[]) =>
+      act(async () => {
+        const have: any[] = [...((secOf("gallery")?.content?.photos as any[]) ?? [])];
+        const room = maxGallery - have.length;
+        if (room <= 0) throw new Error(`The gallery holds up to ${maxGallery} photos.`);
+        for (const f of files.slice(0, room)) have.push({ id: await upload(f), alt: "" });
+        await patchSection("gallery", { photos: have }, true); // photos make the section show
+        if (files.length > room) throw new Error(`Only ${room} more photo${room === 1 ? "" : "s"} fit; the rest were skipped.`);
+      }, "Photos added."),
+    removeGallery: (id: string) =>
+      act(async () => patchSection("gallery", { photos: ((secOf("gallery")?.content?.photos as any[]) ?? []).filter((p) => p.id !== id) }), "Photo removed."),
   };
   const publishReal = async (after?: () => void) => {
     try {
@@ -350,9 +466,9 @@ export function patchVals(v: any, D: any, logic: any) {
     if (S.ob < 7) { logic.setState({ ob: S.ob + 1 }); return; }
     run(async () => {
       const [a, b] = splitNames(S.obNames);
-      const ev = await D.mut("POST", "/api/v1/events", { type: typeSlug(S.obType), couple_a: a, couple_b: b, event_date: dateToRFC3339(S.obDate), venue: S.obVenue || null });
+      const ev = await D.mut("POST", "/api/v1/events", { type: typeSlug(S.obType), couple_a: a, couple_b: b, event_date: dateToRFC3339(S.obDate), venue: S.obVenue || null, timezone: Intl.DateTimeFormat().resolvedOptions().timeZone });
       const eb = `/api/v1/events/${ev.id}`;
-      await D.mut("PATCH", `${eb}/invitation`, { palette: M.PROTO_TO_PALETTE[S.pal] });
+      await D.mut("PATCH", `${eb}/invitation`, { palette: M.paletteValue(S.pal) });
       for (const n of S.obGuests) await D.mut("POST", `${eb}/guests`, { name: n });
       D.setEventId(ev.id);
       logic.setState({ obOpen: false, ob: 0, obNames: "", obDate: "", obVenue: "", obGuests: [] });

@@ -5,6 +5,7 @@ import (
 	"strings"
 
 	eventapp "github.com/mula/mula/internal/application/event"
+	"github.com/mula/mula/internal/domain/event"
 )
 
 type EventHandler struct{ svc *eventapp.Service }
@@ -40,9 +41,12 @@ func (h *EventHandler) Create(w http.ResponseWriter, r *http.Request) {
 		writeErr(w, r, validationErr(map[string]string{"type": "required"}))
 		return
 	}
+	if !timezoneOK(w, r, req.Timezone) {
+		return
+	}
 	u := CurrentUser(r.Context())
 	e, err := h.svc.Create(r.Context(), u.ID, u.Email, eventapp.CreateInput{
-		Type: req.Type, CoupleA: req.CoupleA, CoupleB: req.CoupleB, EventDate: req.EventDate, Venue: req.Venue,
+		Type: req.Type, CoupleA: req.CoupleA, CoupleB: req.CoupleB, EventDate: req.EventDate, Venue: req.Venue, Timezone: req.Timezone,
 	})
 	if err != nil {
 		writeErr(w, r, err)
@@ -67,8 +71,11 @@ func (h *EventHandler) Patch(w http.ResponseWriter, r *http.Request) {
 	if !decode(w, r, &req) {
 		return
 	}
+	if !timezoneOK(w, r, req.Timezone) {
+		return
+	}
 	e, err := h.svc.Update(r.Context(), eventID(r.Context()), eventapp.Patch{
-		Type: req.Type, CoupleA: req.CoupleA, CoupleB: req.CoupleB, EventDate: req.EventDate, Venue: req.Venue,
+		Type: req.Type, CoupleA: req.CoupleA, CoupleB: req.CoupleB, EventDate: req.EventDate, Venue: req.Venue, Timezone: req.Timezone,
 	})
 	if err != nil {
 		writeErr(w, r, err)
@@ -83,4 +90,13 @@ func (h *EventHandler) Delete(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	w.WriteHeader(http.StatusNoContent)
+}
+
+// timezoneOK writes the field error and returns false when a supplied zone is not a loadable IANA name.
+func timezoneOK(w http.ResponseWriter, r *http.Request, tz *string) bool {
+	if tz == nil || event.ValidTimezone(*tz) {
+		return true
+	}
+	writeErr(w, r, validationErr(map[string]string{"timezone": "unknown time zone"}))
+	return false
 }

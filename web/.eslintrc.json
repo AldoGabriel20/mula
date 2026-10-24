@@ -1,4 +1,4 @@
 {
   "extends": "next/core-web-vitals",
-  "ignorePatterns": [".next/", "node_modules/", "tests/e2e/"]
+  "ignorePatterns": [".next/", "node_modules/", "tests/e2e/", "lib/api/generated.ts"]
 }

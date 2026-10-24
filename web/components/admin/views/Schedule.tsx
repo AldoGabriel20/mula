@@ -131,8 +131,29 @@ export function ScheduleView({ v: V }: { v: any }) {
                           </label>{" "}
                           <label className="f">
                             Map link
-                            <input className="inp" placeholder="Paste a Google Maps link" />
+                            <input className="inp" data-f="map" type="url" inputMode="url" placeholder="Paste a Google Maps link" defaultValue={e.map} />
                           </label>
+                          {V.sf && (
+                            <>
+                              <label className="f">
+                                Small heading
+                                <input className="inp" data-f="label" maxLength={40} placeholder="e.g. The Ceremony" defaultValue={e.label} />
+                              </label>
+                              <label className="f">
+                                About the place
+                                <input className="inp" data-f="note" maxLength={160} placeholder="A short description of the location" defaultValue={e.note} />
+                              </label>
+                              <label className="f">
+                                Photo
+                                <input className="inp" data-f="photo" type="file" accept="image/*" />
+                                {e.photoId && (
+                                  <button type="button" className="btn btn-t btn-s" data-v={e.id} onClick={V.evClearPhoto} style={{ justifySelf: "start" }}>
+                                    Remove current photo
+                                  </button>
+                                )}
+                              </label>
+                            </>
+                          )}
                           <label className="f">
                             Dress code
                             <input className="inp" data-f="dress" defaultValue={e.dress === "—" ? "" : e.dress} />

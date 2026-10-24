@@ -56,6 +56,7 @@ var policy = map[string]tier{
 	"GET /api/v1/events/{id}/groups":                       tEditor,
 	"POST /api/v1/events/{id}/groups":                      tEditor,
 	"GET /api/v1/events/{id}/invitation":                   tMember,
+	"GET /api/v1/events/{id}/invitation/preview":           tMember,
 	"PATCH /api/v1/events/{id}/invitation":                 tEditor,
 	"POST /api/v1/events/{id}/invitation/sections":         tEditor,
 	"POST /api/v1/events/{id}/invitation/sections/reorder": tEditor,

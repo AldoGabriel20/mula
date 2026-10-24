@@ -4,6 +4,7 @@ package main
 import (
 	"context"
 	"errors"
+	"github.com/mula/mula/internal/catalog"
 	"net/http"
 	"os"
 	"os/signal"
@@ -44,6 +45,10 @@ func main() {
 		os.Exit(1)
 	}
 	deps := httptransport.Deps{Log: log, CORSOrigin: cfg.CORSOrigin, Secure: cfg.Env != "dev", ClientIP: ipr}
+	if cfg.Env == "dev" && cfg.DevAuthRatePerMin > 0 { // browser test suites only; never outside dev
+		deps.AuthRatePerMin, deps.AuthRateBurst = cfg.DevAuthRatePerMin, max(cfg.DevAuthRateBurst, cfg.DevAuthRatePerMin)
+		log.Warn("auth/guest rate limits raised (DEV_AUTH_RATE_PER_MIN)", "per_min", deps.AuthRatePerMin)
+	}
 
 	// Wire auth only when a database is configured; otherwise serve health-only.
 	if cfg.DatabaseURL != "" {
@@ -68,11 +73,20 @@ func main() {
 		ovRepo := postgres.NewOverviewRepo(pool)
 		deps.Overview = overview.NewService(ovRepo).WithActivity(ovRepo)
 		deps.Guest = guestapp.NewService(postgres.NewGuestRepo(pool)).WithMailer(mailer, cfg.PublicBaseURL)
-		deps.Invitation = invapp.NewService(postgres.NewInvitationRepo(pool))
+		// The section content schemas live in the catalog; a broken catalog must not reach production.
+		cat, problems := catalog.Load(cfg.CatalogDir)
+		problems = append(problems, cat.Validate(catalog.Options{})...)
+		if len(problems) > 0 {
+			for _, p := range problems {
+				log.Error("catalog", "problem", p.String())
+			}
+			log.Error("template catalog is invalid", "dir", cfg.CatalogDir)
+			os.Exit(1)
+		}
+		deps.Invitation = invapp.NewService(postgres.NewInvitationRepo(pool)).WithContentSchema(cat.ContentChecker()).WithThemeSchema(cat.ThemeChecker())
 		deps.Schedule = schapp.NewService(postgres.NewScheduleRepo(pool))
 		deps.Task = taskapp.NewService(postgres.NewTaskRepo(pool))
 		deps.Settings = setapp.NewService(postgres.NewSettingsRepo(pool))
-		deps.Public = pubapp.NewService(postgres.NewPublicInviteRepo(pool))
 		deps.Ops = opsapp.NewService(postgres.NewOpsRepo(pool))
 
 		store, err := storage.NewLocal(cfg.MediaDir)
@@ -90,7 +104,9 @@ func main() {
 			mediaSecret = "dev-insecure-media-secret"
 			log.Warn("using insecure dev media signing secret")
 		}
-		deps.Gift = giftapp.NewService(postgres.NewGiftRepo(pool), store, storage.NewSigner(mediaSecret))
+		mediaSigner := storage.NewSigner(mediaSecret) // one signer: the media route verifies what both services mint
+		deps.Gift = giftapp.NewService(postgres.NewGiftRepo(pool), store, mediaSigner)
+		deps.Public = pubapp.NewService(postgres.NewPublicInviteRepo(pool), mediaSigner)
 
 		// A missing webhook secret outside dev would make webhooks forgeable → refuse to start.
 		secret := cfg.PaymentSecret

@@ -16,7 +16,11 @@ type Item struct {
 	Address     string
 	DressCode   string
 	Description string
-	Visibility  string // everyone | invite_only | family_only
+	Visibility  string  // everyone | invite_only | family_only
+	Label       string  // eyebrow above the title, e.g. "The Ceremony"
+	MapURL      string  // "" or an https:// link
+	VenueNote   string  // short location description
+	MediaID     *string // moment photo (a media row of the same event)
 	Position    int
 }
 
@@ -24,6 +28,9 @@ type Item struct {
 func ValidVisibility(v string) bool {
 	return v == "everyone" || v == "invite_only" || v == "family_only"
 }
+
+// ErrBadMedia: media_id is not a photo of this event.
+var ErrBadMedia = errors.New("unknown photo")
 
 var ErrBadRange = errors.New("schedule item ends before it starts")
 

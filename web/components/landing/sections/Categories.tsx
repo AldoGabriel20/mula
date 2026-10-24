@@ -2,7 +2,7 @@
 
 import { useRef } from "react";
 import Link from "next/link";
-import { InviteScreen } from "../InviteScreen";
+import { TemplateShot } from "../TemplateShot";
 import { BY_SLUG, CATEGORIES } from "../data";
 import { SERIF } from "../fonts";
 import { TH, useLang } from "../i18n";
@@ -57,7 +57,7 @@ export function Categories() {
                   </div>
                   <div style={{ fontFamily: SERIF, fontWeight: 300, fontSize: "clamp(36px,3.2vw,52px)", lineHeight: 0.95, letterSpacing: "-.02em", marginTop: 22, maxWidth: "80%" }}>{tr(c.name)}</div>
                   <div style={{ fontSize: 14, opacity: 0.82, marginTop: 12, maxWidth: "62%" }}>{tr(c.line)}</div>
-                  <div style={{ position: "absolute", right: "-6%", bottom: "-24%", width: "54%", aspectRatio: "9/19.5", transform: "rotate(-6deg)" }}><InviteScreen d={tp.d} /></div>
+                  <div style={{ position: "absolute", right: "-6%", bottom: "-24%", width: "54%", aspectRatio: "9/19.5", transform: "rotate(-6deg)" }}><TemplateShot t={tp} /></div>
                   <span style={{ marginTop: "auto", fontSize: 13, fontWeight: 600, display: "flex", gap: 8, position: "relative" }}>{tr("Explore")} <span>→</span></span>
                 </Link>
               );

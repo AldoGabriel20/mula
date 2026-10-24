@@ -13,6 +13,8 @@ tags:
   - name: health
   - name: me
   - name: events
+  - name: invite
+  - name: templates
 
 paths:
   /healthz:
@@ -83,6 +85,178 @@ paths:
         "401":
           $ref: "#/components/responses/Unauthorized"
 
+  # ---- guest-facing invitation (no session: the token in the path is the credential) ----
+  /api/v1/invite/{token}:
+    get:
+      tags: [invite]
+      summary: A published invitation, guest-safe (event link or a guest's personal link)
+      description: >
+        Never cached (`Cache-Control: private, no-store`). A personal link adds `guest` and records the
+        first open. Unknown, unpublished and revoked tokens are indistinguishable (404).
+      operationId: getInvite
+      security: []
+      parameters:
+        - $ref: "#/components/parameters/InviteToken"
+      responses:
+        "200":
+          description: the invitation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PublicInvitation"
+        "404":
+          $ref: "#/components/responses/NotFound"
+
+  /api/v1/templates:
+    get:
+      summary: The design catalog (public, cacheable 300 s)
+      description: Published platform designs in picker order. Retired designs are not listed.
+      tags: [templates]
+      responses:
+        "200":
+          description: the catalog
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data: { type: array, items: { $ref: "#/components/schemas/CatalogTemplate" } }
+
+  /api/v1/templates/{slug}:
+    get:
+      summary: One design with its full manifest (public, cacheable 300 s)
+      tags: [templates]
+      parameters:
+        - { name: slug, in: path, required: true, schema: { type: string } }
+      responses:
+        "200":
+          description: the entry and its manifest (sections, tokens, customizable, capabilities, marketing)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  template: { $ref: "#/components/schemas/CatalogTemplate" }
+                  manifest: { type: object, description: "catalog/templates/<slug>/manifest.json as synced" }
+        "404":
+          $ref: "#/components/responses/NotFound"
+
+  /api/v1/invite/{token}/rsvp:
+    post:
+      tags: [invite]
+      summary: Reply to the invitation (personal link only)
+      operationId: submitInviteRsvp
+      security: []
+      parameters:
+        - $ref: "#/components/parameters/InviteToken"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/InviteRsvp"
+      responses:
+        "204":
+          description: reply stored
+        "400":
+          $ref: "#/components/responses/ValidationError"
+        "403":
+          description: the link is not personal (`personal_link_required`)
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Error" }
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "422":
+          description: replies are closed (`rsvp_closed`)
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Error" }
+
+  /api/v1/invite/{token}/wish:
+    post:
+      tags: [invite]
+      summary: Leave a wish
+      description: >
+        A personal link attributes the wish to its guest (the `name` field is ignored). A generic link
+        needs a `name`. Angle brackets are stripped from both.
+      operationId: createInviteWish
+      security: []
+      parameters:
+        - $ref: "#/components/parameters/InviteToken"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/InviteWishCreate"
+      responses:
+        "201":
+          description: the stored wish
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InviteWish"
+        "400":
+          $ref: "#/components/responses/ValidationError"
+        "404":
+          $ref: "#/components/responses/NotFound"
+
+  /api/v1/invite/{token}/wishes:
+    get:
+      tags: [invite]
+      summary: The guestbook — approved wishes, newest first
+      description: >
+        Keyset-paginated. Pass the previous page's `next_cursor` as `cursor`; the last page has
+        `next_cursor: null`. Readable on both link kinds. `Cache-Control: private, max-age=15`.
+      operationId: listInviteWishes
+      security: []
+      parameters:
+        - $ref: "#/components/parameters/InviteToken"
+        - name: limit
+          in: query
+          required: false
+          description: page size; out-of-range or non-numeric values fall back to the default / are clamped
+          schema: { type: integer, minimum: 1, maximum: 50, default: 20 }
+        - $ref: "#/components/parameters/Cursor"
+      responses:
+        "200":
+          description: a page of wishes
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InviteWishList"
+        "400":
+          $ref: "#/components/responses/ValidationError"
+        "404":
+          $ref: "#/components/responses/NotFound"
+
+  /api/v1/events/{id}/invitation/preview:
+    get:
+      tags: [invite]
+      summary: The host's draft in the guest shape (any event member)
+      description: >
+        Same body as the guest page with `preview: true` and `guest: null`; only `everyone` moments.
+        Works before the invitation is published. 404 for non-members and for events whose
+        invitation has not been created yet.
+      operationId: getInvitationPreview
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        "200":
+          description: the draft invitation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PublicInvitation"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+
 components:
   securitySchemes:
     cookieAuth:
@@ -105,6 +279,12 @@ components:
       in: query
       required: false
       schema: { type: string }
+    InviteToken:
+      name: token
+      in: path
+      required: true
+      description: opaque capability token (event public token or a guest's personal token)
+      schema: { type: string }
 
   responses:
     Unauthorized:
@@ -114,6 +294,11 @@ components:
           schema: { $ref: "#/components/schemas/Error" }
     ValidationError:
       description: request failed validation
+      content:
+        application/json:
+          schema: { $ref: "#/components/schemas/Error" }
+    NotFound:
+      description: unknown, unpublished or not visible to the caller
       content:
         application/json:
           schema: { $ref: "#/components/schemas/Error" }
@@ -175,6 +360,182 @@ components:
           type: array
           items: { $ref: "#/components/schemas/Event" }
         next_cursor: { type: string, nullable: true }
+
+    Theme:
+      type: object
+      description: >
+        The host's visual overrides of a template (docs/17 §6, §10.2); {} when nothing is changed. Writes are checked
+        against the template manifest's `customizable` lists and the AA 4.5:1 text-contrast rule, so a guest only ever
+        sees plain ids and #RRGGBB colours.
+      properties:
+        palette: { type: string, example: rose-linen, description: "catalog palette id (a legacy label such as Blush is accepted on write and stored as its id)" }
+        fontPairing: { type: string, example: classic-serif }
+        motion: { type: string, enum: [full, calm, off] }
+        tokens:
+          type: object
+          description: colour role -> #RRGGBB, only roles the template lists in `customizable.tokens`
+          additionalProperties: { type: string, pattern: "^#[0-9A-Fa-f]{6}$" }
+
+    CatalogTemplate:
+      type: object
+      description: one design of the catalog; the fields after `palette` come from the synced manifest (absent for a design that has none yet)
+      properties:
+        id: { type: string, format: uuid }
+        slug: { type: string, example: gilded-seal }
+        name: { type: string }
+        category: { type: string }
+        tags: { type: array, items: { type: string } }
+        palette: { type: string, description: "legacy palette label" }
+        kind: { type: string, enum: [coded, themed] }
+        status: { type: string, enum: [published, draft] }
+        access: { type: string, enum: [free, premium] }
+        version: { type: integer }
+        thumbnail: { type: string, nullable: true, example: /templates/gilded-seal/thumb.webp, description: "hero at 1280×800, 640 wide" }
+        thumbnail_mobile: { type: string, nullable: true, example: /templates/gilded-seal/thumb-mobile.webp, description: "hero at 390×844, 260 wide" }
+        customizable: { type: object, nullable: true, description: "what a host may change: palette[], fontPairings[], tokens[], motion[]" }
+        capabilities: { type: object, nullable: true }
+        marketing: { type: object, nullable: true }
+
+    PublicInvitation:
+      type: object
+      description: guest-safe projection of an invitation (an explicit allowlist, see docs/15 §5.4)
+      required: [template, template_version, timezone, event_type, couple_a, couple_b, event_date, venue, palette, theme, language, sections, schedule, media, preview, gifts, gift_methods, live, rsvp_deadline, guest]
+      properties:
+        template: { type: string, nullable: true, example: gilded-seal, description: "template slug, null when none was picked" }
+        timezone: { type: string, example: Asia/Jakarta, description: "IANA zone every date is printed in" }
+        event_type: { type: string, example: wedding }
+        couple_a: { type: string, nullable: true }
+        couple_b: { type: string, nullable: true }
+        event_date: { type: string, format: date-time, nullable: true }
+        venue: { type: string, nullable: true }
+        palette: { type: string }
+        template_version: { type: integer, description: "templates.version of the picked template, 0 when none" }
+        theme: { $ref: "#/components/schemas/Theme" }
+        language: { type: string, example: en }
+        sections:
+          type: array
+          description: visible sections in order; `content` is host-authored free-form JSON, render as text
+          items: { $ref: "#/components/schemas/InviteSection" }
+        schedule:
+          type: array
+          description: moments this link may see (empty when the schedule section is hidden)
+          items: { $ref: "#/components/schemas/InviteMoment" }
+        media:
+          type: object
+          description: signed, session-less photo URLs by media id; only photos of this event are listed
+          additionalProperties: { type: string }
+        preview: { type: boolean, description: "true only on the host's draft view" }
+        gifts:
+          type: array
+          items: { $ref: "#/components/schemas/InviteGift" }
+        gift_methods:
+          type: array
+          items: { $ref: "#/components/schemas/InviteGiftMethod" }
+        live:
+          nullable: true
+          allOf:
+            - $ref: "#/components/schemas/InviteLive"
+        rsvp_deadline: { type: string, format: date-time, nullable: true }
+        guest:
+          nullable: true
+          description: present only on a personal link
+          allOf:
+            - $ref: "#/components/schemas/InviteGuest"
+
+    InviteSection:
+      type: object
+      required: [type, content]
+      properties:
+        type: { type: string, example: hero }
+        content:
+          type: object
+          additionalProperties: true
+
+    InviteMoment:
+      type: object
+      required: [label, title, starts_at, ends_at, venue, address, map_url, venue_note, dress_code, description, photo_id]
+      properties:
+        label: { type: string }
+        title: { type: string }
+        starts_at: { type: string, format: date-time, nullable: true }
+        ends_at: { type: string, format: date-time, nullable: true }
+        venue: { type: string, nullable: true }
+        address: { type: string }
+        map_url: { type: string, description: "empty or an https:// link" }
+        venue_note: { type: string }
+        dress_code: { type: string }
+        description: { type: string }
+        photo_id: { type: string, format: uuid, nullable: true, description: "key into `media`" }
+
+    InviteGift:
+      type: object
+      required: [title, description, url, target_amount]
+      properties:
+        title: { type: string }
+        description: { type: string }
+        url: { type: string, nullable: true }
+        target_amount: { type: number, nullable: true }
+
+    InviteGiftMethod:
+      type: object
+      required: [type, title, detail, copy_value]
+      properties:
+        type: { type: string, enum: [bank, wallet, physical] }
+        title: { type: string }
+        detail: { type: string }
+        copy_value: { type: string }
+
+    InviteLive:
+      type: object
+      required: [provider, stream_url, status, starts_at]
+      properties:
+        provider: { type: string }
+        stream_url: { type: string }
+        status: { type: string, enum: [scheduled, live] }
+        starts_at: { type: string, format: date-time, nullable: true }
+
+    InviteGuest:
+      type: object
+      required: [name, rsvp_status, party_size, max_party]
+      properties:
+        name: { type: string }
+        rsvp_status: { type: string, enum: [pending, "yes", "no"] }
+        party_size: { type: integer }
+        max_party: { type: integer, description: "1 + the plus-ones the host allowed" }
+
+    InviteRsvp:
+      type: object
+      required: [status, party_size]
+      properties:
+        status: { type: string, enum: ["yes", "no"] }
+        party_size: { type: integer, minimum: 0 }
+        meal: { type: string, nullable: true, maxLength: 80 }
+        note: { type: string, nullable: true, maxLength: 300 }
+
+    InviteWishCreate:
+      type: object
+      required: [message]
+      properties:
+        name: { type: string, maxLength: 80, description: "required on a generic link, ignored on a personal link" }
+        message: { type: string, minLength: 1, maxLength: 500 }
+
+    InviteWish:
+      type: object
+      required: [id, name, message]
+      properties:
+        id: { type: string, format: uuid }
+        name: { type: string }
+        message: { type: string }
+
+    InviteWishList:
+      type: object
+      required: [items, next_cursor, total]
+      properties:
+        items:
+          type: array
+          items: { $ref: "#/components/schemas/InviteWish" }
+        next_cursor: { type: string, nullable: true, description: "opaque; null on the last page" }
+        total: { type: integer, description: "approved wishes of the event" }
 
 security:
   - cookieAuth: []

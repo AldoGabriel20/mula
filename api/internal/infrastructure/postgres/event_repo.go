@@ -16,11 +16,11 @@ type EventRepo struct{ pool *pgxpool.Pool }
 
 func NewEventRepo(pool *pgxpool.Pool) *EventRepo { return &EventRepo{pool: pool} }
 
-const eventCols = `id, owner_id, type, couple_a, couple_b, event_date, venue, status, created_at, updated_at`
+const eventCols = `id, owner_id, type, couple_a, couple_b, event_date, venue, timezone, status, created_at, updated_at`
 
 func scanEvent(row pgx.Row) (*event.Event, error) {
 	var e event.Event
-	if err := row.Scan(&e.ID, &e.OwnerID, &e.Type, &e.CoupleA, &e.CoupleB, &e.EventDate, &e.Venue, &e.Status, &e.CreatedAt, &e.UpdatedAt); err != nil {
+	if err := row.Scan(&e.ID, &e.OwnerID, &e.Type, &e.CoupleA, &e.CoupleB, &e.EventDate, &e.Venue, &e.Timezone, &e.Status, &e.CreatedAt, &e.UpdatedAt); err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
 			return nil, event.ErrNotFound
 		}
@@ -52,9 +52,9 @@ func (r *EventRepo) CreateWithOwner(ctx context.Context, ownerID, ownerEmail str
 	defer tx.Rollback(ctx) //nolint:errcheck — no-op after commit
 
 	e, err := scanEvent(tx.QueryRow(ctx,
-		`INSERT INTO events (owner_id, type, couple_a, couple_b, event_date, venue)
-		 VALUES ($1,$2,$3,$4,$5,$6) RETURNING `+eventCols,
-		ownerID, in.Type, in.CoupleA, in.CoupleB, date, in.Venue))
+		`INSERT INTO events (owner_id, type, couple_a, couple_b, event_date, venue, timezone)
+		 VALUES ($1,$2,$3,$4,$5,$6,COALESCE($7, $8)) RETURNING `+eventCols,
+		ownerID, in.Type, in.CoupleA, in.CoupleB, date, in.Venue, in.Timezone, event.DefaultTimezone))
 	if err != nil {
 		return nil, err
 	}
@@ -84,7 +84,7 @@ func (r *EventRepo) ListForUser(ctx context.Context, userID string) ([]event.Eve
 	out := []event.Event{}
 	for rows.Next() {
 		var e event.Event
-		if err := rows.Scan(&e.ID, &e.OwnerID, &e.Type, &e.CoupleA, &e.CoupleB, &e.EventDate, &e.Venue, &e.Status, &e.CreatedAt, &e.UpdatedAt); err != nil {
+		if err := rows.Scan(&e.ID, &e.OwnerID, &e.Type, &e.CoupleA, &e.CoupleB, &e.EventDate, &e.Venue, &e.Timezone, &e.Status, &e.CreatedAt, &e.UpdatedAt); err != nil {
 			return nil, err
 		}
 		out = append(out, e)
@@ -109,9 +109,10 @@ func (r *EventRepo) Update(ctx context.Context, id string, p appevent.Patch) (*e
 		   couple_b   = COALESCE($4, couple_b),
 		   event_date = COALESCE($5, event_date),
 		   venue      = COALESCE($6, venue),
+		   timezone   = COALESCE($7, timezone),
 		   updated_at = now()
 		 WHERE id=$1 AND deleted_at IS NULL RETURNING `+eventCols,
-		id, p.Type, p.CoupleA, p.CoupleB, date, p.Venue))
+		id, p.Type, p.CoupleA, p.CoupleB, date, p.Venue, p.Timezone))
 }
 
 func (r *EventRepo) SoftDelete(ctx context.Context, id string) error {
@@ -128,6 +129,6 @@ func (r *EventRepo) SoftDelete(ctx context.Context, id string) error {
 // prefixed returns eventCols with a table alias (for joined selects).
 func prefixed(alias string) string {
 	return alias + ".id, " + alias + ".owner_id, " + alias + ".type, " + alias + ".couple_a, " +
-		alias + ".couple_b, " + alias + ".event_date, " + alias + ".venue, " + alias + ".status, " +
+		alias + ".couple_b, " + alias + ".event_date, " + alias + ".venue, " + alias + ".timezone, " + alias + ".status, " +
 		alias + ".created_at, " + alias + ".updated_at"
 }

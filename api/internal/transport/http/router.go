@@ -117,6 +117,7 @@ func NewRouter(d Deps) http.Handler {
 			mux.Handle("GET /api/v1/invite/{token}", authRL(http.HandlerFunc(ph.Get)))
 			mux.Handle("POST /api/v1/invite/{token}/rsvp", authRL(http.HandlerFunc(ph.RSVP)))
 			mux.Handle("POST /api/v1/invite/{token}/wish", authRL(http.HandlerFunc(ph.Wish)))
+			mux.Handle("GET /api/v1/invite/{token}/wishes", authRL(http.HandlerFunc(ph.Wishes)))
 		}
 
 		// billing: catalog is public; subscription/invoices/checkout need a session; the
@@ -174,6 +175,7 @@ func NewRouter(d Deps) http.Handler {
 			if d.Invitation != nil {
 				ih := NewInvitationHandler(d.Invitation)
 				mux.HandleFunc("GET /api/v1/templates", ih.Templates)
+				mux.HandleFunc("GET /api/v1/templates/{slug}", ih.Template)
 				mux.Handle("GET /api/v1/events/{id}/invitation", middleware.Chain(http.HandlerFunc(ih.Get), needAuth, member))
 				mux.Handle("PATCH /api/v1/events/{id}/invitation", middleware.Chain(http.HandlerFunc(ih.Update), needAuth, csrf, editor))
 				mux.Handle("POST /api/v1/events/{id}/invitation/sections", middleware.Chain(http.HandlerFunc(ih.AddSection), needAuth, csrf, editor))
@@ -182,6 +184,11 @@ func NewRouter(d Deps) http.Handler {
 				mux.Handle("DELETE /api/v1/events/{id}/invitation/sections/{sid}", middleware.Chain(http.HandlerFunc(ih.DeleteSection), needAuth, csrf, editor))
 				mux.Handle("POST /api/v1/events/{id}/invitation/publish", middleware.Chain(http.HandlerFunc(ih.Publish), needAuth, csrf, editor))
 				mux.Handle("POST /api/v1/events/{id}/invitation/unpublish", middleware.Chain(http.HandlerFunc(ih.Unpublish), needAuth, csrf, editor))
+			}
+
+			if d.Public != nil {
+				ph := NewPublicHandler(d.Public)
+				mux.Handle("GET /api/v1/events/{id}/invitation/preview", middleware.Chain(http.HandlerFunc(ph.Preview), needAuth, member))
 			}
 
 			if d.Schedule != nil {

@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { Magnetic, Reveal, Tilt } from "@/lib/motion";
 import { InviteScreen } from "../InviteScreen";
+import { TemplateShot } from "../TemplateShot";
 import { BY_SLUG, TEMPLATES } from "../data";
 import { SERIF } from "../fonts";
 import { Em, PX, WRAP } from "./shared";
@@ -99,7 +100,7 @@ export function TemplatesPage() {
               return (
                 <Link key={t.slug} href={`/templates/${t.slug}`} data-cursor="Preview" aria-label={`${t.name}, ${t.cat} template, ${t.style}`} style={{ gridColumn: big ? "span 2" : "span 1", gridRow: big ? "span 2" : "span 1", display: "flex", flexDirection: "column", gap: 16, color: "#0E0C0B" }}>
                   <Tilt strength={7} style={{ position: "relative", flex: 1, minHeight: big ? 760 : 440, borderRadius: 4, background: big ? t.d.bg : PLATES[i % PLATES.length], overflow: "hidden", display: "flex", alignItems: "center", justifyContent: "center", padding: big ? 48 : "36px 28px" }}>
-                    <div style={{ width: big ? "min(300px,62%)" : "min(190px,72%)", aspectRatio: "9/19.5" }}><InviteScreen d={t.d} /></div>
+                    <div style={{ width: big ? "min(300px,62%)" : "min(190px,72%)", aspectRatio: "9/19.5" }}><TemplateShot t={t} /></div>
                     <span style={{ position: "absolute", left: 14, top: 14, fontSize: 10, fontWeight: 600, letterSpacing: ".2em", textTransform: "uppercase", padding: "6px 10px", borderRadius: 999, background: "rgba(244,238,228,.9)", color: "#0E0C0B", opacity: big ? 1 : 0 }}>{tr("Featured")}</span>
                   </Tilt>
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: 12 }}>

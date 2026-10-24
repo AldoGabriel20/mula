@@ -3,7 +3,7 @@
 import { useRef, useState } from "react";
 import Link from "next/link";
 import { Magnetic, Reveal } from "@/lib/motion";
-import { InviteScreen } from "../InviteScreen";
+import { TemplateShot } from "../TemplateShot";
 import { BY_SLUG, TEMPLATES } from "../data";
 import { SERIF } from "../fonts";
 import { TH, useLang } from "../i18n";
@@ -71,7 +71,7 @@ export function Gallery() {
               <div key={g.slug} onMouseEnter={() => setHover(i)} onMouseLeave={() => setHover(-1)} style={{ position: "absolute", left: g.left, top: g.top, width: g.w, zIndex: active ? 10 : featured ? 5 : 2 }}>
                 <div ref={(el) => { els.current[i] = el; }} style={{ willChange: "transform" }}>
                   <Link href={href} data-cursor="Preview" onFocus={() => setHover(i)} aria-label={`${tp.name}, ${tp.cat} template`} className={s.galCard} style={{ transform: `rotate(${hov ? 0 : g.rot}deg) scale(${hov ? 1.07 : 1})`, opacity: dim ? 0.55 : 1, filter: `saturate(${dim ? 0.6 : 1})`, transition: "transform .9s cubic-bezier(.2,.75,.15,1), opacity .6s, filter .6s" }}>
-                    <div style={{ width: "100%", aspectRatio: "9/19.5" }}><InviteScreen d={tp.d} /></div>
+                    <div style={{ width: "100%", aspectRatio: "9/19.5" }}><TemplateShot t={tp} /></div>
                   </Link>
                   <div style={{ position: "absolute", left: "50%", top: "100%", marginTop: 26, transform: `translate(-50%, ${active ? 0 : -10}px)`, opacity: active ? 1 : 0, pointerEvents: active ? "auto" : "none", transition: "opacity .45s ease, transform .6s cubic-bezier(.2,.75,.15,1)", display: "flex", flexDirection: "column", alignItems: "center", gap: 12, whiteSpace: "nowrap" }}>
                     <div style={{ display: "flex", alignItems: "baseline", gap: 12 }}>
@@ -93,7 +93,7 @@ export function Gallery() {
         <div className={s.hideScroll} style={{ display: "flex", gap: 18, overflowX: "auto", scrollSnapType: "x mandatory", padding: "20px 20px 40px" }}>
           {TEMPLATES.slice(0, 8).map((tp) => (
             <Link key={tp.slug} href="/templates" style={{ flex: "none", width: "62vw", scrollSnapAlign: "center", display: "flex", flexDirection: "column", gap: 14 }}>
-              <div style={{ width: "100%", aspectRatio: "9/19.5" }}><InviteScreen d={tp.d} /></div>
+              <div style={{ width: "100%", aspectRatio: "9/19.5" }}><TemplateShot t={tp} /></div>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
                 <span style={{ fontFamily: SERIF, fontSize: 26 }}>{tp.name}</span>
                 <span style={{ fontSize: 10, fontWeight: 600, letterSpacing: ".18em", textTransform: "uppercase", color: "#7A5232" }}>{tp.cat}</span>

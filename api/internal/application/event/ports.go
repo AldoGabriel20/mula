@@ -13,6 +13,7 @@ type CreateInput struct {
 	CoupleB   *string
 	EventDate *string // RFC3339; parsed in the repo
 	Venue     *string
+	Timezone  *string // IANA name; nil = event.DefaultTimezone
 }
 
 // Patch carries only the fields present in a PATCH (nil = leave unchanged).
@@ -22,6 +23,7 @@ type Patch struct {
 	CoupleB   *string
 	EventDate *string
 	Venue     *string
+	Timezone  *string
 }
 
 type EventRepo interface {

@@ -52,7 +52,7 @@ Format per endpoint: method, path, auth, authz, notes. Request/response bodies l
 | Method | Path | Auth | Authz | Notes |
 | --- | --- | --- | --- | --- |
 | GET | `/events` | auth | member | list my events |
-| POST | `/events` | auth | — | create (caller = owner) |
+| POST | `/events` | auth | — | create (caller = owner); optional `timezone` (IANA, default `Asia/Jakarta`, 400 on an unknown zone) |
 | GET | `/events/{id}` | auth | member | |
 | PATCH | `/events/{id}` | auth | editor | names, type, date, venue |
 | DELETE | `/events/{id}` | auth | owner | |
@@ -62,8 +62,9 @@ Format per endpoint: method, path, auth, authz, notes. Request/response bodies l
 | Method | Path | Auth | Authz |
 | --- | --- | --- | --- |
 | GET | `/events/{id}/invitation` | auth | member |
-| PATCH | `/events/{id}/invitation` | auth | editor |
-| GET/POST/PATCH/DELETE | `/events/{id}/invitation/sections[/{sid}]` | auth | editor |
+| PATCH | `/events/{id}/invitation` | auth | editor — picking a template adds the missing sections of its manifest (`templates.manifest`, synced from `catalog/` by `go run ./cmd/templates sync`; nothing is removed). Publishing requires the manifest's `required` sections visible (default `hero` + `rsvp`). Accepts `theme` `{palette?, fontPairing?, motion?, tokens?}`: each value must be listed in the template's `customizable`, colours are `#RRGGBB` and every text pair keeps 4.5:1 contrast, total ≤ 2 KB; errors are `400` with `fields` keyed `theme.<path>`. A theme needs a design with a manifest. Sending `{}` clears it; picking another design without a theme drops the old one. The invitation body carries `theme` |
+| GET | `/events/{id}/invitation/preview` | auth | member — the host's draft in the guest shape, see *Public invitation* |
+| GET/POST/PATCH/DELETE | `/events/{id}/invitation/sections[/{sid}]` | auth | editor — `content` is validated per section type (`catalog/sections.schema.json`): lengths, array caps, photo ids must be this event's media, `music.track` must be a catalog track, `gallery.photos` ≤ the template's cap. Unknown keys are kept (≤ 2 KB each, 32 KB per section). Failures are `400 validation_error` with `fields` keyed `content.<path>` (`content.media` for a foreign photo) |
 | POST | `/events/{id}/invitation/sections/reorder` | auth | editor |
 | POST | `/events/{id}/invitation/publish` | auth | owner/editor |
 | POST | `/events/{id}/invitation/unpublish` | auth | owner/editor |
@@ -81,7 +82,7 @@ Format per endpoint: method, path, auth, authz, notes. Request/response bodies l
 ### Schedule / tasks / team
 | Method | Path | Auth | Authz |
 | --- | --- | --- | --- |
-| GET/POST | `/events/{id}/schedule` | auth | member/editor |
+| GET/POST | `/events/{id}/schedule` | auth | member/editor — template fields `label` (≤40), `map_url` (empty or `https://`, ≤500), `venue_note` (≤160), `media_id` (a photo of this event, `""` clears) |
 | PATCH/DELETE | `/events/{id}/schedule/{sid}` | auth | editor |
 | POST | `/events/{id}/schedule/reorder` | auth | editor |
 | GET/POST | `/events/{id}/tasks` | auth | member/editor |
@@ -119,16 +120,20 @@ Format per endpoint: method, path, auth, authz, notes. Request/response bodies l
 ### Templates / content (public)
 | Method | Path | Auth |
 | --- | --- | --- |
-| GET | `/templates` | public — `{data:[{id,slug,name,category,tags,palette}]}` (`/templates/{slug}` not built) |
+| GET | `/templates` | public, cacheable 300 s — `{data:[{id,slug,name,category,tags,palette,kind,status,access,version,thumbnail,thumbnail_mobile,customizable,capabilities,marketing}]}`; retired designs are not listed; the manifest fields are absent for a design without one |
+| GET | `/templates/{slug}` | public, cacheable 300 s — `{template, manifest}`; 404 for an unknown or retired slug |
 | GET | `/tips`, `/tips/{slug}` | public (optional) |
 | POST | `/contact` | public (rate-limited) |
 
 ### Public invitation (guest, token-scoped)
+Template support (`15-template-gilded-seal-design.md`) changes three things here: the extra fields on `GET /invite/{token}`, the `201` body of `POST …/wish`, and the new `GET …/wishes`. The host's draft preview, `GET /events/{id}/invitation/preview` (auth, member), returns the same body as `GET /invite/{token}` with `preview:true`, `guest:null`, only `everyone` moments, and works before publishing (404 for non-members and while no invitation exists yet).
+
 | Method | Path | Auth | Notes |
 | --- | --- | --- | --- |
-| GET | `/invite/{token}` | guest | published, guest-safe invitation (`gift_methods`, `live` when shown and not offline, `rsvp_deadline`); records open if enabled |
+| GET | `/invite/{token}` | guest | published, guest-safe invitation (`gift_methods`, `live` when shown and not offline, `rsvp_deadline`); records open if enabled. **Template additions (0015):** `template` (slug or null), `timezone` (IANA), `schedule[]` (moments this link may see: `everyone`, plus `invite_only` on a personal link, never `family_only`; `[]` when the schedule section is hidden), `media` (`{<media id>: signed URL}`, only the event's own photos, valid 6 h), `preview` (false) |
 | POST | `/invite/{token}/rsvp` | guest | `{status,party_size,meal,note}`; 422 `rsvp_closed` after `rsvp_deadline` (or event day + 24 h when none) |
-| POST | `/invite/{token}/wish` | guest | `{name,message}` |
+| POST | `/invite/{token}/wish` | guest | `{name,message}`; personal link ignores `name` (author = the guest). **Now `201 {id,name,message}`** (was empty) |
+| GET | `/invite/{token}/wishes` | guest | **new** — approved wishes, newest first: `?limit=` (1–50, default 20) `&cursor=` (opaque) → `{items:[{id,name,message}], next_cursor|null, total}`; both link kinds; 400 `cursor` on a malformed cursor; `Cache-Control: private, max-age=15` |
 
 ---
 
@@ -152,7 +157,7 @@ Format per endpoint: method, path, auth, authz, notes. Request/response bodies l
   "rsvp":{"status":"pending|yes|no","party_size":2,"meal":"…"},"opened_at":"…|null" }
 
 // Public invitation (guest-safe subset)
-{ "event":{"couple":{…},"date":"…","venue":"…"},"template":"…","palette":"…",
+{ "event":{"couple":{…},"date":"…","venue":"…"},"template":"…","template_version":1,"palette":"…","theme":{"palette":"rose-linen","tokens":{"accent":"#C9A27A"}},
   "sections":[{"type":"hero","content":{…},"visible":true}, …],
   "guest":{"name":"…"}|null }
 ```

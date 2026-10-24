@@ -2,6 +2,8 @@
 
 Next.js 14 App Router + TypeScript (versions from the recovered build: `next@14.2`, `react@18.3`, `typescript@5.8`). Styling is **CSS Modules + CSS custom properties** (no Tailwind — not in the dependency set). The production app decomposes the prototype into the components in `05`; it does **not** paste prototype HTML into one component.
 
+> **Templates.** Guest-facing templates are built on the template kit (`web/lib/kit/`: tokens and `KitRoot`, motion, GL, the invite model, headless behaviours) and described by a manifest in `catalog/`. See `17-template-kit-design.md` (and §17 for how to add one).
+
 ---
 
 ## Stack (from recovered `package.json`)

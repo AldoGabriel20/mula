@@ -3,7 +3,8 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Magnetic, Reveal, Tilt } from "@/lib/motion";
-import { InviteScreen, type InviteData } from "../InviteScreen";
+import type { InviteData } from "../InviteScreen";
+import { TemplateShot } from "../TemplateShot";
 import { BY_SLUG, TEMPLATES } from "../data";
 import { SERIF, fam } from "../fonts";
 import { Em, EVENT_DATE, Eq, PX, WRAP, lum, useNow } from "./shared";
@@ -52,7 +53,12 @@ export function TemplatePage({ slug }: { slug: string }) {
     .slice(0, 4);
   const rsvpTitle = rsvp === "yes" ? `${tr("Wonderful,")} ${guestShown}. ${tr("We’ll save you a seat.")}` : rsvp === "no" ? `${tr("Thank you for letting us know,")} ${guestShown}.` : `${tr("Will you attend,")} ${guestShown}?`;
   const rsvpBtn = (on: boolean) => ({ height: 48, borderRadius: 999, border: "1px solid #0E0C0B", background: on ? "#0E0C0B" : "transparent", color: on ? "#F4EEE4" : "#0E0C0B", font: "inherit", fontSize: 14, cursor: "pointer" }) as const;
-  const openModal = () => { setModal(true); setCover(false); };
+  // a template with a real renderer opens its live demo in a new tab; the others keep the phone-mock modal
+  const openModal = () => {
+    if (t.live) { window.open(`/demo/${t.slug}?to=${encodeURIComponent(guestShown)}`, "_blank", "noopener"); return; }
+    setModal(true);
+    setCover(false);
+  };
 
   return (
     <LandingShell active="templates" bg={d.bg} fg="#0E0C0B" startLight={light} hover="fade">
@@ -85,7 +91,7 @@ export function TemplatePage({ slug }: { slug: string }) {
           </div>
           <div style={{ display: "flex", justifyContent: "center" }}>
             <button onClick={openModal} data-cursor="Open" aria-label="Open full preview" style={{ all: "unset", cursor: "pointer", width: "min(330px,72vw)", aspectRatio: "9/19.5", display: "block" }}>
-              <Tilt strength={8} style={{ width: "100%", height: "100%" }}><InviteScreen d={heroD} /></Tilt>
+              <Tilt strength={8} style={{ width: "100%", height: "100%" }}><TemplateShot t={t} d={heroD} /></Tilt>
             </button>
           </div>
         </div>
@@ -130,7 +136,7 @@ export function TemplatePage({ slug }: { slug: string }) {
                 </div>
               </div>
             </Reveal>
-            <div style={{ position: "absolute", right: "clamp(0px,3vw,40px)", bottom: 0, width: "clamp(150px,18vw,250px)", aspectRatio: "9/19.5" }}><InviteScreen d={heroD} /></div>
+            <div style={{ position: "absolute", right: "clamp(0px,3vw,40px)", bottom: 0, width: "clamp(150px,18vw,250px)", aspectRatio: "9/19.5" }}><TemplateShot t={t} d={heroD} /></div>
           </div>
         </div>
       </section>
@@ -190,7 +196,7 @@ export function TemplatePage({ slug }: { slug: string }) {
             {more.map((x) => (
               <Link key={x.slug} href={`/templates/${x.slug}`} data-cursor="Preview" style={{ display: "flex", flexDirection: "column", gap: 14 }}>
                 <div style={{ background: "#E6DED1", borderRadius: 4, padding: "32px 24px", display: "flex", justifyContent: "center" }}>
-                  <div style={{ width: "min(170px,70%)", aspectRatio: "9/19.5" }}><InviteScreen d={x.d} /></div>
+                  <div style={{ width: "min(170px,70%)", aspectRatio: "9/19.5" }}><TemplateShot t={x} /></div>
                 </div>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
                   <span style={{ fontFamily: SERIF, fontSize: 26 }}>{x.name}</span>
@@ -206,7 +212,7 @@ export function TemplatePage({ slug }: { slug: string }) {
         <div role="dialog" aria-modal="true" aria-label="Invitation preview" style={{ position: "fixed", inset: 0, zIndex: 140, background: "rgba(10,9,8,.92)", backdropFilter: "blur(10px)", display: "flex", alignItems: "center", justifyContent: "center", padding: 20 }}>
           <button onClick={() => setModal(false)} style={{ position: "absolute", top: 20, right: 20, height: 44, padding: "0 20px", borderRadius: 999, border: "1px solid rgba(244,238,228,.3)", background: "transparent", color: "#F4EEE4", font: "inherit", fontSize: 13, cursor: "pointer" }}>{tr("Close")}</button>
           <div style={{ position: "relative", height: "min(86vh,760px)", aspectRatio: "9/19.5", maxWidth: "90vw" }}>
-            <InviteScreen d={heroD} />
+            <TemplateShot t={t} d={heroD} />
             <div style={{ position: "absolute", inset: "2.6%", borderRadius: "12%/5.6%", overflow: "hidden", pointerEvents: cover ? "none" : "auto" }}>
               <div style={{ position: "absolute", inset: 0, background: d.bg, color: d.fg, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 18, textAlign: "center", padding: 24, transform: `translateY(${cover ? "-101%" : "0%"})`, transition: "transform 1.3s cubic-bezier(.7,0,.2,1)" }}>
                 <span style={{ fontSize: 11, letterSpacing: ".3em", textTransform: "uppercase", opacity: 0.8 }}>{tr("Dear")} {guestShown}</span>

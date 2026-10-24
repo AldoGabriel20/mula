@@ -1,3 +1,5 @@
+import { PALETTES } from "@/lib/kit/generated/palettes";
+import { paletteByIdOrAlias } from "@/lib/kit/tokens";
 import { eventLabel } from "./event-label";
 
 // Maps API payloads onto the shapes the prototype logic (logic.ts) renders. The prototype's own
@@ -76,7 +78,9 @@ export function toMoment(s: any, id: number, open: boolean) {
   const d = s.starts_at ? new Date(s.starts_at) : null;
   const ymd = d ? `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}` : "";
   const e = s.ends_at ? new Date(s.ends_at) : null;
-  return { id, uid: s.id, name: s.title, date: ymd, s: d ? hhmm(d) : "—", en: e ? hhmm(e) : "", venue: s.venue || "Add a venue", addr: s.address || "", dress: s.dress_code || "—", vis: VIS_LABEL[s.visibility] || "Everyone", desc: s.description || "", open, starts_at: s.starts_at, ends_at: s.ends_at };
+  return { id, uid: s.id, name: s.title, date: ymd, s: d ? hhmm(d) : "—", en: e ? hhmm(e) : "", venue: s.venue || "Add a venue", addr: s.address || "", dress: s.dress_code || "—", vis: VIS_LABEL[s.visibility] || "Everyone", desc: s.description || "", open, starts_at: s.starts_at, ends_at: s.ends_at,
+    // template fields (docs/15 §5.3)
+    map: s.map_url || "", label: s.label || "", note: s.venue_note || "", photoId: (s.media_id as string | null) || null };
 }
 
 // ---- registry --------------------------------------------------------------------------------
@@ -109,9 +113,18 @@ export function toTx(i: any) {
 }
 
 // ---- palettes --------------------------------------------------------------------------------
-// API palette names → the prototype's six palettes (index into logic.pals), and back.
-export const PALETTE_TO_PROTO: Record<string, number> = { Ivory: 0, Midnight: 1, Forest: 2, Blush: 3, Stone: 4 };
-export const PROTO_TO_PALETTE = ["Ivory", "Midnight", "Forest", "Blush", "Stone", "Midnight"];
+// The prototype addresses palettes by index (logic.pals). The catalog (catalog/palettes.json) is the one source:
+// `PALETTES` order is the index, a stored `invitations.palette` is a catalog id or a legacy label ("Forest").
+export const PROTO_PALETTES = PALETTES.slice(0, 6);
+/** logic.pals entries (n, bg, fg, ac) from the catalog's swatches (bg, ink, accent). */
+export const protoPals = () => PROTO_PALETTES.map((p) => ({ n: p.name, bg: p.swatch[0], fg: p.swatch[1], ac: p.swatch[2] }));
+/** Index of the palette a stored value (id or legacy label) names, or undefined. */
+export const paletteIndex = (stored: string | null | undefined): number | undefined => {
+  const p = paletteByIdOrAlias(stored, PROTO_PALETTES);
+  return p ? PROTO_PALETTES.indexOf(p) : undefined;
+};
+/** The value to store for a prototype palette index: the catalog id. */
+export const paletteValue = (i: number): string => (PROTO_PALETTES[i] ?? PROTO_PALETTES[0]).id;
 
 // ---- check-in --------------------------------------------------------------------------------
 /** Arrival counts in the six quarter-hour slots the event-day chart shows (from 30 min before the start). */

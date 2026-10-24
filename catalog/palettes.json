@@ -1,0 +1,226 @@
+{
+  "palettes": [
+    {
+      "id": "gold-ivory",
+      "name": "Gold & Ivory",
+      "swatch": [
+        "#F7F2E9",
+        "#302720",
+        "#A98545"
+      ],
+      "color": {
+        "bg": "#F7F2E9",
+        "surface": "#FCF9F3",
+        "ink": "#302720",
+        "inkSoft": "#4A3E35",
+        "muted": "#6B5D52",
+        "accent": "#A98545",
+        "accentSoft": "#E8D7AD",
+        "line": "#B08E52",
+        "danger": "#8E4A43",
+        "onAccent": "#271F19"
+      },
+      "extra": {
+        "inkStrong": "#271F19",
+        "mutedStrong": "#5E5046",
+        "eyebrow": "#6E5730",
+        "eyebrowSoft": "#7E6436",
+        "veilFrom": "#FBF6EE",
+        "veilTo": "#EDE3D4"
+      },
+      "aliases": [
+        "Ivory"
+      ]
+    },
+    {
+      "id": "stone-linen",
+      "name": "Stone & Linen",
+      "swatch": [
+        "#F1EFEA",
+        "#2A2A28",
+        "#9A9588"
+      ],
+      "color": {
+        "bg": "#F1EFEA",
+        "surface": "#FAF9F6",
+        "ink": "#2A2A28",
+        "inkSoft": "#454542",
+        "muted": "#62625D",
+        "accent": "#9A9588",
+        "accentSoft": "#DDD9CE",
+        "line": "#A39E90",
+        "danger": "#8E4A43",
+        "onAccent": "#1F1F1D"
+      },
+      "extra": {
+        "inkStrong": "#1F1F1D",
+        "mutedStrong": "#51514D",
+        "eyebrow": "#5E5A4E",
+        "eyebrowSoft": "#6E6A5C",
+        "veilFrom": "#FAF9F6",
+        "veilTo": "#F1EFEA"
+      },
+      "aliases": [
+        "Stone"
+      ]
+    },
+    {
+      "id": "rose-linen",
+      "name": "Rose & Linen",
+      "swatch": [
+        "#F8EDEB",
+        "#3A2626",
+        "#C97E83"
+      ],
+      "color": {
+        "bg": "#F8EDEB",
+        "surface": "#FDF7F5",
+        "ink": "#3A2626",
+        "inkSoft": "#553B3B",
+        "muted": "#6E5555",
+        "accent": "#C97E83",
+        "accentSoft": "#F0D3D1",
+        "line": "#C58A8D",
+        "danger": "#8E3A3A",
+        "onAccent": "#2B1717"
+      },
+      "extra": {
+        "inkStrong": "#2B1717",
+        "mutedStrong": "#5E4545",
+        "eyebrow": "#7A3F44",
+        "eyebrowSoft": "#8A5055",
+        "veilFrom": "#FDF7F5",
+        "veilTo": "#F8EDEB"
+      },
+      "aliases": [
+        "Blush"
+      ]
+    },
+    {
+      "id": "sage-parchment",
+      "name": "Sage & Parchment",
+      "swatch": [
+        "#F1F2EA",
+        "#2F3A2E",
+        "#8A9A7E"
+      ],
+      "color": {
+        "bg": "#F1F2EA",
+        "surface": "#FAFAF5",
+        "ink": "#2F3A2E",
+        "inkSoft": "#46543F",
+        "muted": "#5D6A55",
+        "accent": "#8A9A7E",
+        "accentSoft": "#DCE3D0",
+        "line": "#8F9D83",
+        "danger": "#8E4A43",
+        "onAccent": "#1E281D"
+      },
+      "extra": {
+        "inkStrong": "#1E281D",
+        "mutedStrong": "#4E5B47",
+        "eyebrow": "#4D5E42",
+        "eyebrowSoft": "#5E6F52",
+        "veilFrom": "#FAFAF5",
+        "veilTo": "#F1F2EA"
+      },
+      "aliases": [
+        "Forest"
+      ]
+    },
+    {
+      "id": "midnight-gold",
+      "name": "Midnight & Gold",
+      "swatch": [
+        "#1C2233",
+        "#F2EBDD",
+        "#C7A66A"
+      ],
+      "color": {
+        "bg": "#1C2233",
+        "surface": "#252C40",
+        "ink": "#F2EBDD",
+        "inkSoft": "#D8D0C0",
+        "muted": "#B4AC9C",
+        "accent": "#C7A66A",
+        "accentSoft": "#4A4430",
+        "line": "#A88748",
+        "danger": "#E39A92",
+        "onAccent": "#1C2233"
+      },
+      "extra": {
+        "inkStrong": "#FFFFFF",
+        "mutedStrong": "#CFC7B7",
+        "eyebrow": "#D9BC85",
+        "eyebrowSoft": "#C7A66A",
+        "veilFrom": "#252C40",
+        "veilTo": "#1C2233"
+      },
+      "aliases": [
+        "Midnight"
+      ]
+    },
+    {
+      "id": "terracotta-sand",
+      "name": "Terracotta & Sand",
+      "swatch": [
+        "#F6EDE4",
+        "#3A2A22",
+        "#C07A5A"
+      ],
+      "color": {
+        "bg": "#F6EDE4",
+        "surface": "#FCF7F1",
+        "ink": "#3A2A22",
+        "inkSoft": "#57433A",
+        "muted": "#6F5A4F",
+        "accent": "#C07A5A",
+        "accentSoft": "#F0D6C6",
+        "line": "#C98F73",
+        "danger": "#8E3A33",
+        "onAccent": "#2B1B14"
+      },
+      "extra": {
+        "inkStrong": "#2B1B14",
+        "mutedStrong": "#5F4A3F",
+        "eyebrow": "#8A4A30",
+        "eyebrowSoft": "#9A5A40",
+        "veilFrom": "#FCF7F1",
+        "veilTo": "#F6EDE4"
+      },
+      "aliases": []
+    },
+    {
+      "id": "noir-gold",
+      "name": "Noir & Gold",
+      "swatch": [
+        "#F3F1EE",
+        "#141414",
+        "#B79D6E"
+      ],
+      "color": {
+        "bg": "#F3F1EE",
+        "surface": "#FFFFFF",
+        "ink": "#141414",
+        "inkSoft": "#333333",
+        "muted": "#5B5B5B",
+        "accent": "#B79D6E",
+        "accentSoft": "#D9C29A",
+        "line": "#B79D6E",
+        "danger": "#8E4A43",
+        "onAccent": "#141414"
+      },
+      "extra": {
+        "inkStrong": "#141414",
+        "mutedStrong": "#444444",
+        "eyebrow": "#6F5A2E",
+        "eyebrowSoft": "#7A6330",
+        "veilFrom": "#FFFFFF",
+        "veilTo": "#E9E6E1"
+      },
+      "aliases": [
+        "Noir"
+      ]
+    }
+  ]
+}

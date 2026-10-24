@@ -4,12 +4,13 @@
 SHELL := /bin/bash
 ENV   := set -a; [ -f .env ] && . ./.env; set +a;
 
-.PHONY: setup db db-down db-reset migrate seed api web test help
+.PHONY: setup db db-down db-reset migrate templates seed api web test help
 
 help:
 	@echo "make setup    first run: .env + db + migrate + seed"
 	@echo "make db       start Postgres (docker, localhost:15432)"
-	@echo "make migrate  apply SQL migrations"
+	@echo "make migrate  apply SQL migrations, then sync the template catalog"
+	@echo "make templates validate the catalog, sync it to the DB (SKIP_SYNC=1 to skip), regenerate web/lib/kit/generated"
 	@echo "make seed     load the demo account + celebration (dev only, idempotent)"
 	@echo "make api      run the Go API on :8080"
 	@echo "make web      run the Next dev server on :3000"
@@ -35,7 +36,13 @@ db-reset:
 	$(MAKE) db migrate seed
 
 migrate:
-	$(ENV) cd api && go run ./cmd/migrate up
+	$(ENV) cd api && go run ./cmd/migrate up && go run ./cmd/templates sync
+
+# catalog/ -> DB row + typed web files (docs/17 §9.2). CI runs validate + gen-web and fails on a diff.
+templates:
+	cd api && go run ./cmd/templates validate
+	$(ENV) if [ -z "$$SKIP_SYNC" ]; then cd api && go run ./cmd/templates sync; fi
+	cd api && go run ./cmd/templates gen-web
 
 seed:
 	$(ENV) cd api && go run ./cmd/seed
@@ -50,4 +57,4 @@ web:
 test:
 	docker compose exec -T postgres psql -U mula -d mula -tc "SELECT 1 FROM pg_database WHERE datname='mula_test'" | grep -q 1 \
 	  || docker compose exec -T postgres psql -U mula -d mula -c "CREATE DATABASE mula_test"
-	$(ENV) cd api && DATABASE_URL="$$TEST_DATABASE_URL" go run ./cmd/migrate up && go test -count=1 ./...
+	$(ENV) cd api && DATABASE_URL="$$TEST_DATABASE_URL" go run ./cmd/migrate up && DATABASE_URL="$$TEST_DATABASE_URL" go run ./cmd/templates sync && go test -count=1 ./...

@@ -21,6 +21,7 @@ import (
 	giftapp "github.com/mula/mula/internal/application/gift"
 	guestapp "github.com/mula/mula/internal/application/guest"
 	invapp "github.com/mula/mula/internal/application/invitation"
+	pubapp "github.com/mula/mula/internal/application/publicinvite"
 	schedapp "github.com/mula/mula/internal/application/schedule"
 	taskapp "github.com/mula/mula/internal/application/task"
 	"github.com/mula/mula/internal/domain/event"
@@ -124,10 +125,42 @@ func main() {
 	if _, err := invSvc.Update(ctx, ev.ID, invapp.UpdatePatch{Palette: &pal}); err != nil {
 		fail("palette: %v", err)
 	}
+	// the demo celebration wears Gilded Seal: picking it adds the template's sections (docs/15 §5.2),
+	// then each gets its copy. No photos are seeded, so the page falls back to its gradients; the
+	// gallery and music sections stay hidden until a host fills them.
+	tpls, err := invSvc.Templates(ctx)
+	if err != nil {
+		fail("templates: %v", err)
+	}
+	for _, tp := range tpls {
+		if tp.Slug == "gilded-seal" {
+			id := tp.ID
+			if _, err := invSvc.Update(ctx, ev.ID, invapp.UpdatePatch{TemplateID: &id}); err != nil {
+				fail("template: %v", err)
+			}
+		}
+	}
+	if inv, err = invSvc.Get(ctx, ev.ID); err != nil {
+		fail("invitation: %v", err)
+	}
+	sectionCopy := map[string]map[string]any{
+		"hero":    {"title": "The wedding of", "line": "Join us as Raka and Celine begin their forever."},
+		"opening": {"title": "Together with our families", "statement": "Two hearts, one story, a lifetime to begin.", "subtitle": "We invite you to celebrate our wedding"},
+		"story": {
+			"title": "How it began",
+			"body":  "We met on a rainy Tuesday in a bookshop neither of us meant to visit. Three years, two cities and one very patient cat later, we are getting married, and we would love you to be there.",
+			"chapters": []any{
+				map[string]any{"title": "The first hello", "text": "A shared umbrella and an argument about poetry."},
+				map[string]any{"title": "Growing together", "text": "Two cities, a hundred train rides, one cat."},
+				map[string]any{"title": "The question", "text": "Asked in the same bookshop, between the cookbooks."},
+			},
+		},
+		"closing": {"body": "Thank you for being part of the story we are about to begin."},
+	}
 	for _, s := range inv.Sections {
-		if s.Type == "hero" {
-			if _, err := invSvc.UpdateSection(ctx, ev.ID, s.ID, invapp.SectionPatch{Content: map[string]any{"title": "The wedding of"}}); err != nil {
-				fail("hero: %v", err)
+		if c, ok := sectionCopy[s.Type]; ok {
+			if _, err := invSvc.UpdateSection(ctx, ev.ID, s.ID, invapp.SectionPatch{Content: c}); err != nil {
+				fail("section %s: %v", s.Type, err)
 			}
 		}
 	}
@@ -151,8 +184,20 @@ func main() {
 	}
 
 	// publish (verified user + required sections present → passes the real rules)
-	if _, err := invSvc.Publish(ctx, ev.ID, true); err != nil {
+	token, err := invSvc.Publish(ctx, ev.ID, true)
+	if err != nil {
 		fail("publish: %v", err)
+	}
+	// a few kind words in the guestbook, through the same public path a guest uses
+	pub := pubapp.NewService(postgres.NewPublicInviteRepo(pool), nil)
+	for _, w := range [][2]string{
+		{"Nadia", "Wishing you a lifetime of laughter, patience and slow Sunday mornings together."},
+		{"The Hartono Family", "May your home always be full of warmth, good food and open doors."},
+		{"Daniel", "Finally! See you both on the dance floor."},
+	} {
+		if _, err := pub.Wish(ctx, token, w[0], w[1]); err != nil {
+			fail("wish %s: %v", w[0], err)
+		}
 	}
 	enrich(ctx, ev.ID, evSvc, guestSvc, taskSvc, schedapp.NewService(postgres.NewScheduleRepo(pool)), giftapp.NewService(postgres.NewGiftRepo(pool), nil, nil))
 	fmt.Println("created demo celebration (published)")
@@ -170,8 +215,8 @@ func enrich(ctx context.Context, eventID string, ev *eventapp.Service, guests *g
 		}
 		venue := "The Glasshouse, Jakarta"
 		for _, in := range []schedapp.Input{
-			{Title: "Ceremony", StartsAt: start(9), EndsAt: start(10), Venue: &venue, Address: "Jl. Jend. Sudirman 5", DressCode: "Black tie optional", Description: "Vows under the glass roof.", Visibility: "everyone"},
-			{Title: "Reception dinner", StartsAt: start(11), EndsAt: start(15), Venue: &venue, DressCode: "Black tie optional", Description: "Dinner and toasts.", Visibility: "invite_only"},
+			{Title: "Ceremony", Label: "The Ceremony", StartsAt: start(9), EndsAt: start(10), Venue: &venue, Address: "Jl. Jend. Sudirman 5", VenueNote: "Under the glass roof, in the garden hall.", DressCode: "Black tie optional", Description: "Vows under the glass roof.", Visibility: "everyone"},
+			{Title: "Reception dinner", Label: "The Reception", StartsAt: start(11), EndsAt: start(15), Venue: &venue, Address: "Jl. Jend. Sudirman 5", DressCode: "Black tie optional", Description: "Dinner and toasts.", Visibility: "invite_only"},
 		} {
 			if _, err := sched.Create(ctx, eventID, in); err != nil {
 				fail("moment %s: %v", in.Title, err)

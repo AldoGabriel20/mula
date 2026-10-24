@@ -58,6 +58,7 @@ type createEventReq struct {
 	CoupleB   *string `json:"couple_b"`
 	EventDate *string `json:"event_date"`
 	Venue     *string `json:"venue"`
+	Timezone  *string `json:"timezone"`
 }
 type patchEventReq struct {
 	Type      *string `json:"type"`
@@ -65,6 +66,7 @@ type patchEventReq struct {
 	CoupleB   *string `json:"couple_b"`
 	EventDate *string `json:"event_date"`
 	Venue     *string `json:"venue"`
+	Timezone  *string `json:"timezone"`
 }
 
 // ---- responses ----
@@ -99,6 +101,7 @@ type eventDTO struct {
 	CoupleB   *string `json:"couple_b"`
 	EventDate *string `json:"event_date"`
 	Venue     *string `json:"venue"`
+	Timezone  string  `json:"timezone"`
 	Status    string  `json:"status"`
 	CreatedAt string  `json:"created_at"`
 }
@@ -117,6 +120,7 @@ func toEventDTO(e *event.Event) eventDTO {
 		CoupleB:   e.CoupleB,
 		EventDate: date,
 		Venue:     e.Venue,
+		Timezone:  e.Timezone,
 		Status:    e.Status,
 		CreatedAt: e.CreatedAt.UTC().Format(time.RFC3339),
 	}
@@ -149,7 +153,10 @@ func writeErr(w http.ResponseWriter, r *http.Request, err error) {
 // mapError turns domain/service errors into the HTTP error envelope.
 func mapError(err error) error {
 	var incomplete *invitation.IncompleteError
+	var badContent *invitation.ContentError
 	switch {
+	case errors.As(err, &badContent):
+		return apperr.Validation(badContent.Fields)
 	case errors.As(err, &incomplete):
 		e := apperr.New(http.StatusUnprocessableEntity, "invitation_incomplete", "add and show the required sections before publishing")
 		e.Fields = map[string]string{}
@@ -163,6 +170,8 @@ func mapError(err error) error {
 		return apperr.New(http.StatusUnprocessableEntity, "rsvp_closed", "replies are closed for this event")
 	case errors.Is(err, invitation.ErrBadRSVP):
 		return apperr.Validation(map[string]string{"request": "invalid reply"})
+	case errors.Is(err, invitation.ErrBadCursor):
+		return apperr.Validation(map[string]string{"cursor": "invalid cursor"})
 	case errors.Is(err, invitation.ErrNotVerified):
 		return apperr.New(http.StatusUnprocessableEntity, "email_not_verified", "verify your email before publishing")
 	case errors.Is(err, invitation.ErrBadTemplate):

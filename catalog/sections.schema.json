@@ -1,0 +1,249 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mula.app/catalog/sections.schema.json",
+  "title": "Section content shapes (docs/15 §4.1, docs/17 §7.6). Unknown keys are allowed (forward compatibility) but size-capped by the API. x-* keys drive the admin form.",
+  "$defs": {
+    "hero": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string",
+          "maxLength": 120,
+          "x-label": "Eyebrow",
+          "x-order": 0
+        },
+        "line": {
+          "type": "string",
+          "maxLength": 160,
+          "x-label": "Hero line",
+          "x-widget": "textarea",
+          "x-order": 1
+        },
+        "photo_id": {
+          "type": "string",
+          "pattern": "^$|^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
+          "x-label": "Cover photo",
+          "x-widget": "media",
+          "x-order": 2
+        }
+      }
+    },
+    "opening": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string",
+          "maxLength": 120,
+          "x-label": "Opening line",
+          "x-order": 0,
+          "x-placeholder": "Together with our families"
+        },
+        "statement": {
+          "type": "string",
+          "maxLength": 90,
+          "x-label": "Opening message",
+          "x-widget": "textarea",
+          "x-hint": "The big statement that appears word by word. About 12 words reads best.",
+          "x-order": 1,
+          "x-placeholder": "Two hearts, one story, a lifetime to begin."
+        },
+        "subtitle": {
+          "type": "string",
+          "maxLength": 120,
+          "x-label": "Invitation line",
+          "x-order": 2,
+          "x-placeholder": "We invite you to celebrate our wedding"
+        }
+      }
+    },
+    "story": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string",
+          "maxLength": 120,
+          "x-label": "Heading",
+          "x-order": 0
+        },
+        "body": {
+          "type": "string",
+          "maxLength": 1200,
+          "x-label": "Story",
+          "x-widget": "textarea",
+          "x-order": 1
+        },
+        "chapters": {
+          "type": "array",
+          "maxItems": 5,
+          "x-label": "Chapters",
+          "x-widget": "chapters",
+          "items": {
+            "type": "object",
+            "properties": {
+              "title": {
+                "type": "string",
+                "maxLength": 40,
+                "x-label": "Title"
+              },
+              "text": {
+                "type": "string",
+                "maxLength": 120,
+                "x-label": "Text",
+                "x-widget": "textarea"
+              }
+            }
+          },
+          "x-order": 3
+        },
+        "photo_ids": {
+          "type": "array",
+          "maxItems": 2,
+          "x-label": "Story photos",
+          "x-widget": "media-list",
+          "items": {
+            "type": "string",
+            "pattern": "^$|^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+          },
+          "x-order": 2
+        }
+      }
+    },
+    "schedule": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string",
+          "maxLength": 120,
+          "x-label": "Heading",
+          "x-order": 0
+        },
+        "dress_code": {
+          "type": "string",
+          "maxLength": 60,
+          "x-label": "Dress code",
+          "x-order": 1
+        }
+      }
+    },
+    "gallery": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string",
+          "maxLength": 120,
+          "x-label": "Heading",
+          "x-order": 0
+        },
+        "photos": {
+          "type": "array",
+          "maxItems": 12,
+          "x-label": "Photos",
+          "x-widget": "gallery",
+          "x-max": "capabilities.gallery.max",
+          "items": {
+            "type": "object",
+            "required": [
+              "id"
+            ],
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "^$|^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+              },
+              "alt": {
+                "type": "string",
+                "maxLength": 80,
+                "x-label": "Description"
+              }
+            }
+          },
+          "x-order": 1
+        }
+      }
+    },
+    "gift": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string",
+          "maxLength": 120,
+          "x-label": "Heading",
+          "x-order": 0
+        },
+        "body": {
+          "type": "string",
+          "maxLength": 300,
+          "x-label": "Note",
+          "x-widget": "textarea",
+          "x-order": 1
+        }
+      }
+    },
+    "rsvp": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string",
+          "maxLength": 120,
+          "x-label": "Heading",
+          "x-order": 0
+        },
+        "body": {
+          "type": "string",
+          "maxLength": 200,
+          "x-label": "Intro",
+          "x-widget": "textarea",
+          "x-order": 1
+        }
+      }
+    },
+    "wishes": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string",
+          "maxLength": 120,
+          "x-label": "Heading",
+          "x-order": 0
+        }
+      }
+    },
+    "music": {
+      "type": "object",
+      "properties": {
+        "track": {
+          "type": "string",
+          "maxLength": 60,
+          "x-label": "Track",
+          "x-widget": "track",
+          "x-order": 0
+        }
+      }
+    },
+    "closing": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string",
+          "maxLength": 120,
+          "x-label": "Heading",
+          "x-order": 0
+        },
+        "body": {
+          "type": "string",
+          "maxLength": 200,
+          "x-label": "Message",
+          "x-widget": "textarea",
+          "x-order": 1
+        },
+        "photo_id": {
+          "type": "string",
+          "pattern": "^$|^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
+          "x-label": "Closing photo",
+          "x-widget": "media",
+          "x-order": 2
+        }
+      }
+    }
+  }
+}

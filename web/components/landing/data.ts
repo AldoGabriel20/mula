@@ -1,8 +1,18 @@
 // Static landing content, extracted verbatim from the prototype (docs/landing-page-prototype/mula-core.js).
 // Prices are placeholders in the prototype ("Rp 000K") and stay so until launch pricing is confirmed.
+import { MANIFESTS } from '@/lib/kit/generated/manifests';
+import { PALETTES } from '@/lib/kit/generated/palettes';
+import { hasLiveTemplate } from '@/lib/kit/generated/registry';
 import type { InviteData } from './InviteScreen';
 
-export type Template = { slug: string; name: string; cat: string; style: string; mood: string; color: string; desc: string; d: InviteData };
+export type Template = {
+  slug: string; name: string; cat: string; style: string; mood: string; color: string; desc: string; d: InviteData;
+  /** Derived, never hand-set: the slug has a coded renderer (the catalog manifest), so the preview opens /demo/<slug> instead of the phone mock. */
+  live?: boolean;
+  /** The real template, captured from its demo (catalog manifest `thumbnail`); absent for a design without a manifest. */
+  thumb?: string;
+  thumbMobile?: string;
+};
 export type Category = { name: string; line: string; slug: string; bg: string; fg: string };
 export type Tip = { slug: string; cat: string; read: string; title: string; excerpt: string };
 export type Tier = { key: string; name: string; featured?: boolean; price: string; note: string; items: string[] };
@@ -16,7 +26,7 @@ export const PHOTOS: Record<string, string> = {
   "gold": "radial-gradient(60% 50% at 40% 30%, rgba(255,228,170,.9), rgba(255,228,170,0) 60%), radial-gradient(80% 70% at 80% 80%, rgba(90,60,25,.95), rgba(90,60,25,0) 70%), linear-gradient(170deg, #C9A35E, #6B4A22 60%, #22180C)"
 };
 
-export const TEMPLATES: Template[] = [
+const RAW_TEMPLATES: Template[] = [
   {
     "slug": "serenity",
     "name": "Serenity",
@@ -347,8 +357,76 @@ export const TEMPLATES: Template[] = [
       "photo": "radial-gradient(60% 50% at 40% 30%, rgba(255,228,170,.9), rgba(255,228,170,0) 60%), radial-gradient(80% 70% at 80% 80%, rgba(90,60,25,.95), rgba(90,60,25,0) 70%), linear-gradient(170deg, #C9A35E, #6B4A22 60%, #22180C)",
       "date": "Thursday · 10 June 2027 · 19.00"
     }
+  },
+  {
+    "slug": "gilded-seal",
+    "name": "Gilded Seal",
+    "cat": "Wedding",
+    "style": "Elegant",
+    "mood": "Romantic",
+    "color": "Ivory",
+    "desc": "",
+    "d": {
+      "bg": "#F5EEE3",
+      "fg": "#271F19",
+      "accent": "#B08E52",
+      "font": "'Cormorant Garamond', serif",
+      "weight": 300,
+      "size": 13,
+      "eyebrow": "The Wedding Of",
+      "title": "Adrian & Isabella",
+      "variant": "arch",
+      "photo": PHOTOS.blush,
+      "date": "Saturday · 12 June 2027"
+    }
+  },
+  {
+    "slug": "we-do",
+    "name": "We Do",
+    "cat": "Wedding",
+    "style": "Modern",
+    "mood": "Romantic",
+    "color": "Noir",
+    "desc": "",
+    "d": {
+      "bg": "#F3F1EE",
+      "fg": "#141414",
+      "accent": "#B79D6E",
+      "font": "'Cormorant Garamond', serif",
+      "weight": 500,
+      "size": 13,
+      "eyebrow": "We Do",
+      "title": "Rani & Dimas",
+      "variant": "photo",
+      "photo": PHOTOS.noir,
+      "date": "Monday · 22 July 2030"
+    }
   }
 ];
+
+/**
+ * A design that has a catalog manifest takes its marketing copy, category, palette label and thumbnail from it
+ * (catalog/templates/<slug>/manifest.json, docs/17 §12); the rest keep the prototype's content and the phone mock.
+ */
+function withCatalog(t: Template): Template {
+  const m = MANIFESTS[t.slug];
+  if (!m) return t;
+  const pal = PALETTES.find((p) => p.id === m.palette);
+  return {
+    ...t,
+    name: m.name,
+    cat: m.category,
+    style: m.marketing.style,
+    mood: m.marketing.mood,
+    color: pal?.aliases[0] ?? pal?.name ?? t.color,
+    desc: m.marketing.desc,
+    live: hasLiveTemplate(t.slug),
+    thumb: `/templates/${t.slug}/${m.thumbnail}`,
+    thumbMobile: m.thumbnailMobile ? `/templates/${t.slug}/${m.thumbnailMobile}` : undefined,
+  };
+}
+
+export const TEMPLATES: Template[] = RAW_TEMPLATES.map(withCatalog);
 
 export const BY_SLUG: Record<string, Template> = Object.fromEntries(TEMPLATES.map((t) => [t.slug, t]));
 

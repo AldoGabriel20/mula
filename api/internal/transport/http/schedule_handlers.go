@@ -3,6 +3,8 @@ package http
 import (
 	"errors"
 	"net/http"
+	"net/url"
+	"regexp"
 	"strings"
 	"time"
 
@@ -25,6 +27,10 @@ type scheduleDTO struct {
 	DressCode   string  `json:"dress_code"`
 	Description string  `json:"description"`
 	Visibility  string  `json:"visibility"`
+	Label       string  `json:"label"`
+	MapURL      string  `json:"map_url"`
+	VenueNote   string  `json:"venue_note"`
+	MediaID     *string `json:"media_id"`
 	Position    int     `json:"position"`
 }
 
@@ -38,7 +44,8 @@ func rfc3339(t *time.Time) *string {
 
 func toScheduleDTO(it *schedule.Item) scheduleDTO {
 	return scheduleDTO{ID: it.ID, Title: it.Title, StartsAt: rfc3339(it.StartsAt), EndsAt: rfc3339(it.EndsAt), Venue: it.Venue,
-		Address: it.Address, DressCode: it.DressCode, Description: it.Description, Visibility: it.Visibility, Position: it.Position}
+		Address: it.Address, DressCode: it.DressCode, Description: it.Description, Visibility: it.Visibility,
+		Label: it.Label, MapURL: it.MapURL, VenueNote: it.VenueNote, MediaID: it.MediaID, Position: it.Position}
 }
 
 type scheduleReq struct {
@@ -50,6 +57,10 @@ type scheduleReq struct {
 	DressCode   string  `json:"dress_code"`
 	Description string  `json:"description"`
 	Visibility  string  `json:"visibility"`
+	Label       string  `json:"label"`
+	MapURL      string  `json:"map_url"`
+	VenueNote   string  `json:"venue_note"`
+	MediaID     *string `json:"media_id"`
 }
 type schedulePatchReq struct {
 	Title       *string `json:"title"`
@@ -60,10 +71,25 @@ type schedulePatchReq struct {
 	DressCode   *string `json:"dress_code"`
 	Description *string `json:"description"`
 	Visibility  *string `json:"visibility"`
+	Label       *string `json:"label"`
+	MapURL      *string `json:"map_url"`
+	VenueNote   *string `json:"venue_note"`
+	MediaID     *string `json:"media_id"` // "" clears the photo
+}
+
+// scheduleExtras are the template fields validated alongside the base ones.
+type scheduleExtras struct{ label, venueNote, mapURL, mediaID *string }
+
+var uuidRe = regexp.MustCompile(`^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$`)
+
+// httpsURL: absolute https link with a host (blocks javascript:, data:, http:).
+func httpsURL(s string) bool {
+	u, err := url.Parse(s)
+	return err == nil && u.Scheme == "https" && u.Host != ""
 }
 
 // scheduleFields validates the free-text bounds shared by create and patch.
-func scheduleFields(address, dress, desc, vis, starts, ends *string) map[string]string {
+func scheduleFields(address, dress, desc, vis, starts, ends *string, x scheduleExtras) map[string]string {
 	f := map[string]string{}
 	over := func(p *string, n int) bool { return p != nil && len([]rune(*p)) > n }
 	if over(address, 300) {
@@ -81,6 +107,18 @@ func scheduleFields(address, dress, desc, vis, starts, ends *string) map[string]
 				f[k] = "must be RFC3339"
 			}
 		}
+	}
+	if over(x.label, 40) {
+		f["label"] = "at most 40 characters"
+	}
+	if over(x.venueNote, 160) {
+		f["venue_note"] = "at most 160 characters"
+	}
+	if m := x.mapURL; m != nil && *m != "" && (len(*m) > 500 || !httpsURL(*m)) {
+		f["map_url"] = "must be an https:// link of at most 500 characters"
+	}
+	if m := x.mediaID; m != nil && *m != "" && !uuidRe.MatchString(*m) {
+		f["media_id"] = "must be a photo id"
 	}
 	if vis != nil && *vis != "" && !schedule.ValidVisibility(*vis) {
 		f["visibility"] = "must be everyone, invite_only or family_only"
@@ -110,12 +148,14 @@ func (h *ScheduleHandler) Create(w http.ResponseWriter, r *http.Request) {
 		writeErr(w, r, validationErr(map[string]string{"title": "required"}))
 		return
 	}
-	if f := scheduleFields(&req.Address, &req.DressCode, &req.Description, &req.Visibility, req.StartsAt, req.EndsAt); len(f) > 0 {
+	if f := scheduleFields(&req.Address, &req.DressCode, &req.Description, &req.Visibility, req.StartsAt, req.EndsAt,
+		scheduleExtras{&req.Label, &req.VenueNote, &req.MapURL, req.MediaID}); len(f) > 0 {
 		writeErr(w, r, validationErr(f))
 		return
 	}
 	it, err := h.svc.Create(r.Context(), eventID(r.Context()), schapp.Input{Title: req.Title, StartsAt: req.StartsAt, EndsAt: req.EndsAt, Venue: req.Venue,
-		Address: req.Address, DressCode: req.DressCode, Description: req.Description, Visibility: req.Visibility})
+		Address: req.Address, DressCode: req.DressCode, Description: req.Description, Visibility: req.Visibility,
+		Label: req.Label, MapURL: req.MapURL, VenueNote: req.VenueNote, MediaID: req.MediaID})
 	if err != nil {
 		writeErr(w, r, mapTimeErr(err))
 		return
@@ -145,12 +185,14 @@ func (h *ScheduleHandler) Patch(w http.ResponseWriter, r *http.Request) {
 	if !decode(w, r, &req) {
 		return
 	}
-	if f := scheduleFields(req.Address, req.DressCode, req.Description, req.Visibility, req.StartsAt, req.EndsAt); len(f) > 0 {
+	if f := scheduleFields(req.Address, req.DressCode, req.Description, req.Visibility, req.StartsAt, req.EndsAt,
+		scheduleExtras{req.Label, req.VenueNote, req.MapURL, req.MediaID}); len(f) > 0 {
 		writeErr(w, r, validationErr(f))
 		return
 	}
 	it, err := h.svc.Update(r.Context(), r.PathValue("sid"), schapp.Patch{Title: req.Title, StartsAt: req.StartsAt, EndsAt: req.EndsAt, Venue: req.Venue,
-		Address: req.Address, DressCode: req.DressCode, Description: req.Description, Visibility: req.Visibility})
+		Address: req.Address, DressCode: req.DressCode, Description: req.Description, Visibility: req.Visibility,
+		Label: req.Label, MapURL: req.MapURL, VenueNote: req.VenueNote, MediaID: req.MediaID})
 	if err != nil {
 		writeErr(w, r, mapTimeErr(err))
 		return
@@ -197,6 +239,9 @@ func (h *ScheduleHandler) ICS(w http.ResponseWriter, r *http.Request) {
 func mapTimeErr(err error) error {
 	if _, ok := err.(*time.ParseError); ok {
 		return validationErr(map[string]string{"starts_at": "must be RFC3339"})
+	}
+	if errors.Is(err, schedule.ErrBadMedia) {
+		return validationErr(map[string]string{"media_id": "unknown photo"})
 	}
 	if errors.Is(err, schedule.ErrBadRange) {
 		return validationErr(map[string]string{"ends_at": "must not be before starts_at"})
