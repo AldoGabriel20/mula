@@ -8,6 +8,7 @@ import { Waiting } from "@/components/templates/Waiting";
 import type { TemplateSlug } from "./registry";
 
 export const RENDERERS: Record<TemplateSlug, ComponentType<TemplateProps>> = {
+  "arunika": dynamic(() => import("@/components/templates/arunika/Arunika"), { ssr: false, loading: () => createElement(Waiting, { slug: "arunika" }) }),
   "gilded-seal": dynamic(() => import("@/components/templates/gilded-seal/GildedSeal"), { ssr: false, loading: () => createElement(Waiting, { slug: "gilded-seal" }) }),
   "we-do": dynamic(() => import("@/components/templates/we-do/WeDo"), { ssr: false, loading: () => createElement(Waiting, { slug: "we-do" }) }),
 };

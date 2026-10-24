@@ -17,7 +17,7 @@
   "position": 9,
   "palette": "noir-gold",
   "marketing": {
-    "desc": "Black-and-white portraits, hand-lettered gold and a heart drawn in light. A modern, story-first invitation with a countdown, a timeline and a calendar link.",
+    "desc": "A 3D envelope with the guest's name opens onto faded-film portraits, a patterned liner, gold foil and a heart drawn in light. Editorial type, a flip countdown, a timeline and a calendar link.",
     "style": "Modern",
     "mood": "Romantic",
     "demo": {
@@ -82,32 +82,32 @@
   },
   "tokens": {
     "color": {
-      "bg": "#F3F1EE",
-      "surface": "#FFFFFF",
-      "ink": "#141414",
-      "inkSoft": "#333333",
-      "muted": "#5B5B5B",
-      "accent": "#B79D6E",
-      "accentSoft": "#D9C29A",
-      "line": "#B79D6E",
+      "bg": "#F4EFE7",
+      "surface": "#FBF8F3",
+      "ink": "#191714",
+      "inkSoft": "#3B362F",
+      "muted": "#625B51",
+      "accent": "#B08D57",
+      "accentSoft": "#DCC7A0",
+      "line": "#CDB68A",
       "danger": "#8E4A43",
-      "onAccent": "#141414"
+      "onAccent": "#191714"
     },
     "font": {
-      "display": "playfair",
-      "body": "montserrat",
-      "script": "allura"
+      "display": "bodoni",
+      "body": "manrope",
+      "script": "pinyon"
     },
     "motion": {
       "level": "full"
     },
     "extra": {
-      "inkStrong": "#141414",
-      "mutedStrong": "#444444",
-      "eyebrow": "#6F5A2E",
-      "eyebrowSoft": "#7A6330",
-      "veilFrom": "#FFFFFF",
-      "veilTo": "#E9E6E1"
+      "inkStrong": "#191714",
+      "mutedStrong": "#4A443C",
+      "eyebrow": "#6E5427",
+      "eyebrowSoft": "#7D6232",
+      "veilFrom": "#FBF8F3",
+      "veilTo": "#EAE3D8"
     }
   },
   "customizable": {
@@ -120,6 +120,7 @@
     ],
     "fontPairings": [
       "we-do",
+      "we-do-playfair",
       "classic-serif"
     ],
     "tokens": [

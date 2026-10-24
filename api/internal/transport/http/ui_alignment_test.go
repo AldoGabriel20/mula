@@ -699,7 +699,7 @@ func TestInvitationDeadlineAndTemplates(t *testing.T) {
 		}
 	}
 	_ = json.Unmarshal(r.Body.Bytes(), &cat)
-	if r.Code != 200 || len(cat.Data) != 10 || cat.Data[0].Slug != "linen-vow" || len(cat.Data[0].Tags) != 2 || cat.Data[8].Slug != "gilded-seal" || cat.Data[9].Slug != "we-do" {
+	if r.Code != 200 || len(cat.Data) != 11 || cat.Data[0].Slug != "linen-vow" || len(cat.Data[0].Tags) != 2 || cat.Data[8].Slug != "gilded-seal" || cat.Data[9].Slug != "we-do" || cat.Data[10].Slug != "arunika" {
 		t.Fatalf("templates: %d %s", r.Code, r.Body)
 	}
 

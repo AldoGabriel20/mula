@@ -196,32 +196,64 @@ export const PALETTES: Palette[] = [
     "id": "noir-gold",
     "name": "Noir & Gold",
     "swatch": [
-      "#F3F1EE",
-      "#141414",
-      "#B79D6E"
+      "#F4EFE7",
+      "#191714",
+      "#B08D57"
     ],
     "color": {
-      "accent": "#B79D6E",
-      "accentSoft": "#D9C29A",
-      "bg": "#F3F1EE",
+      "accent": "#B08D57",
+      "accentSoft": "#DCC7A0",
+      "bg": "#F4EFE7",
       "danger": "#8E4A43",
-      "ink": "#141414",
-      "inkSoft": "#333333",
-      "line": "#B79D6E",
-      "muted": "#5B5B5B",
-      "onAccent": "#141414",
-      "surface": "#FFFFFF"
+      "ink": "#191714",
+      "inkSoft": "#3B362F",
+      "line": "#CDB68A",
+      "muted": "#625B51",
+      "onAccent": "#191714",
+      "surface": "#FBF8F3"
     },
     "extra": {
-      "eyebrow": "#6F5A2E",
-      "eyebrowSoft": "#7A6330",
-      "inkStrong": "#141414",
-      "mutedStrong": "#444444",
-      "veilFrom": "#FFFFFF",
-      "veilTo": "#E9E6E1"
+      "eyebrow": "#6E5427",
+      "eyebrowSoft": "#7D6232",
+      "inkStrong": "#191714",
+      "mutedStrong": "#4A443C",
+      "veilFrom": "#FBF8F3",
+      "veilTo": "#EAE3D8"
     },
     "aliases": [
       "Noir"
+    ]
+  },
+  {
+    "id": "olive-wine",
+    "name": "Olive & Wine",
+    "swatch": [
+      "#F8F5EE",
+      "#4F573A",
+      "#5C1323"
+    ],
+    "color": {
+      "accent": "#5C1323",
+      "accentSoft": "#C79AA0",
+      "bg": "#F8F5EE",
+      "danger": "#A3243B",
+      "ink": "#363C26",
+      "inkSoft": "#4F573A",
+      "line": "#8C9270",
+      "muted": "#5F654B",
+      "onAccent": "#F6F1E7",
+      "surface": "#FCFBF8"
+    },
+    "extra": {
+      "eyebrow": "#6D2537",
+      "eyebrowSoft": "#7D3445",
+      "inkStrong": "#2B301E",
+      "mutedStrong": "#50553E",
+      "veilFrom": "#FCFBF8",
+      "veilTo": "#EEEAE1"
+    },
+    "aliases": [
+      "Olive"
     ]
   }
 ];

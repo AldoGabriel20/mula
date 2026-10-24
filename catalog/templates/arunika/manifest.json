@@ -1,0 +1,135 @@
+{
+  "manifestVersion": 1,
+  "slug": "arunika",
+  "name": "Arunika",
+  "kind": "coded",
+  "renderer": "arunika/Arunika",
+  "status": "published",
+  "access": "free",
+  "category": "Wedding",
+  "eventTypes": [
+    "wedding"
+  ],
+  "tags": [
+    "Garden",
+    "Scrapbook"
+  ],
+  "position": 10,
+  "palette": "olive-wine",
+  "marketing": {
+    "desc": "An olive envelope sealed in burgundy wax opens on a painted lake and a shower of petals, then a scrapbook collage of cards, polaroids and hand-painted bouquets that drifts in 3D under the guest's touch.",
+    "style": "Garden",
+    "mood": "Moody",
+    "demo": {
+      "route": "/demo/arunika"
+    }
+  },
+  "sections": [
+    {
+      "type": "hero",
+      "required": true
+    },
+    {
+      "type": "opening"
+    },
+    {
+      "type": "music",
+      "hiddenUntilFilled": true
+    },
+    {
+      "type": "story"
+    },
+    {
+      "type": "schedule"
+    },
+    {
+      "type": "gallery",
+      "hiddenUntilFilled": true,
+      "max": 12
+    },
+    {
+      "type": "gift"
+    },
+    {
+      "type": "rsvp",
+      "required": true
+    },
+    {
+      "type": "wishes"
+    },
+    {
+      "type": "closing"
+    }
+  ],
+  "capabilities": {
+    "music": true,
+    "gallery": {
+      "max": 12
+    },
+    "wishes": true,
+    "rsvp": true,
+    "gift": true,
+    "timezone": true,
+    "multiMoment": {
+      "max": 10
+    },
+    "languages": [
+      "en",
+      "id"
+    ],
+    "needsWebGL": false,
+    "reducedMotion": "static"
+  },
+  "tokens": {
+    "color": {
+      "bg": "#F8F5EE",
+      "surface": "#FCFBF8",
+      "ink": "#363C26",
+      "inkSoft": "#4F573A",
+      "muted": "#5F654B",
+      "accent": "#5C1323",
+      "accentSoft": "#C79AA0",
+      "line": "#8C9270",
+      "danger": "#A3243B",
+      "onAccent": "#F6F1E7"
+    },
+    "font": {
+      "display": "cormorant",
+      "body": "montserrat",
+      "script": "pinyon"
+    },
+    "motion": {
+      "level": "full"
+    },
+    "extra": {
+      "inkStrong": "#2B301E",
+      "mutedStrong": "#50553E",
+      "eyebrow": "#6D2537",
+      "eyebrowSoft": "#7D3445",
+      "veilFrom": "#FCFBF8",
+      "veilTo": "#EEEAE1"
+    }
+  },
+  "customizable": {
+    "palette": [
+      "olive-wine",
+      "sage-parchment",
+      "rose-linen",
+      "gold-ivory"
+    ],
+    "fontPairings": [
+      "arunika",
+      "classic-serif",
+      "we-do-playfair"
+    ],
+    "tokens": [
+      "accent"
+    ],
+    "motion": [
+      "full",
+      "calm"
+    ]
+  },
+  "thumbnail": "thumb.webp",
+  "thumbnailMobile": "thumb-mobile.webp"
+}

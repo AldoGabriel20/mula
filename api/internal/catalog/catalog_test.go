@@ -383,7 +383,7 @@ func TestSync(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if len(rep.Inserted)+len(rep.Updated)+len(rep.Retired) != 0 || len(rep.Unchanged) != 3 {
+	if len(rep.Inserted)+len(rep.Updated)+len(rep.Retired) != 0 || len(rep.Unchanged) != len(cat.Templates) {
 		t.Fatalf("second run must be a no-op: %s", rep)
 	}
 	var stamp2 string

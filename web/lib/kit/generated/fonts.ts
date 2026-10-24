@@ -139,9 +139,23 @@ export const FONT_PAIRINGS: FontPairing[] = [
   },
   {
     "id": "we-do",
+    "name": "Bodoni & Pinyon",
+    "display": "bodoni",
+    "body": "manrope",
+    "script": "pinyon"
+  },
+  {
+    "id": "we-do-playfair",
     "name": "Playfair & Allura",
     "display": "playfair",
     "body": "montserrat",
     "script": "allura"
+  },
+  {
+    "id": "arunika",
+    "name": "Cormorant & Montserrat",
+    "display": "cormorant",
+    "body": "montserrat",
+    "script": "pinyon"
   }
 ];

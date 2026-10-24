@@ -9,7 +9,7 @@ import { TRACKS } from "@/lib/kit/music";
 
 describe("registry", () => {
   it("knows the coded templates and nothing else; unknown, empty and prototype-chain slugs fall back to the generic card", () => {
-    expect([...TEMPLATE_SLUGS]).toEqual(["gilded-seal", "we-do"]);
+    expect([...TEMPLATE_SLUGS]).toEqual(["arunika", "gilded-seal", "we-do"]);
     expect(hasLiveTemplate("gilded-seal")).toBe(true);
     for (const s of ["linen-vow", "", null, undefined, "constructor", "__proto__", "toString"]) expect(hasLiveTemplate(s)).toBe(false);
   });
@@ -20,7 +20,7 @@ describe("landing catalog", () => {
     const t = BY_SLUG["gilded-seal"];
     expect(t).toBeTruthy();
     expect(t).toMatchObject({ name: "Gilded Seal", cat: "Wedding", style: "Elegant", color: "Ivory", live: true });
-    expect(TEMPLATES.filter((x) => x.live).map((x) => x.slug)).toEqual(["gilded-seal", "we-do"]); // the others keep the phone mock
+    expect(TEMPLATES.filter((x) => x.live).map((x) => x.slug)).toEqual(["arunika", "gilded-seal", "we-do"]); // the others keep the phone mock
   });
   it("takes its copy, category, palette label and thumbnails from the catalog manifest; `live` is derived, never hand-set", () => {
     const t = BY_SLUG["gilded-seal"];

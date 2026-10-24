@@ -36,6 +36,10 @@ export function derive(c: WeDoConfig) {
   const monthName = up({ month: "long" });
   const dayNum = when ? fmtInZone(when, tz, loc, { day: "numeric" }) : "";
   const year = when ? fmtInZone(when, tz, loc, { year: "numeric" }) : "";
+  const parts = when ? zoneParts(when, tz) : null;
+  const pad = (n: number | string) => String(n).padStart(2, "0");
+  /** "22 · 07 · 2030" for the cover and the marquee. */
+  const dots = parts ? `${pad(parts.d)} · ${pad(parts.m)} · ${parts.y}` : "";
   const timeText = when ? `${id ? "PUKUL" : "AT"} ${clock(when, tz, c.language)}` : "";
   const first = c.partnerOne.split(/\s+/)[0];
   const second = c.partnerTwo.split(/\s+/)[0];
@@ -75,7 +79,7 @@ export function derive(c: WeDoConfig) {
   const rsvpBy = deadline ? `${id ? "sebelum" : "by"} ${fmtInZone(deadline, tz, loc, { day: "numeric", month: "long" })}` : "";
 
   return {
-    dayName, monthName, dayNum, year, timeText, rsvpBy, cal, rowTime,
+    dayName, monthName, dayNum, year, timeText, dots, rsvpBy, cal, rowTime,
     names: `${first} & ${second}`,
     ini1: first.charAt(0).toUpperCase(),
     ini2: second.charAt(0).toUpperCase(),

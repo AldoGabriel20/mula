@@ -194,32 +194,64 @@
       "id": "noir-gold",
       "name": "Noir & Gold",
       "swatch": [
-        "#F3F1EE",
-        "#141414",
-        "#B79D6E"
+        "#F4EFE7",
+        "#191714",
+        "#B08D57"
       ],
       "color": {
-        "bg": "#F3F1EE",
-        "surface": "#FFFFFF",
-        "ink": "#141414",
-        "inkSoft": "#333333",
-        "muted": "#5B5B5B",
-        "accent": "#B79D6E",
-        "accentSoft": "#D9C29A",
-        "line": "#B79D6E",
+        "bg": "#F4EFE7",
+        "surface": "#FBF8F3",
+        "ink": "#191714",
+        "inkSoft": "#3B362F",
+        "muted": "#625B51",
+        "accent": "#B08D57",
+        "accentSoft": "#DCC7A0",
+        "line": "#CDB68A",
         "danger": "#8E4A43",
-        "onAccent": "#141414"
+        "onAccent": "#191714"
       },
       "extra": {
-        "inkStrong": "#141414",
-        "mutedStrong": "#444444",
-        "eyebrow": "#6F5A2E",
-        "eyebrowSoft": "#7A6330",
-        "veilFrom": "#FFFFFF",
-        "veilTo": "#E9E6E1"
+        "inkStrong": "#191714",
+        "mutedStrong": "#4A443C",
+        "eyebrow": "#6E5427",
+        "eyebrowSoft": "#7D6232",
+        "veilFrom": "#FBF8F3",
+        "veilTo": "#EAE3D8"
       },
       "aliases": [
         "Noir"
+      ]
+    },
+    {
+      "id": "olive-wine",
+      "name": "Olive & Wine",
+      "swatch": [
+        "#F8F5EE",
+        "#4F573A",
+        "#5C1323"
+      ],
+      "color": {
+        "bg": "#F8F5EE",
+        "surface": "#FCFBF8",
+        "ink": "#363C26",
+        "inkSoft": "#4F573A",
+        "muted": "#5F654B",
+        "accent": "#5C1323",
+        "accentSoft": "#C79AA0",
+        "line": "#8C9270",
+        "danger": "#A3243B",
+        "onAccent": "#F6F1E7"
+      },
+      "extra": {
+        "inkStrong": "#2B301E",
+        "mutedStrong": "#50553E",
+        "eyebrow": "#6D2537",
+        "eyebrowSoft": "#7D3445",
+        "veilFrom": "#FCFBF8",
+        "veilTo": "#EEEAE1"
+      },
+      "aliases": [
+        "Olive"
       ]
     }
   ]
